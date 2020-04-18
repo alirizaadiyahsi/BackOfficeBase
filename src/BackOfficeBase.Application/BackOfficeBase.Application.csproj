@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Authentication\Dto\" />
+    <Folder Include="Authorization\Roles\Dto\" />
+    <Folder Include="Authorization\Users\Dto\" />
+    <Folder Include="OrganizationUnits\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BackOfficeBase.Domain\BackOfficeBase.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
