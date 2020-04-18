@@ -5,13 +5,11 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3534F314-74B2-4E23-BEE3-CBC1F041DE1D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3B5E5848-1A57-4F10-B477-3DA5228AFEAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOfficeBase.Domain", "src\BackOfficeBase.Domain\BackOfficeBase.Domain.csproj", "{D465B77D-7B9E-49FC-AE3A-26D7519E010B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Domain", "src\BackOfficeBase.Domain\BackOfficeBase.Domain.csproj", "{D465B77D-7B9E-49FC-AE3A-26D7519E010B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOfficeBase.DataAccess", "src\BackOfficeBase.DataAccess\BackOfficeBase.DataAccess.csproj", "{6BE88927-1398-4568-801B-220472A5B2FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.DataAccess", "src\BackOfficeBase.DataAccess\BackOfficeBase.DataAccess.csproj", "{6BE88927-1398-4568-801B-220472A5B2FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Application", "src\BackOfficeBase.Application\BackOfficeBase.Application.csproj", "{BEADCFED-C53C-4480-B17E-F57E1B65D454}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOfficeBase.Application", "src\BackOfficeBase.Application\BackOfficeBase.Application.csproj", "{BEADCFED-C53C-4480-B17E-F57E1B65D454}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
