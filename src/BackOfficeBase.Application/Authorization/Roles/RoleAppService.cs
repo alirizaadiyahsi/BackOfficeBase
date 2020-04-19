@@ -1,6 +1,6 @@
 ﻿namespace BackOfficeBase.Application.Authorization.Roles
 {
-    public class RoleService : IRoleService
+    public class RoleAppService : IRoleAppService
     {
     }
 }
