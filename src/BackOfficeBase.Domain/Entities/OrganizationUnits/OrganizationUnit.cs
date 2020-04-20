@@ -16,8 +16,8 @@ namespace BackOfficeBase.Domain.Entities.OrganizationUnits
 
         public virtual ICollection<OrganizationUnit> Children { get; set; }
 
-        public virtual ICollection<OrganizationUnitUser> OrganizationUnitUsers { get; set; }
+        public virtual ICollection<OrganizationUnitUser> OrganizationUnitUsers { get; set; } = new List<OrganizationUnitUser>();
 
-        public virtual ICollection<OrganizationUnitRole> OrganizationUnitRoles { get; set; }
+        public virtual ICollection<OrganizationUnitRole> OrganizationUnitRoles { get; set; } = new List<OrganizationUnitRole>();
     }
 }

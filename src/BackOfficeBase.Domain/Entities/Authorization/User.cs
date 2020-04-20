@@ -46,8 +46,8 @@ namespace BackOfficeBase.Domain.Entities.Authorization
 
         public virtual ICollection<UserToken> UserTokens { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
-        public virtual ICollection<OrganizationUnitUser> OrganizationUnitUsers { get; set; }
+        public virtual ICollection<OrganizationUnitUser> OrganizationUnitUsers { get; set; } = new List<OrganizationUnitUser>();
     }
 }
