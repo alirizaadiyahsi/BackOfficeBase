@@ -15,8 +15,8 @@ namespace BackOfficeBase.Tests.Application.Authorization
     {
         private readonly IPermissionAppService _permissionAppService;
 
-        private static string TestPermissionClaimForUser = "TestPermissionClaimForUser";
-        private static string TestPermissionClaimForRole = "TestPermissionClaimForRoe";
+        private static readonly string TestPermissionClaimForUser = "TestPermissionClaimForUser";
+        private static readonly string TestPermissionClaimForRole = "TestPermissionClaimForRoe";
 
         public PermissionAppServiceTests()
         {
