@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Authentication\Dto\" />
     <Folder Include="Authorization\Roles\Dto\" />
     <Folder Include="Authorization\Users\Dto\" />
     <Folder Include="OrganizationUnits\Dto\" />
