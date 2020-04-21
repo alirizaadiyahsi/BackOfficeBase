@@ -11,7 +11,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.24" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BackOfficeBase.DataAccess\BackOfficeBase.DataAccess.csproj" />
     <ProjectReference Include="..\BackOfficeBase.Domain\BackOfficeBase.Domain.csproj" />
+    <ProjectReference Include="..\BackOfficeBase.Utilities\BackOfficeBase.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

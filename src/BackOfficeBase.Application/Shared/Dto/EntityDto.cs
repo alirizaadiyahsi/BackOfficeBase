@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BackOfficeBase.Application.Dto
+namespace BackOfficeBase.Application.Shared.Dto
 {
     public abstract class EntityDto
     {

@@ -1,4 +1,6 @@
-﻿namespace BackOfficeBase.Application.Dto
+﻿using System.Collections.Generic;
+
+namespace BackOfficeBase.Application.Shared.Dto
 {
     public class PagedListInput
     {
@@ -8,9 +10,9 @@
             PageSize = 10;
         }
 
-        public string Filter { get; set; }
+        public Dictionary<string, string> Filters { get; set; }
 
-        public string SortBy { get; set; }
+        public Dictionary<string, string> Sorts { get; set; }
 
         public int PageIndex { get; set; }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using BackOfficeBase.Domain.Entities.Auditing;
 
-namespace BackOfficeBase.Application.Dto
+namespace BackOfficeBase.Application.Shared.Dto
 {
     public abstract class FullAuditedEntityDto : AuditedEntityDto, IFullAudited
     {
