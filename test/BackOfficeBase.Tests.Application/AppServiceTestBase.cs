@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Tests.Shared;
 
@@ -27,11 +29,21 @@ namespace BackOfficeBase.Tests.Application
             return testRole;
         }
 
-        public static User GetTestUser(string userName = "TestUserName")
+        public static User GetTestUser(string userName = "TestUserName", string email = "testuser@mail.com")
         {
             var testUser = new User
             {
-                UserName = userName
+                Id = Guid.NewGuid(),
+                UserName = userName,
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Email = email,
+                IsDeleted = false,
+                EmailConfirmed = true,
+                NormalizedEmail = email.ToUpper(CultureInfo.GetCultureInfo("en-US")),
+                NormalizedUserName = userName.ToUpper(CultureInfo.GetCultureInfo("en-US")),
+                PasswordHash = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
             return testUser;
