@@ -20,7 +20,11 @@ namespace BackOfficeBase.Tests.Application.Shared
 
         public CrudAppServiceTests()
         {
-            var mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<Product, ProductDto>());
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Product, ProductDto>();
+                cfg.CreateMap<CreateProductInput, Product>();
+            });
             var mapper = mapperConfig.CreateMapper();
 
             _dbContextTest = GetNewHostServiceProvider().GetRequiredService<BackOfficeBaseDbContextTest>();
@@ -54,7 +58,7 @@ namespace BackOfficeBase.Tests.Application.Shared
                 Filters = new List<string>
                 {
                     "Name.Contains(\"Product\")",
-                    $"CreationTime > DateTime.Now.AddDays(-5)",
+                    "CreationTime > DateTime.Now.AddDays(-5)",
                     "!IsDeleted"
                 },
                 Sorts = new List<string>
@@ -71,5 +75,24 @@ namespace BackOfficeBase.Tests.Application.Shared
             Assert.Equal(0, pagedProductList.Items.Count(x => x.Code == "c_product_code"));
             Assert.Equal("b_product_code_1", pagedProductList.Items.ToArray()[1].Code);
         }
+
+        [Fact]
+        public async Task Should_Create_Async()
+        {
+            var productDto = await _productCrudAppService.CreateAsync(new CreateProductInput
+            {
+                Code = "create_async_product_code",
+                Name = "Create Async Product Name"
+            });
+            await _dbContextTest.SaveChangesAsync();
+
+            var anotherScopeDbContext = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>(); ;
+            var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(productDto.Id);
+
+            Assert.NotNull(productDto);
+            Assert.NotNull(insertedProductDto);
+            Assert.Equal(productDto.Code, insertedProductDto.Code);
+        }
+
     }
 }
