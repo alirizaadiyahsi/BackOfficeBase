@@ -20,13 +20,7 @@ namespace BackOfficeBase.Tests.Application.Shared
 
         public CrudAppServiceTests()
         {
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Product, ProductDto>();
-                cfg.CreateMap<CreateProductInput, Product>();
-                cfg.CreateMap<UpdateProductInput, Product>();
-            });
-            var mapper = mapperConfig.CreateMapper();
+            var mapper = GetConfiguredMapper();
 
             _dbContextTest = GetNewHostServiceProvider().GetRequiredService<BackOfficeBaseDbContextTest>();
             _productCrudAppService = new ProductCrudAppService.ProductCrudAppService(_dbContextTest, mapper);
@@ -142,6 +136,18 @@ namespace BackOfficeBase.Tests.Application.Shared
 
             Assert.NotNull(productDto);
             Assert.Null(deletedProductDto);
+        }
+
+        private static IMapper GetConfiguredMapper()
+        {
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Product, ProductDto>();
+                cfg.CreateMap<CreateProductInput, Product>();
+                cfg.CreateMap<UpdateProductInput, Product>();
+            });
+            var mapper = mapperConfig.CreateMapper();
+            return mapper;
         }
     }
 }
