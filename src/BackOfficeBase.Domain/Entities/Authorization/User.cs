@@ -31,13 +31,10 @@ namespace BackOfficeBase.Domain.Entities.Authorization
 
         public DateTime? DeletionTime { get; set; }
 
-        [ForeignKey("CreatorUserId")]
         public virtual User CreatorUser { get; set; }
 
-        [ForeignKey("ModifierUserId")]
         public virtual User ModifierUser { get; set; }
 
-        [ForeignKey("DeleterUserId")]
         public virtual User DeleterUser { get; set; }
 
         public virtual ICollection<UserClaim> UserClaims { get; set; }
