@@ -1,21 +1,30 @@
 ﻿using System;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
+using BackOfficeBase.Domain.Entities.Auditing;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackOfficeBase.DataAccess
 {
     public class BackOfficeBaseDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
-        public BackOfficeBaseDbContext(DbContextOptions options)
+        // TODO: move following line to another class
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly Guid _currentUserId;
+
+        public BackOfficeBaseDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
-
+            _httpContextAccessor = httpContextAccessor;
+            _currentUserId = new Guid(_httpContextAccessor.HttpContext.User.FindFirstValue("Id"));
         }
-
-        // TODO: set creation and modification properties on SaveChanges
 
         public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
         public DbSet<OrganizationUnitUser> OrganizationUnitUsers { get; set; }
@@ -87,6 +96,70 @@ namespace BackOfficeBase.DataAccess
                     .WithMany(r => r.OrganizationUnitRoles)
                     .HasForeignKey(ur => ur.OrganizationUnitId);
             }));
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                SetAuditingProperties(entry);
+            }
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void SetAuditingProperties(EntityEntry entry)
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    SetCreationAuditedProperties(entry);
+                    break;
+                case EntityState.Modified:
+                    SetModificationAuditedProperties(entry);
+                    break;
+                case EntityState.Deleted:
+                    SetDeletionAuditedProperties(entry);
+                    break;
+            }
+        }
+
+        private void SetDeletionAuditedProperties(EntityEntry entry)
+        {
+            if (entry is IHasDeletionTime objectWithDeletionTime)
+            {
+                objectWithDeletionTime.DeletionTime = DateTime.Now;
+            }
+
+            if (entry is IDeletionAudited objectWithDeleterUser)
+            {
+                objectWithDeleterUser.DeleterUserId = _currentUserId;
+            }
+        }
+
+        private void SetModificationAuditedProperties(EntityEntry entry)
+        {
+            if (entry is IHasModificationTime objectWithModificationTime)
+            {
+                objectWithModificationTime.ModificationTime = DateTime.Now;
+            }
+
+            if (entry is IModificationAudited objectWithModifierUser)
+            {
+                objectWithModifierUser.ModifierUserId = _currentUserId;
+            }
+        }
+
+        private void SetCreationAuditedProperties(EntityEntry entry)
+        {
+            if (entry is IHasCreationTime objectWithCreationTime)
+            {
+                objectWithCreationTime.CreationTime = DateTime.Now;
+            }
+
+            if (entry is ICreationAudited objectWithCreatorUser)
+            {
+                objectWithCreatorUser.CreatorUserId = _currentUserId;
+            }
         }
     }
 }
