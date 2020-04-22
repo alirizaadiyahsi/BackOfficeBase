@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BackOfficeBase.Application\BackOfficeBase.Application.csproj" />
     <ProjectReference Include="..\..\src\BackOfficeBase.DataAccess\BackOfficeBase.DataAccess.csproj" />
   </ItemGroup>
 
