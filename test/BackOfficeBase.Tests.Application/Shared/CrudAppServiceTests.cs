@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
-using BackOfficeBase.Tests.Application.Shared.CrudAppService;
-using BackOfficeBase.Tests.Application.Shared.CrudAppService.Dto;
+using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService;
+using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             var mapper = mapperConfig.CreateMapper();
 
             _dbContextTest = GetNewHostServiceProvider().GetRequiredService<BackOfficeBaseDbContextTest>();
-            _productCrudAppService = new ProductCrudAppService(_dbContextTest, mapper);
+            _productCrudAppService = new ProductCrudAppService.ProductCrudAppService(_dbContextTest, mapper);
         }
 
         [Fact]

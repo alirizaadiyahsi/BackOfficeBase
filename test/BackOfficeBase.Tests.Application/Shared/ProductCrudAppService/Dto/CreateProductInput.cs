@@ -1,4 +1,4 @@
-﻿namespace BackOfficeBase.Tests.Application.Shared.CrudAppService.Dto
+﻿namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto
 {
     public class CreateProductInput
     {
