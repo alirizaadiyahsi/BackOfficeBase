@@ -107,6 +107,7 @@ namespace BackOfficeBase.DataAccess
             return base.SaveChangesAsync(cancellationToken);
         }
 
+        // TODO: Write tests for auditing property settings
         private void SetAuditingProperties(EntityEntry entry)
         {
             switch (entry.State)
