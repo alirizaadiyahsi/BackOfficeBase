@@ -24,6 +24,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             {
                 cfg.CreateMap<Product, ProductDto>();
                 cfg.CreateMap<CreateProductInput, Product>();
+                cfg.CreateMap<UpdateProductInput, Product>();
             });
             var mapper = mapperConfig.CreateMapper();
 
@@ -86,7 +87,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await _dbContextTest.SaveChangesAsync();
 
-            var anotherScopeDbContext = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>(); ;
+            var anotherScopeDbContext = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
             var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(productDto.Id);
 
             Assert.NotNull(productDto);
@@ -94,5 +95,33 @@ namespace BackOfficeBase.Tests.Application.Shared
             Assert.Equal(productDto.Code, insertedProductDto.Code);
         }
 
+        [Fact]
+        public async Task Should_Update_Async()
+        {
+            var dbContextForAddEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
+
+            var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
+            {
+                Code = "update_product_code",
+                Name = "Update Product Name"
+            });
+            await dbContextForAddEntity.SaveChangesAsync();
+
+            _productCrudAppService.Update(new UpdateProductInput
+            {
+                Id = productDto.Entity.Id,
+                Code = "update_product_code_updated",
+                Name = "Update Product Name Updated"
+            });
+            await _dbContextTest.SaveChangesAsync();
+
+            var dbContextForGetEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
+            var updatedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
+
+            Assert.NotNull(productDto);
+            Assert.NotNull(updatedProductDto);
+            Assert.Equal("update_product_code_updated", updatedProductDto.Code);
+            Assert.Equal("Update Product Name Updated", updatedProductDto.Name);
+        }
     }
 }
