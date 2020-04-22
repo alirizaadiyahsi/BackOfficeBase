@@ -33,18 +33,15 @@ namespace BackOfficeBase.Application.Shared.Services
 
         public virtual async Task<IPagedList<TGetListOutput>> GetListAsync(PagedListInput input)
         {
-            var query = _dbContext.Set<TEntity>().AsQueryable();
-            foreach (var (field, condition) in input.Filters)
-            {
-                query = query.Where($"{field} {condition}");
-            }
+            var predicate = string.Join(" && ", input.Filters);
+            var query = _dbContext.Set<TEntity>().Where(predicate);
 
             IOrderedQueryable<TEntity> orderedQuery = null;
-            foreach (var (field, sortBy) in input.Sorts)
+            foreach (var sort in input.Sorts)
             {
                 orderedQuery = orderedQuery == null
-                    ? query.OrderBy($"{field} {sortBy}")
-                    : orderedQuery.ThenBy($"{field} {sortBy}");
+                    ? query.OrderBy(sort)
+                    : orderedQuery.ThenBy(sort);
             }
 
             var count = await orderedQuery.CountAsync();

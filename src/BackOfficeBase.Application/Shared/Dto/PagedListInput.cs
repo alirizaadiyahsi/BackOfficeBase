@@ -10,9 +10,9 @@ namespace BackOfficeBase.Application.Shared.Dto
             PageSize = 10;
         }
 
-        public Dictionary<string, string> Filters { get; set; }
+        public List<string> Filters { get; set; }
 
-        public Dictionary<string, string> Sorts { get; set; }
+        public List<string> Sorts { get; set; }
 
         public int PageIndex { get; set; }
 
