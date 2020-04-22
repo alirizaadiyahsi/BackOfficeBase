@@ -99,7 +99,6 @@ namespace BackOfficeBase.Tests.Application.Shared
         public async Task Should_Update_Async()
         {
             var dbContextForAddEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
-
             var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
             {
                 Code = "update_product_code",
@@ -122,6 +121,27 @@ namespace BackOfficeBase.Tests.Application.Shared
             Assert.NotNull(updatedProductDto);
             Assert.Equal("update_product_code_updated", updatedProductDto.Code);
             Assert.Equal("Update Product Name Updated", updatedProductDto.Name);
+        }
+
+        [Fact]
+        public async Task Should_Delete_Async()
+        {
+            var dbContextForAddEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
+            var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
+            {
+                Code = "delete_product_code",
+                Name = "Delete Product Name"
+            });
+            await dbContextForAddEntity.SaveChangesAsync();
+            
+            await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
+            await _dbContextTest.SaveChangesAsync();
+
+            var dbContextForGetEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
+            var deletedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
+
+            Assert.NotNull(productDto);
+            Assert.Null(deletedProductDto);
         }
     }
 }

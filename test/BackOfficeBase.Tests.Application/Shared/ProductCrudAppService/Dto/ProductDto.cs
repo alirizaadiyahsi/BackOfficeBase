@@ -2,7 +2,7 @@
 
 namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto
 {
-    public class ProductDto : EntityDto
+    public class ProductDto : AuditedEntityDto
     {
         public string Name { get; set; }
         public string Code { get; set; }
