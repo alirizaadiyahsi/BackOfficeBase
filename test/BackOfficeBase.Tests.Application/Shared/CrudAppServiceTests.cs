@@ -16,21 +16,18 @@ namespace BackOfficeBase.Tests.Application.Shared
     public class CrudAppServiceTests : AppServiceTestBase
     {
         private readonly IProductCrudAppService _productCrudAppService;
-        private readonly BackOfficeBaseDbContextTest _dbContextTest;
 
         public CrudAppServiceTests()
         {
             var mapper = GetConfiguredMapper();
-
-            _dbContextTest = GetNewHostServiceProvider().GetRequiredService<BackOfficeBaseDbContextTest>();
-            _productCrudAppService = new ProductCrudAppService.ProductCrudAppService(_dbContextTest, mapper);
+            _productCrudAppService = new ProductCrudAppService.ProductCrudAppService(DbContextTest, mapper);
         }
 
         [Fact]
         public async Task Should_Get_Async()
         {
-            var result = _dbContextTest.Products.Add(new Product { Name = "Product Name", Code = "product_code" });
-            _dbContextTest.SaveChanges();
+            var result = DbContextTest.Products.Add(new Product { Name = "Product Name", Code = "product_code" });
+            DbContextTest.SaveChanges();
 
             var productDto = await _productCrudAppService.GetAsync(result.Entity.Id);
 
@@ -41,12 +38,12 @@ namespace BackOfficeBase.Tests.Application.Shared
         [Fact]
         public async Task Should_Get_List_Async()
         {
-            _dbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code", CreationTime = DateTime.Now.AddDays(-5) });
-            _dbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2", CreationTime = DateTime.Now.AddDays(-4) });
-            _dbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1", CreationTime = DateTime.Now.AddDays(-2) });
-            _dbContextTest.Products.Add(new Product { Name = "C Product Name", Code = "c_product_code", CreationTime = DateTime.Now.AddDays(-3), IsDeleted = true });
-            _dbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code", CreationTime = DateTime.Now.AddDays(-1) });
-            _dbContextTest.SaveChanges();
+            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code", CreationTime = DateTime.Now.AddDays(-5) });
+            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2", CreationTime = DateTime.Now.AddDays(-4) });
+            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1", CreationTime = DateTime.Now.AddDays(-2) });
+            DbContextTest.Products.Add(new Product { Name = "C Product Name", Code = "c_product_code", CreationTime = DateTime.Now.AddDays(-3), IsDeleted = true });
+            DbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code", CreationTime = DateTime.Now.AddDays(-1) });
+            DbContextTest.SaveChanges();
 
             var pagedListInput = new PagedListInput
             {
@@ -79,7 +76,7 @@ namespace BackOfficeBase.Tests.Application.Shared
                 Code = "create_async_product_code",
                 Name = "Create Async Product Name"
             });
-            await _dbContextTest.SaveChangesAsync();
+            await DbContextTest.SaveChangesAsync();
 
             var anotherScopeDbContext = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
             var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(productDto.Id);
@@ -106,7 +103,7 @@ namespace BackOfficeBase.Tests.Application.Shared
                 Code = "update_product_code_updated",
                 Name = "Update Product Name Updated"
             });
-            await _dbContextTest.SaveChangesAsync();
+            await DbContextTest.SaveChangesAsync();
 
             var dbContextForGetEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
             var updatedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
@@ -129,7 +126,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             await dbContextForAddEntity.SaveChangesAsync();
             
             await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
-            await _dbContextTest.SaveChangesAsync();
+            await DbContextTest.SaveChangesAsync();
 
             var dbContextForGetEntity = GetNewHostServiceProvider().CreateScope().ServiceProvider.GetRequiredService<BackOfficeBaseDbContextTest>();
             var deletedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);

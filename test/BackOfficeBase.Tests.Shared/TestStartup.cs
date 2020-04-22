@@ -17,10 +17,7 @@ namespace BackOfficeBase.Tests.Shared
             });
 
             services.ConfigureNucleusApplication();
-
-            //services.AddIdentity<User, Role>()
-            //    .AddEntityFrameworkStores<BackOfficeBaseDbContext>()
-            //    .AddDefaultTokenProviders();
+            services.AddHttpContextAccessor();
         }
 
         public void Configure()

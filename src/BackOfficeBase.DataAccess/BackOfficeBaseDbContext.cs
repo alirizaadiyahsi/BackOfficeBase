@@ -15,7 +15,7 @@ namespace BackOfficeBase.DataAccess
 {
     public class BackOfficeBaseDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
-        // TODO: move following line to another class
+        // TODO: Move following line to another class to use from another classes too. And write an extension method to get userId
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Guid _currentUserId;
 
@@ -118,6 +118,7 @@ namespace BackOfficeBase.DataAccess
                     SetModificationAuditedProperties(entry);
                     break;
                 case EntityState.Deleted:
+                    // TODO: Implement oft delete
                     SetDeletionAuditedProperties(entry);
                     break;
             }

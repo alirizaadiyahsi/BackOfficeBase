@@ -1,12 +1,34 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Claims;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Tests.Shared;
+using BackOfficeBase.Tests.Shared.DataAccess;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BackOfficeBase.Tests.Application
 {
     public class AppServiceTestBase : TestBase
     {
+        protected readonly BackOfficeBaseDbContextTest DbContextTest;
+        protected readonly IHttpContextAccessor HttpContextAccessor;
+
+        public AppServiceTestBase()
+        {
+            HttpContextAccessor = GetNewHostServiceProvider().GetRequiredService<IHttpContextAccessor>();
+            HttpContextAccessor.HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new List<ClaimsIdentity>
+                {
+                    new ClaimsIdentity(new List<Claim> {new Claim("Id", Guid.NewGuid().ToString())})
+                })
+            };
+
+            DbContextTest = GetNewHostServiceProvider().GetRequiredService<BackOfficeBaseDbContextTest>();
+        }
+
         public static void AddUserToRole(User testUser, Role testRole)
         {
             var testUserRole = new UserRole
