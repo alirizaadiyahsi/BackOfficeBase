@@ -15,17 +15,37 @@ namespace BackOfficeBase.DataAccess
 
         }
 
+        public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
+        public DbSet<OrganizationUnitUser> OrganizationUnitUsers { get; set; }
+        public DbSet<OrganizationUnitRole> OrganizationUnitRoles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Role>().ToTable("Role");
-            modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<UserClaim>().ToTable("UserClaim");
             modelBuilder.Entity<UserLogin>().ToTable("UserLogin");
             modelBuilder.Entity<RoleClaim>().ToTable("RoleClaim");
             modelBuilder.Entity<UserToken>().ToTable("UserToken");
             modelBuilder.Entity<OrganizationUnit>().ToTable("OrganizationUnit");
+
+            modelBuilder.Entity((Action<EntityTypeBuilder<User>>)(b =>
+            {
+                b.ToTable("User");
+
+                b.HasOne(x => x.CreatorUser)
+                .WithMany()
+                .HasForeignKey(x => x.CreatorUserId);
+
+                b.HasOne(x => x.ModifierUser)
+                    .WithMany()
+                    .HasForeignKey(x => x.ModifierUserId);
+
+                b.HasOne(x => x.DeleterUser)
+                    .WithMany()
+                    .HasForeignKey(x => x.DeleterUserId);
+            }));
 
             modelBuilder.Entity((Action<EntityTypeBuilder<UserRole>>)(b =>
             {
