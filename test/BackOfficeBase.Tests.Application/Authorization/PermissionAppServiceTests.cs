@@ -23,11 +23,11 @@ namespace BackOfficeBase.Tests.Application.Authorization
         {
             AddUserToRole(_testUser, _testRole);
 
-            var mockUserClaimStore = SetupMockUserClaimStore(_testUser);
-            var mockRoleClaimStore = SetupMockRoleClaimStore(_testRole);
+            var mockUserStore = SetupMockUserStore(_testUser);
+            var mockRoleStore = SetupMockRoleStore(_testRole);
 
-            var userManager = new UserManager<User>(mockUserClaimStore.Object, null, null, null, null, null, null, null, null);
-            var roleManager = new RoleManager<Role>(mockRoleClaimStore.Object, null, null, null, null);
+            var userManager = new UserManager<User>(mockUserStore.Object, null, null, null, null, null, null, null, null);
+            var roleManager = new RoleManager<Role>(mockRoleStore.Object, null, null, null, null);
             _permissionAppService = new PermissionAppService(userManager, roleManager);
         }
 
@@ -58,29 +58,29 @@ namespace BackOfficeBase.Tests.Application.Authorization
             Assert.False(isPermissionNotGranted);
         }
 
-        private static Mock<IRoleClaimStore<Role>> SetupMockRoleClaimStore(Role testRole)
+        private static Mock<IRoleStore<Role>> SetupMockRoleStore(Role testRole)
         {
-            var mockRoleClaimStore = new Mock<IRoleClaimStore<Role>>();
-            mockRoleClaimStore.Setup(x => x.GetClaimsAsync(testRole, CancellationToken.None)).ReturnsAsync(
+            var mockRoleStore = new Mock<IRoleStore<Role>>();
+            mockRoleStore.As<IRoleClaimStore<Role>>().Setup(x => x.GetClaimsAsync(testRole, CancellationToken.None)).ReturnsAsync(
                 new List<Claim>
                 {
                     new Claim(CustomClaimTypes.Permission, TestPermissionClaimForRole)
                 });
 
-            return mockRoleClaimStore;
+            return mockRoleStore;
         }
 
-        private static Mock<IUserClaimStore<User>> SetupMockUserClaimStore(User testUser)
+        private static Mock<IUserStore<User>> SetupMockUserStore(User testUser)
         {
-            var mockUserClaimStore = new Mock<IUserClaimStore<User>>();
-            mockUserClaimStore.Setup(x => x.FindByNameAsync(testUser.UserName, CancellationToken.None)).ReturnsAsync(testUser);
-            mockUserClaimStore.Setup(x => x.GetClaimsAsync(testUser, CancellationToken.None)).ReturnsAsync(
+            var mockUserStore = new Mock<IUserStore<User>>();
+            mockUserStore.Setup(x => x.FindByNameAsync(testUser.UserName, CancellationToken.None)).ReturnsAsync(testUser);
+            mockUserStore.As<IUserClaimStore<User>>().Setup(x => x.GetClaimsAsync(testUser, CancellationToken.None)).ReturnsAsync(
                 new List<Claim>
                 {
                     new Claim(CustomClaimTypes.Permission, TestPermissionClaimForUser)
                 });
 
-            return mockUserClaimStore;
+            return mockUserStore;
         }
     }
 }
