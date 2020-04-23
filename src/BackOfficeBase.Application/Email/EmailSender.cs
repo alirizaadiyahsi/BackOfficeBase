@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -9,10 +10,12 @@ namespace BackOfficeBase.Application.Email
     public class EmailSender : IEmailSender
     {
         private readonly EmailSettings _emailSettings;
+        private readonly ILogger _logger;
 
         public EmailSender(
-            IOptions<EmailSettings> emailSettings)
+            IOptions<EmailSettings> emailSettings, ILogger logger)
         {
+            _logger = logger;
             _emailSettings = emailSettings.Value;
         }
 
@@ -30,6 +33,11 @@ namespace BackOfficeBase.Application.Email
                     Text = message
                 };
 
+#if DEBUG
+                _logger.LogInformation(@$"-------- Send Email: From: {_emailSettings.SenderEmail} - To: {email}
+                                       \n -------- Subject: {subject}
+                                       \n -------- Body: {message}");
+#else
                 using (var client = new SmtpClient())
                 {
                     await client.ConnectAsync(_emailSettings.Host, _emailSettings.Port, _emailSettings.EnableSsl);
@@ -37,6 +45,9 @@ namespace BackOfficeBase.Application.Email
                     await client.SendAsync(mimeMessage);
                     await client.DisconnectAsync(true);
                 }
+#endif
+
+
 
             }
             catch (Exception ex)

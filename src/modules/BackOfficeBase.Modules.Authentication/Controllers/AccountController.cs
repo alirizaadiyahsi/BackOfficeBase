@@ -168,14 +168,14 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             }
 
             if (!await _authenticationAppService.CheckPasswordAsync(userToVerify, password)) return null;
+            var claims = CreateUserClaims(userToVerify);
+            claims = CreateRoleClaims(userToVerify, claims);
 
-            var claims = new List<Claim>(new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, userToVerify.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("Id", userToVerify.Id.ToString())
-            });
+            return new ClaimsIdentity(new ClaimsIdentity(new GenericIdentity(userNameOrEmail, "Token"), claims));
+        }
 
+        private static List<Claim> CreateRoleClaims(User userToVerify, List<Claim> claims)
+        {
             // add roles to roleClaim to use build-in User.IsInRole method
             var roleNames = userToVerify.UserRoles.Select(ur => ur.Role.Name);
             foreach (var roleName in roleNames)
@@ -183,7 +183,18 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
                 claims.Add(new Claim(ClaimTypes.Role, roleName));
             }
 
-            return new ClaimsIdentity(new ClaimsIdentity(new GenericIdentity(userNameOrEmail, "Token"), claims));
+            return claims;
+        }
+
+        private static List<Claim> CreateUserClaims(User userToVerify)
+        {
+            var claims = new List<Claim>(new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userToVerify.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("Id", userToVerify.Id.ToString())
+            });
+            return claims;
         }
     }
 }

@@ -1,6 +1,10 @@
 using System;
 using System.Linq;
+using BackOfficeBase.Application.Email;
+using BackOfficeBase.Domain.AppConsts.Configuration;
 using BackOfficeBase.Web.Core.ActionFilters;
+using BackOfficeBase.Web.Core.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +34,11 @@ namespace BackOfficeBase.Web.Api
             });
 
             LoadModules(mvcBuilder);
+
+            services.Configure<EmailSettings>(Configuration.GetSection(AppConfig.Email_Smtp));
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+            services.AddScoped<UnitOfWorkActionFilter>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
