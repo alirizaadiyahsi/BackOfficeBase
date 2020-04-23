@@ -2,6 +2,6 @@
 {
     public class ForgotPasswordInput
     {
-        public string UserNameOrEmail { get; set; }
+        public string Email { get; set; }
     }
 }
