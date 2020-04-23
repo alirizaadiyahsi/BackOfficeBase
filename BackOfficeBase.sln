@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Modules.Auth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Tests.DataAccess", "test\BackOfficeBase.Tests.DataAccess\BackOfficeBase.Tests.DataAccess.csproj", "{77F33D05-B415-40AA-BF03-268DE8B266BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Tests.Web.Core", "test\BackOfficeBase.Tests.Web.Core\BackOfficeBase.Tests.Web.Core.csproj", "{EC32D736-C3F0-4E65-A998-15499961E58B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC32D736-C3F0-4E65-A998-15499961E58B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC32D736-C3F0-4E65-A998-15499961E58B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC32D736-C3F0-4E65-A998-15499961E58B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC32D736-C3F0-4E65-A998-15499961E58B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{8AF30262-23A6-4D30-B798-313B9073E574} = {3534F314-74B2-4E23-BEE3-CBC1F041DE1D}
 		{3B2B0EEF-6CBE-45E2-8D54-51E348F25011} = {8AF30262-23A6-4D30-B798-313B9073E574}
 		{77F33D05-B415-40AA-BF03-268DE8B266BE} = {BAB9268B-0CF9-43DF-9275-4CCECC40179C}
+		{EC32D736-C3F0-4E65-A998-15499961E58B} = {BAB9268B-0CF9-43DF-9275-4CCECC40179C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A4B1F28-B66C-4C39-B941-ED1CB0C41BBC}

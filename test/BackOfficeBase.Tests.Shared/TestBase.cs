@@ -11,7 +11,7 @@ namespace BackOfficeBase.Tests.Shared
 {
     public class TestBase
     {
-        protected BackOfficeBaseDbContextTest GetDbContextTest()
+        protected TestBackOfficeBaseDbContext GetDbContextTest()
         {
             var provider = GetNewHostServiceProvider().CreateScope().ServiceProvider;
             var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -23,7 +23,7 @@ namespace BackOfficeBase.Tests.Shared
                 })
             };
 
-            return provider.GetRequiredService<BackOfficeBaseDbContextTest>();
+            return provider.GetRequiredService<TestBackOfficeBaseDbContext>();
         }
 
         protected IServiceProvider GetNewHostServiceProvider()

@@ -9,7 +9,7 @@ namespace BackOfficeBase.Tests.Shared
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BackOfficeBaseDbContextTest>(options =>
+            services.AddDbContext<TestBackOfficeBaseDbContext>(options =>
             {
                 options.UseInMemoryDatabase("BackOfficeBaseDbContextTest")
                     .UseLazyLoadingProxies()

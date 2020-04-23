@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BackOfficeBase.Tests.Shared.DataAccess
 {
-    public class BackOfficeBaseDbContextTest : BackOfficeBaseDbContext
+    public class TestBackOfficeBaseDbContext : BackOfficeBaseDbContext
     {
-        public BackOfficeBaseDbContextTest(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
+        public TestBackOfficeBaseDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options, httpContextAccessor)
         {
         }
 

@@ -5,7 +5,7 @@ namespace BackOfficeBase.Tests.DataAccess
 {
     public class DataAccessTestBase : TestBase
     {
-        protected readonly BackOfficeBaseDbContextTest DbContextTest;
+        protected readonly TestBackOfficeBaseDbContext DbContextTest;
 
         public DataAccessTestBase()
         {

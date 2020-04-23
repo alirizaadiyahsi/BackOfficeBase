@@ -8,7 +8,7 @@ namespace BackOfficeBase.Tests.Application
 {
     public class AppServiceTestBase : TestBase
     {
-        protected readonly BackOfficeBaseDbContextTest DbContextTest;
+        protected readonly TestBackOfficeBaseDbContext DbContextTest;
 
         public AppServiceTestBase()
         {
