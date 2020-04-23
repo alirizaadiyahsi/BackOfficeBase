@@ -5,6 +5,7 @@ using AutoMapper;
 using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService;
 using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto;
+using BackOfficeBase.Tests.Shared.DataAccess;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 using Xunit;
 
@@ -13,10 +14,12 @@ namespace BackOfficeBase.Tests.Application.Shared
     public class CrudAppServiceTests : AppServiceTestBase
     {
         private readonly IProductCrudAppService _productCrudAppService;
+        protected readonly TestBackOfficeBaseDbContext DbContextTest;
 
         public CrudAppServiceTests()
         {
             var mapper = GetConfiguredMapper();
+            DbContextTest = GetDbContextTest();
             _productCrudAppService = new ProductCrudAppService.ProductCrudAppService(DbContextTest, mapper);
         }
 

@@ -8,13 +8,6 @@ namespace BackOfficeBase.Tests.Application
 {
     public class AppServiceTestBase : TestBase
     {
-        protected readonly TestBackOfficeBaseDbContext DbContextTest;
-
-        public AppServiceTestBase()
-        {
-            DbContextTest = GetDbContextTest();
-        }
-
         public static void AddUserToRole(User testUser, Role testRole)
         {
             var testUserRole = new UserRole
