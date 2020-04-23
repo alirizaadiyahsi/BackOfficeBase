@@ -45,7 +45,7 @@ namespace BackOfficeBase.Application.Shared.Services
             }
 
             var count = await orderedQuery.CountAsync();
-            var pagedList = query.PagedBy(input.PageIndex, input.PageSize).ToList();
+            var pagedList = orderedQuery.PagedBy(input.PageIndex, input.PageSize).ToList();
             var pagedListOutput = _mapper.Map<List<TGetListOutput>>(pagedList);
 
             return pagedListOutput.ToPagedList(count);

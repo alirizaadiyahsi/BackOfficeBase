@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{8AF3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Modules.Authentication", "src\modules\BackOfficeBase.Modules.Authentication\BackOfficeBase.Modules.Authentication.csproj", "{3B2B0EEF-6CBE-45E2-8D54-51E348F25011}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOfficeBase.Tests.DataAccess", "test\BackOfficeBase.Tests.DataAccess\BackOfficeBase.Tests.DataAccess.csproj", "{77F33D05-B415-40AA-BF03-268DE8B266BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{3B2B0EEF-6CBE-45E2-8D54-51E348F25011}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B2B0EEF-6CBE-45E2-8D54-51E348F25011}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B2B0EEF-6CBE-45E2-8D54-51E348F25011}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77F33D05-B415-40AA-BF03-268DE8B266BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 		{791D5FBA-E15B-4040-9BD9-C963EBFD5D77} = {3534F314-74B2-4E23-BEE3-CBC1F041DE1D}
 		{8AF30262-23A6-4D30-B798-313B9073E574} = {3534F314-74B2-4E23-BEE3-CBC1F041DE1D}
 		{3B2B0EEF-6CBE-45E2-8D54-51E348F25011} = {8AF30262-23A6-4D30-B798-313B9073E574}
+		{77F33D05-B415-40AA-BF03-268DE8B266BE} = {BAB9268B-0CF9-43DF-9275-4CCECC40179C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A4B1F28-B66C-4C39-B941-ED1CB0C41BBC}

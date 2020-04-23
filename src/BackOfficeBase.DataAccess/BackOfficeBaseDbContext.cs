@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using BackOfficeBase.DataAccess.Extensions;
 using BackOfficeBase.Domain.Entities;
 using BackOfficeBase.Domain.Entities.Auditing;
 using BackOfficeBase.Domain.Entities.Authorization;
@@ -16,7 +17,6 @@ namespace BackOfficeBase.DataAccess
 {
     public class BackOfficeBaseDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
-        // TODO: Move following line to another class to use from another classes too. And write an extension method to get userId
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Guid _currentUserId;
 
@@ -97,47 +97,58 @@ namespace BackOfficeBase.DataAccess
                     .WithMany(r => r.OrganizationUnitRoles)
                     .HasForeignKey(ur => ur.OrganizationUnitId);
             }));
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
+                    modelBuilder.Entity(entityType.ClrType).AddQueryFilter<ISoftDelete>(e => e.IsDeleted == false);
+            }
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            foreach (var entry in ChangeTracker.Entries())
-            {
-                SetAuditingProperties(entry);
-            }
+            SetAuditingProperties();
             return base.SaveChangesAsync(cancellationToken);
         }
 
-        // TODO: Write tests for auditing property set
-        private void SetAuditingProperties(EntityEntry entry)
+        public override int SaveChanges()
         {
-            switch (entry.State)
+            SetAuditingProperties();
+            return base.SaveChanges();
+        }
+
+        private void SetAuditingProperties()
+        {
+            foreach (var entry in ChangeTracker.Entries())
             {
-                case EntityState.Added:
-                    SetCreationAuditedProperties(entry);
-                    break;
-                case EntityState.Modified:
-                    SetModificationAuditedProperties(entry);
-                    break;
-                case EntityState.Deleted:
-                    SetDeletionAuditedProperties(entry);
-                    break;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        SetCreationAuditedProperties(entry);
+                        break;
+                    case EntityState.Modified:
+                        SetModificationAuditedProperties(entry);
+                        break;
+                    case EntityState.Deleted:
+                        SetDeletionAuditedProperties(entry);
+                        break;
+                }
             }
         }
 
         private void SetDeletionAuditedProperties(EntityEntry entry)
         {
-            if (entry is IHasDeletionTime objectWithDeletionTime)
+            if (entry.Entity is IHasDeletionTime objectWithDeletionTime)
             {
                 objectWithDeletionTime.DeletionTime = DateTime.Now;
             }
 
-            if (entry is IDeletionAudited objectWithDeleterUser)
+            if (entry.Entity is IDeletionAudited objectWithDeleterUser)
             {
                 objectWithDeleterUser.DeleterUserId = _currentUserId;
             }
 
-            if (entry is ISoftDelete objectIsSoftDelete)
+            if (entry.Entity is ISoftDelete objectIsSoftDelete)
             {
                 entry.State = EntityState.Modified;
                 objectIsSoftDelete.IsDeleted = true;
@@ -146,12 +157,12 @@ namespace BackOfficeBase.DataAccess
 
         private void SetModificationAuditedProperties(EntityEntry entry)
         {
-            if (entry is IHasModificationTime objectWithModificationTime)
+            if (entry.Entity is IHasModificationTime objectWithModificationTime)
             {
                 objectWithModificationTime.ModificationTime = DateTime.Now;
             }
 
-            if (entry is IModificationAudited objectWithModifierUser)
+            if (entry.Entity is IModificationAudited objectWithModifierUser)
             {
                 objectWithModifierUser.ModifierUserId = _currentUserId;
             }
@@ -159,12 +170,12 @@ namespace BackOfficeBase.DataAccess
 
         private void SetCreationAuditedProperties(EntityEntry entry)
         {
-            if (entry is IHasCreationTime objectWithCreationTime)
+            if (entry.Entity is IHasCreationTime objectWithCreationTime)
             {
                 objectWithCreationTime.CreationTime = DateTime.Now;
             }
 
-            if (entry is ICreationAudited objectWithCreatorUser)
+            if (entry.Entity is ICreationAudited objectWithCreatorUser)
             {
                 objectWithCreatorUser.CreatorUserId = _currentUserId;
             }
