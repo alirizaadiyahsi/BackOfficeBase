@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using BackOfficeBase.DataAccess.Extensions;
+using BackOfficeBase.DataAccess.Helpers;
 using BackOfficeBase.Domain.Entities;
 using BackOfficeBase.Domain.Entities.Auditing;
 using BackOfficeBase.Domain.Entities.Authorization;
@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackOfficeBase.DataAccess
 {
@@ -35,74 +34,8 @@ namespace BackOfficeBase.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Role>().ToTable("Role");
-            modelBuilder.Entity<UserClaim>().ToTable("UserClaim");
-            modelBuilder.Entity<UserLogin>().ToTable("UserLogin");
-            modelBuilder.Entity<RoleClaim>().ToTable("RoleClaim");
-            modelBuilder.Entity<UserToken>().ToTable("UserToken");
-            modelBuilder.Entity<OrganizationUnit>().ToTable("OrganizationUnit");
-
-            modelBuilder.Entity((Action<EntityTypeBuilder<User>>)(b =>
-            {
-                b.ToTable("User");
-
-                b.HasOne(x => x.CreatorUser)
-                .WithMany()
-                .HasForeignKey(x => x.CreatorUserId);
-
-                b.HasOne(x => x.ModifierUser)
-                    .WithMany()
-                    .HasForeignKey(x => x.ModifierUserId);
-
-                b.HasOne(x => x.DeleterUser)
-                    .WithMany()
-                    .HasForeignKey(x => x.DeleterUserId);
-            }));
-
-            modelBuilder.Entity((Action<EntityTypeBuilder<UserRole>>)(b =>
-            {
-                b.ToTable("UserRole");
-
-                b.HasOne(ur => ur.User)
-                    .WithMany(u => u.UserRoles)
-                    .HasForeignKey(ur => ur.UserId);
-
-                b.HasOne(ur => ur.Role)
-                    .WithMany(r => r.UserRoles)
-                    .HasForeignKey(ur => ur.RoleId);
-            }));
-
-            modelBuilder.Entity((Action<EntityTypeBuilder<OrganizationUnitUser>>)(b =>
-            {
-                b.ToTable("OrganizationUnitUser");
-
-                b.HasOne(ur => ur.User)
-                    .WithMany(u => u.OrganizationUnitUsers)
-                    .HasForeignKey(ur => ur.UserId);
-
-                b.HasOne(ur => ur.OrganizationUnit)
-                    .WithMany(r => r.OrganizationUnitUsers)
-                    .HasForeignKey(ur => ur.OrganizationUnitId);
-            }));
-
-            modelBuilder.Entity((Action<EntityTypeBuilder<OrganizationUnitRole>>)(b =>
-            {
-                b.ToTable("OrganizationUnitRole");
-
-                b.HasOne(ur => ur.Role)
-                    .WithMany(u => u.OrganizationUnitRoles)
-                    .HasForeignKey(ur => ur.RoleId);
-
-                b.HasOne(ur => ur.OrganizationUnit)
-                    .WithMany(r => r.OrganizationUnitRoles)
-                    .HasForeignKey(ur => ur.OrganizationUnitId);
-            }));
-
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
-                    modelBuilder.Entity(entityType.ClrType).AddQueryFilter<ISoftDelete>(e => e.IsDeleted == false);
-            }
+            ModelConfigurationHelper.SetModelConfigurations(modelBuilder);
+            QueryFilterHelper.AddQueryFilters(modelBuilder);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
