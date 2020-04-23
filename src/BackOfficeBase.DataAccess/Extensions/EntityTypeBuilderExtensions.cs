@@ -9,7 +9,7 @@ namespace BackOfficeBase.DataAccess.Extensions
 {
     public static class EntityTypeBuilderExtensions
     {
-        internal static void AddQueryFilter<T>(this EntityTypeBuilder entityTypeBuilder, Expression<Func<T, bool>> expression)
+        public static void AddQueryFilter<T>(this EntityTypeBuilder entityTypeBuilder, Expression<Func<T, bool>> expression)
         {
             var parameterType = Expression.Parameter(entityTypeBuilder.Metadata.ClrType);
             var expressionFilter = ReplacingExpressionVisitor.Replace(
