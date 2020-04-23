@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using BackOfficeBase.Domain.Entities;
 using BackOfficeBase.Domain.Entities.Auditing;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
@@ -119,7 +120,6 @@ namespace BackOfficeBase.DataAccess
                     SetModificationAuditedProperties(entry);
                     break;
                 case EntityState.Deleted:
-                    // TODO: Implement oft delete
                     SetDeletionAuditedProperties(entry);
                     break;
             }
@@ -135,6 +135,12 @@ namespace BackOfficeBase.DataAccess
             if (entry is IDeletionAudited objectWithDeleterUser)
             {
                 objectWithDeleterUser.DeleterUserId = _currentUserId;
+            }
+
+            if (entry is ISoftDelete objectIsSoftDelete)
+            {
+                entry.State = EntityState.Modified;
+                objectIsSoftDelete.IsDeleted = true;
             }
         }
 
