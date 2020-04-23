@@ -1,15 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using BackOfficeBase.Web.Core.ActionFilters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace BackOfficeBase.Web.Api
 {
@@ -25,7 +22,15 @@ namespace BackOfficeBase.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            var mvcBuilder = services.AddControllers(options =>
+            {
+                options.Filters.AddService<UnitOfWorkActionFilter>();
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
+
+            LoadModules(mvcBuilder);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +51,17 @@ namespace BackOfficeBase.Web.Api
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static void LoadModules(IMvcBuilder mvcBuilder)
+        {
+            var moduleAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => a.GetName().Name.Contains("BackOfficeBase.Modules"));
+
+            foreach (var moduleAssembly in moduleAssemblies)
+            {
+                mvcBuilder.AddApplicationPart(moduleAssembly);
+            }
         }
     }
 }
