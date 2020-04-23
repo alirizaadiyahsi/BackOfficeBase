@@ -13,6 +13,13 @@ namespace BackOfficeBase.Tests.Shared
 {
     public class TestBase
     {
+        protected readonly TestBackOfficeBaseDbContext DbContextTest;
+
+        public TestBase()
+        {
+            DbContextTest = GetDbContextTest();
+        }
+
         protected TestBackOfficeBaseDbContext GetDbContextTest()
         {
             var provider = GetNewHostServiceProvider().CreateScope().ServiceProvider;
