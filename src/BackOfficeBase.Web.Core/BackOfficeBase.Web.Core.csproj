@@ -6,6 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BackOfficeBase.Application\BackOfficeBase.Application.csproj" />
+    <ProjectReference Include="..\BackOfficeBase.DataAccess\BackOfficeBase.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
