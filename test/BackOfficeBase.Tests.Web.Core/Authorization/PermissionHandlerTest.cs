@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Permissions;
 using BackOfficeBase.Domain.AppConsts.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
+using BackOfficeBase.Web.Core.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using Xunit;
 
-namespace BackOfficeBase.Tests.Application.Authorization
+namespace BackOfficeBase.Tests.Web.Core.Authorization
 {
-    public class PermissionAppServiceTests : AppServiceTestBase
+    public class PermissionHandlerTest : WebCoreTestBase
     {
         private readonly IPermissionAppService _permissionAppService;
         private static readonly string TestPermissionClaimForUser = "TestPermissionClaimForUser";
@@ -19,7 +21,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
         private readonly User _testUser = GetTestUser();
         private readonly Role _testRole = GetTestRole();
 
-        public PermissionAppServiceTests()
+        public PermissionHandlerTest()
         {
             AddUserToRole(_testUser, _testRole);
 
@@ -32,30 +34,53 @@ namespace BackOfficeBase.Tests.Application.Authorization
         }
 
         [Fact]
-        public async Task Should_Permission_Granted_To_User()
+        public async Task Should_User_Has_Permission()
         {
-            var isPermissionGranted =
-                await _permissionAppService.IsUserGrantedToPermissionAsync(_testUser.UserName, TestPermissionClaimForUser);
+            var requirements = new List<PermissionRequirement>
+            {
+                new PermissionRequirement(TestPermissionClaimForUser)
+            };
 
-            Assert.True(isPermissionGranted);
+            var claimsPrincipal = new ClaimsPrincipal(
+                new ClaimsIdentity(
+                    new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, _testUser.UserName)
+                    },
+                    "TestAuthorizationType"
+                )
+            );
+
+            var authorizationHandlerContext = new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
+            var permissionHandler = new PermissionHandler(_permissionAppService);
+            await permissionHandler.HandleAsync(authorizationHandlerContext);
+
+            Assert.True(authorizationHandlerContext.HasSucceeded);
         }
 
         [Fact]
-        public async Task Should_Permission_Granted_To_User_Role()
+        public async Task Should_Not_User_Has_Permission()
         {
-            var isPermissionGranted =
-                await _permissionAppService.IsUserGrantedToPermissionAsync(_testUser.UserName, TestPermissionClaimForRole);
+            var requirements = new List<PermissionRequirement>
+            {
+                new PermissionRequirement("NotGrantedPermissionClaim")
+            };
 
-            Assert.True(isPermissionGranted);
-        }
+            var claimsPrincipal = new ClaimsPrincipal(
+                new ClaimsIdentity(
+                    new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, _testUser.UserName)
+                    },
+                    "TestAuthorizationType"
+                )
+            );
 
-        [Fact]
-        public async Task Should_Not_Permission_Granted_To_User()
-        {
-            var isPermissionNotGranted =
-                await _permissionAppService.IsUserGrantedToPermissionAsync(_testUser.UserName, "NotGrantedPermissionClaim");
+            var authorizationHandlerContext = new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
+            var permissionHandler = new PermissionHandler(_permissionAppService);
+            await permissionHandler.HandleAsync(authorizationHandlerContext);
 
-            Assert.False(isPermissionNotGranted);
+            Assert.False(authorizationHandlerContext.HasSucceeded);
         }
 
         private static Mock<IRoleClaimStore<Role>> SetupMockRoleClaimStore(Role testRole)
