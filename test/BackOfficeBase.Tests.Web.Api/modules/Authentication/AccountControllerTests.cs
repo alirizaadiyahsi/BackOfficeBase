@@ -31,7 +31,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
             mockAuthenticationService.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
-            
+
             var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
             var actionResult = await accountController.Login(new LoginInput
             {
@@ -54,7 +54,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
             mockAuthenticationService.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync((User)null);
             mockAuthenticationService.Setup(x => x.CreateUserAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
             mockAuthenticationService.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
-            
+
             var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
             var actionResult = await accountController.Register(new RegisterInput
             {
@@ -68,6 +68,25 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
 
             Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
             Assert.True(!string.IsNullOrEmpty(registerOutput.ResetToken));
+        }
+
+        [Fact]
+        public async Task Should_Confirm_Email()
+        {
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            mockAuthenticationService.Setup(x => x.ConfirmEmailAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+
+            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var actionResult = await accountController.ConfirmEmail(new ConfirmEmailInput
+            {
+                Token = Guid.NewGuid().ToString(),
+                Email = _testUser.Email
+            });
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
+
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
 
         private static Mock<IConfiguration> SetupMockConfiguration()
