@@ -18,6 +18,9 @@ namespace BackOfficeBase.Tests.Shared
 
             services.ConfigureNucleusApplication();
             services.AddHttpContextAccessor();
+
+            // TODO: Make authorization configuration (JWT)
+            // Configuration.Bind(_jwtTokenConfiguration);
         }
 
         public void Configure()
