@@ -1,9 +1,17 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authentication;
+using BackOfficeBase.Application.Authentication.Dto;
+using BackOfficeBase.Application.Email;
+using BackOfficeBase.Domain.AppConsts.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Controllers;
+using BackOfficeBase.Web.Core.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -11,41 +19,50 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
 {
     public class AccountControllerTests : WebApiTestBase
     {
-        private readonly IAuthenticationAppService _authenticationAppService;
+        private readonly AccountController _accountController;
         private readonly User _testUser = GetTestUser();
         private readonly Role _testRole = GetTestRole();
 
         public AccountControllerTests()
         {
-            AddUserToRole(_testUser, _testRole);
-
-            var mockUserStore = SetupMockUserStore(_testUser);
-            var userManager = new UserManager<User>(mockUserStore.Object, null, null, null, null, null, null, null, null);
-
-            _authenticationAppService = new AuthenticationAppService(userManager);
-
-            var mockService = new Mock<IAuthenticationAppService>();
-            mockService.Setup(x => x.CheckPasswordAsync(_testUser, "123qwe")).ReturnsAsync(true);
+            var jwtTokenConfiguration = Options.Create(new JwtTokenConfiguration());
+            var mockAuthenticationService = SetupMockAuthenticationService();
+            var mockConfiguration = SetupMockConfiguration();
+            var mockEmailSender = new Mock<IEmailSender>();
+            _accountController = new AccountController(mockAuthenticationService.Object, jwtTokenConfiguration, mockConfiguration.Object, mockEmailSender.Object);
         }
 
         [Fact]
         public async Task Should_Login()
         {
-            //var controller = new AccountController(_authenticationAppService,);
+            var actionResult = await _accountController.Login(new LoginInput
+            {
+                Password = "123qwe",
+                UserNameOrEmail = _testUser.UserName
+            });
 
-            Assert.True(true);
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var loginOutput = Assert.IsType<LoginOutput>(okObjectResult.Value);
+
+            Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
+            Assert.True(!string.IsNullOrEmpty(loginOutput.Token));
         }
 
-
-        private static Mock<IUserStore<User>> SetupMockUserStore(User testUser)
+        private static Mock<IConfiguration> SetupMockConfiguration()
         {
-            var mockUserStore = new Mock<IUserStore<User>>();
-            mockUserStore.Setup(x => x.FindByNameAsync(testUser.UserName, CancellationToken.None)).ReturnsAsync(testUser);
-            mockUserStore.As<IUserEmailStore<User>>()
-                .Setup(x => x.FindByEmailAsync(testUser.NormalizedEmail, CancellationToken.None))
-                .ReturnsAsync(testUser);
+            var mockConfiguration = new Mock<IConfiguration>();
+            mockConfiguration.Setup(x => x[AppConfig.App_ClientUrl]).Returns("http://localhost:8080");
+            
+            return mockConfiguration;
+        }
 
-            return mockUserStore;
+        private Mock<IAuthenticationAppService> SetupMockAuthenticationService()
+        {
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(_testUser.UserName)).ReturnsAsync(_testUser);
+            mockAuthenticationService.Setup(x => x.CheckPasswordAsync(_testUser, "123qwe")).ReturnsAsync(true);
+            
+            return mockAuthenticationService;
         }
     }
 }
