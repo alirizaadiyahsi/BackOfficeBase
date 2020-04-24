@@ -125,6 +125,45 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
             Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
 
+        [Fact]
+        public async Task Should_Forgot_Password()
+        {
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            mockAuthenticationService.Setup(x => x.GeneratePasswordResetTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
+
+            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var actionResult = await accountController.ForgotPassword(new ForgotPasswordInput
+            {
+                Email = _testUser.Email
+            });
+
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var forgotPasswordOutput = Assert.IsType<ForgotPasswordOutput>(okObjectResult.Value);
+
+            Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
+            Assert.True(!string.IsNullOrEmpty(forgotPasswordOutput.ResetToken));
+        }
+
+        [Fact]
+        public async Task Should_Reset_Password()
+        {
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            mockAuthenticationService.Setup(x => x.ResetPasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+
+            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var actionResult = await accountController.ResetPassword(new ResetPasswordInput
+            {
+                Token = Guid.NewGuid().ToString(),
+                Password = "123qwe",
+                UserNameOrEmail = _testUser.UserName
+            });
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
+
         private static Mock<IConfiguration> SetupMockConfiguration()
         {
             var mockConfiguration = new Mock<IConfiguration>();
