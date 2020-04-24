@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authentication;
@@ -19,23 +20,20 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
 {
     public class AccountControllerTests : WebApiTestBase
     {
-        private readonly AccountController _accountController;
         private readonly User _testUser = GetTestUser();
-        private readonly Role _testRole = GetTestRole();
-
-        public AccountControllerTests()
-        {
-            var jwtTokenConfiguration = Options.Create(new JwtTokenConfiguration());
-            var mockAuthenticationService = SetupMockAuthenticationService();
-            var mockConfiguration = SetupMockConfiguration();
-            var mockEmailSender = new Mock<IEmailSender>();
-            _accountController = new AccountController(mockAuthenticationService.Object, jwtTokenConfiguration, mockConfiguration.Object, mockEmailSender.Object);
-        }
+        private readonly IOptions<JwtTokenConfiguration> _jwtTokenConfiguration = Options.Create(new JwtTokenConfiguration());
+        private readonly Mock<IConfiguration> _mockConfiguration = SetupMockConfiguration();
+        private readonly Mock<IEmailSender> _mockEmailSender = new Mock<IEmailSender>();
 
         [Fact]
         public async Task Should_Login()
         {
-            var actionResult = await _accountController.Login(new LoginInput
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            mockAuthenticationService.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
+            
+            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var actionResult = await accountController.Login(new LoginInput
             {
                 Password = "123qwe",
                 UserNameOrEmail = _testUser.UserName
@@ -48,21 +46,36 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
             Assert.True(!string.IsNullOrEmpty(loginOutput.Token));
         }
 
+        [Fact]
+        public async Task Should_Register()
+        {
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
+            mockAuthenticationService.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync((User)null);
+            mockAuthenticationService.Setup(x => x.CreateUserAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            mockAuthenticationService.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
+            
+            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var actionResult = await accountController.Register(new RegisterInput
+            {
+                UserName = _testUser.UserName,
+                Email = _testUser.Email,
+                Password = "123qwe"
+            });
+
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult);
+            var registerOutput = Assert.IsType<RegisterOutput>(okObjectResult.Value);
+
+            Assert.Equal((int)HttpStatusCode.OK, okObjectResult.StatusCode);
+            Assert.True(!string.IsNullOrEmpty(registerOutput.ResetToken));
+        }
+
         private static Mock<IConfiguration> SetupMockConfiguration()
         {
             var mockConfiguration = new Mock<IConfiguration>();
             mockConfiguration.Setup(x => x[AppConfig.App_ClientUrl]).Returns("http://localhost:8080");
-            
-            return mockConfiguration;
-        }
 
-        private Mock<IAuthenticationAppService> SetupMockAuthenticationService()
-        {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(_testUser.UserName)).ReturnsAsync(_testUser);
-            mockAuthenticationService.Setup(x => x.CheckPasswordAsync(_testUser, "123qwe")).ReturnsAsync(true);
-            
-            return mockAuthenticationService;
+            return mockConfiguration;
         }
     }
 }
