@@ -8,7 +8,7 @@ namespace BackOfficeBase.Application.Shared.Services
     public interface ICrudAppService<TEntity, TGetOutputDto, TGetListOutput, in TCreateInput, in TUpdateInput>
     {
         Task<TGetOutputDto> GetAsync(Guid id);
-        Task<IPagedList<TGetListOutput>> GetListAsync(PagedListInput input);
+        Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input);
         Task<TGetOutputDto> CreateAsync(TCreateInput input);
         TGetOutputDto Update(TUpdateInput input);
         Task<TGetOutputDto> DeleteAsync(Guid id);

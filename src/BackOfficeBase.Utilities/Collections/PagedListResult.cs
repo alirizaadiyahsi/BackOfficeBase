@@ -2,9 +2,9 @@
 
 namespace BackOfficeBase.Utilities.Collections
 {
-    public class PagedList<T> : IPagedList<T>
+    public class PagedListResult<T> : IPagedListResult<T>
     {
-        public PagedList()
+        public PagedListResult()
         {
             Items = new List<T>();
         }

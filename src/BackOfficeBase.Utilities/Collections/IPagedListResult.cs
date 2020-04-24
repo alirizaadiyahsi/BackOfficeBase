@@ -2,7 +2,7 @@
 
 namespace BackOfficeBase.Utilities.Collections
 {
-    public interface IPagedList<T>
+    public interface IPagedListResult<T>
     {
         int TotalCount { get; set; }
 

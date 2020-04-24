@@ -31,7 +31,7 @@ namespace BackOfficeBase.Application.Shared.Services
             return _mapper.Map<TGetOutputDto>(entity);
         }
 
-        public virtual async Task<IPagedList<TGetListOutput>> GetListAsync(PagedListInput input)
+        public virtual async Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input)
         {
             var predicate = string.Join(" && ", input.Filters);
             var query = _dbContext.Set<TEntity>().Where(predicate);
@@ -48,7 +48,7 @@ namespace BackOfficeBase.Application.Shared.Services
             var pagedList = orderedQuery.PagedBy(input.PageIndex, input.PageSize).ToList();
             var pagedListOutput = _mapper.Map<List<TGetListOutput>>(pagedList);
 
-            return pagedListOutput.ToPagedList(count);
+            return pagedListOutput.ToPagedListResult(count);
         }
 
         public virtual async Task<TGetOutputDto> CreateAsync(TCreateInput input)
