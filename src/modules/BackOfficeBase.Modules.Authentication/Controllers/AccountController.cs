@@ -20,7 +20,6 @@ using Microsoft.Extensions.Options;
 
 namespace BackOfficeBase.Modules.Authentication.Controllers
 {
-    // TODO: Write test
     public class AccountController : ApiControllerBase
     {
         private readonly IAuthenticationAppService _authenticationAppService;
