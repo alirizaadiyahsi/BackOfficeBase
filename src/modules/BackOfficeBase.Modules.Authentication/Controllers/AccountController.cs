@@ -11,6 +11,7 @@ using BackOfficeBase.Application.Authentication.Dto;
 using BackOfficeBase.Application.Email;
 using BackOfficeBase.Domain.AppConsts.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
+using BackOfficeBase.Modules.Authentication.Constants;
 using BackOfficeBase.Web.Core.Configuration;
 using BackOfficeBase.Web.Core.Controllers;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +46,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             var userToVerify = await CreateClaimsIdentityAsync(input.UserNameOrEmail, input.Password);
             if (userToVerify == null)
             {
-                return NotFound("User name or password is not correct!"); // TODO: Make these messages static object
+                return NotFound(Messages.UserNameOrPasswordNotFound);
             }
 
             var token = new JwtSecurityToken
@@ -68,10 +69,10 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         public async Task<ActionResult> Register([FromBody]RegisterInput input)
         {
             var user = await _authenticationAppService.FindUserByEmailAsync(input.Email);
-            if (user != null) return Conflict("Email already exist!"); // TODO: Make these messages static object
+            if (user != null) return Conflict(Messages.EmailAlreadyExist);
 
             user = await _authenticationAppService.FindUserByUserNameAsync(input.UserName);
-            if (user != null) return Conflict("User name already exist!"); // TODO: Make these messages static object
+            if (user != null) return Conflict(Messages.UserNameAlreadyExist); 
 
             var applicationUser = new User
             {
@@ -100,7 +101,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         public async Task<ActionResult> ConfirmEmail([FromBody] ConfirmEmailInput input)
         {
             var user = await _authenticationAppService.FindUserByEmailAsync(input.Email);
-            if (user == null) return NotFound("Email is not found!"); // TODO: Make these messages static object
+            if (user == null) return NotFound(Messages.EmailIsNotFound);
 
             var result = await _authenticationAppService.ConfirmEmailAsync(user, input.Token);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
@@ -115,7 +116,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         {
             if (input.NewPassword != input.PasswordRepeat)
             {
-                return BadRequest("Passwords are not matched!"); // TODO: Make these messages static object
+                return BadRequest(Messages.PasswordsAreNotMatched);
             }
 
             var user = await _authenticationAppService.FindUserByUserNameAsync(User.Identity.Name);
@@ -129,7 +130,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         public async Task<ActionResult<ForgotPasswordOutput>> ForgotPassword([FromBody] ForgotPasswordInput input)
         {
             var user = await _authenticationAppService.FindUserByEmailAsync(input.Email);
-            if (user == null) return NotFound("User is not found!"); // TODO: Make these messages static object
+            if (user == null) return NotFound(Messages.UserIsNotFound);
 
             var resetToken = await _authenticationAppService.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = $"{_configuration[AppConfig.App_ClientUrl]}/account/reset-password?token={HttpUtility.UrlEncode(resetToken)}";
@@ -145,7 +146,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordInput input)
         {
             var user = await _authenticationAppService.FindUserByUserNameOrEmailAsync(input.UserNameOrEmail);
-            if (user == null) return NotFound("User is not found!"); // TODO: Make these messages static object
+            if (user == null) return NotFound(Messages.UserIsNotFound);
 
             var result = await _authenticationAppService.ResetPasswordAsync(user, input.Token, input.Password);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
