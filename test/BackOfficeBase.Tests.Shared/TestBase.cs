@@ -26,9 +26,9 @@ namespace BackOfficeBase.Tests.Shared
             var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
             httpContextAccessor.HttpContext = new DefaultHttpContext
             {
-                User = new ClaimsPrincipal(new List<ClaimsIdentity>
+                User = new ClaimsPrincipal(new[]
                 {
-                    new ClaimsIdentity(new List<Claim> {new Claim("Id", Guid.NewGuid().ToString())})
+                    new ClaimsIdentity(new[] {new Claim("Id", Guid.NewGuid().ToString())})
                 })
             };
 

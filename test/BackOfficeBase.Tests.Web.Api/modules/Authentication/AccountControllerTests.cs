@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authentication;
@@ -9,6 +11,7 @@ using BackOfficeBase.Domain.AppConsts.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Controllers;
 using BackOfficeBase.Web.Core.Configuration;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -85,7 +88,40 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
             });
 
             var okResult = Assert.IsType<OkResult>(actionResult);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
 
+        [Fact]
+        public async Task Should_Change_Password()
+        {
+            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
+            mockAuthenticationService.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            mockAuthenticationService.Setup(x => x.ChangePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+
+            var accountController = new AccountController(
+                mockAuthenticationService.Object,
+                _jwtTokenConfiguration,
+                _mockConfiguration.Object,
+                _mockEmailSender.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new ClaimsPrincipal(new ClaimsIdentity(
+                            new[] { new Claim(ClaimTypes.Name, _testUser.UserName) }, "TestAuthTypeName"))
+                    }
+                }
+            };
+
+            var actionResult = await accountController.ChangePassword(new ChangePasswordInput
+            {
+                CurrentPassword = "123qwe",
+                NewPassword = "123qwe123qwe",
+                PasswordRepeat = "123qwe123qwe"
+            });
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
             Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
 
