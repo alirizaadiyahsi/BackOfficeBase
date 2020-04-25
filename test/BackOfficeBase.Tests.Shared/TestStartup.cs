@@ -16,11 +16,8 @@ namespace BackOfficeBase.Tests.Shared
                     .EnableSensitiveDataLogging();
             });
 
-            services.ConfigureNucleusApplication();
+            services.ConfigureApplicationService();
             services.AddHttpContextAccessor();
-
-            // TODO: Make authorization configuration (JWT)
-            // Configuration.Bind(_jwtTokenConfiguration);
         }
 
         public void Configure()
