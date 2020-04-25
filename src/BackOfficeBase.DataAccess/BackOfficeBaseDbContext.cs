@@ -17,13 +17,11 @@ namespace BackOfficeBase.DataAccess
     public class BackOfficeBaseDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly Guid _currentUserId;
 
         public BackOfficeBaseDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
-            _currentUserId = new Guid(_httpContextAccessor.HttpContext.User.FindFirstValue("Id"));
         }
 
         public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
@@ -78,7 +76,7 @@ namespace BackOfficeBase.DataAccess
 
             if (entry.Entity is IDeletionAudited objectWithDeleterUser)
             {
-                objectWithDeleterUser.DeleterUserId = _currentUserId;
+                objectWithDeleterUser.DeleterUserId = GetCurrentUserId();
             }
 
             if (entry.Entity is ISoftDelete objectIsSoftDelete)
@@ -97,7 +95,7 @@ namespace BackOfficeBase.DataAccess
 
             if (entry.Entity is IModificationAudited objectWithModifierUser)
             {
-                objectWithModifierUser.ModifierUserId = _currentUserId;
+                objectWithModifierUser.ModifierUserId = GetCurrentUserId();
             }
         }
 
@@ -110,8 +108,13 @@ namespace BackOfficeBase.DataAccess
 
             if (entry.Entity is ICreationAudited objectWithCreatorUser)
             {
-                objectWithCreatorUser.CreatorUserId = _currentUserId;
+                objectWithCreatorUser.CreatorUserId = GetCurrentUserId();
             }
+        }
+
+        private Guid GetCurrentUserId()
+        {
+            return new Guid(_httpContextAccessor.HttpContext.User.FindFirstValue("Id"));
         }
     }
 }
