@@ -1,4 +1,6 @@
 using System;
+using BackOfficeBase.DataAccess;
+using BackOfficeBase.DataAccess.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,9 +32,8 @@ namespace BackOfficeBase.Web.Api
                 var host = CreateHostBuilder(args).Build();
                 using (var scope = host.Services.CreateScope())
                 {
-                    // TODO: Seed database
-                    //var dbContext = scope.ServiceProvider.GetRequiredService<BackOfficeBaseDbContext>();
-                    //new DbContextDataSeeder(dbContext).SeedData();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<BackOfficeBaseDbContext>();
+                    new DbContextDataSeedHelper(dbContext).SeedData();
                 }
 
                 host.Run();
