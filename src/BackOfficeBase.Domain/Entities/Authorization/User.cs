@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using BackOfficeBase.Domain.Entities.Auditing;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
 using Microsoft.AspNetCore.Identity;
