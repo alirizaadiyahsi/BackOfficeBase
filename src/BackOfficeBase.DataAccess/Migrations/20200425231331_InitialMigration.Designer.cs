@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackOfficeBase.DataAccess.Migrations
 {
     [DbContext(typeof(BackOfficeBaseDbContext))]
-    [Migration("20200425203919_InitialMigration")]
+    [Migration("20200425231331_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,14 +95,9 @@ namespace BackOfficeBase.DataAccess.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("RoleId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
 
                     b.ToTable("RoleClaim");
                 });
@@ -228,14 +223,9 @@ namespace BackOfficeBase.DataAccess.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("UserClaim");
                 });
@@ -254,14 +244,9 @@ namespace BackOfficeBase.DataAccess.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("UserLogin");
                 });
@@ -292,15 +277,10 @@ namespace BackOfficeBase.DataAccess.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("UserToken");
                 });
@@ -419,15 +399,11 @@ namespace BackOfficeBase.DataAccess.Migrations
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.Authorization.RoleClaim", b =>
                 {
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.Role", null)
-                        .WithMany()
+                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.Role", "Role")
+                        .WithMany("RoleClaims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.Role", "Role")
-                        .WithMany("RoleClaims")
-                        .HasForeignKey("RoleId1");
                 });
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.Authorization.User", b =>
@@ -447,28 +423,20 @@ namespace BackOfficeBase.DataAccess.Migrations
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.Authorization.UserClaim", b =>
                 {
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", null)
-                        .WithMany()
+                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", "User")
+                        .WithMany("UserClaims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", "User")
-                        .WithMany("UserClaims")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.Authorization.UserLogin", b =>
                 {
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", null)
-                        .WithMany()
+                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", "User")
+                        .WithMany("UserLogins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", "User")
-                        .WithMany("UserLogins")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.Authorization.UserRole", b =>
@@ -488,15 +456,11 @@ namespace BackOfficeBase.DataAccess.Migrations
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.Authorization.UserToken", b =>
                 {
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", null)
-                        .WithMany()
+                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", "User")
+                        .WithMany("UserTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BackOfficeBase.Domain.Entities.Authorization.User", "User")
-                        .WithMany("UserTokens")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("BackOfficeBase.Domain.Entities.OrganizationUnits.OrganizationUnit", b =>

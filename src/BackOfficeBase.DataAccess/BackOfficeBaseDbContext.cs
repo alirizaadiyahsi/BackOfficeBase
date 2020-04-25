@@ -112,8 +112,13 @@ namespace BackOfficeBase.DataAccess
             }
         }
 
-        private Guid GetCurrentUserId()
+        private Guid? GetCurrentUserId()
         {
+            if (_httpContextAccessor.HttpContext == null)
+            {
+                return null;
+            }
+
             return new Guid(_httpContextAccessor.HttpContext.User.FindFirstValue("Id"));
         }
     }

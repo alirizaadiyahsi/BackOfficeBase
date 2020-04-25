@@ -163,8 +163,7 @@ namespace BackOfficeBase.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true),
-                    UserId1 = table.Column<Guid>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -175,12 +174,6 @@ namespace BackOfficeBase.DataAccess.Migrations
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserClaim_User_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,8 +183,7 @@ namespace BackOfficeBase.DataAccess.Migrations
                     LoginProvider = table.Column<string>(nullable: false),
                     ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
-                    UserId = table.Column<Guid>(nullable: false),
-                    UserId1 = table.Column<Guid>(nullable: true)
+                    UserId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -202,12 +194,6 @@ namespace BackOfficeBase.DataAccess.Migrations
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserLogin_User_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -217,8 +203,7 @@ namespace BackOfficeBase.DataAccess.Migrations
                     UserId = table.Column<Guid>(nullable: false),
                     LoginProvider = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true),
-                    UserId1 = table.Column<Guid>(nullable: true)
+                    Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -229,12 +214,6 @@ namespace BackOfficeBase.DataAccess.Migrations
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserToken_User_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,8 +251,7 @@ namespace BackOfficeBase.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true),
-                    RoleId1 = table.Column<Guid>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -284,12 +262,6 @@ namespace BackOfficeBase.DataAccess.Migrations
                         principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RoleClaim_Role_RoleId1",
-                        column: x => x.RoleId1,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -369,11 +341,6 @@ namespace BackOfficeBase.DataAccess.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleClaim_RoleId1",
-                table: "RoleClaim",
-                column: "RoleId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_User_CreatorUserId",
                 table: "User",
                 column: "CreatorUserId");
@@ -406,29 +373,14 @@ namespace BackOfficeBase.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserClaim_UserId1",
-                table: "UserClaim",
-                column: "UserId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserLogin_UserId",
                 table: "UserLogin",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserLogin_UserId1",
-                table: "UserLogin",
-                column: "UserId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserRole_RoleId",
                 table: "UserRole",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserToken_UserId1",
-                table: "UserToken",
-                column: "UserId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
