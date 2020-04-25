@@ -131,6 +131,7 @@ namespace BackOfficeBase.Web.Api
             });
         }
 
+        // TODO: This is the easiest way to load assemblies. But module projects should be referenced manually. This can be more generic.
         private static void LoadModules(IMvcBuilder mvcBuilder)
         {
             var moduleAssemblies = AppDomain.CurrentDomain.GetAssemblies()
