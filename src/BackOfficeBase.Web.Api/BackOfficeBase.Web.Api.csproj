@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BackOfficeBase.Web.Core\BackOfficeBase.Web.Core.csproj" />
     <ProjectReference Include="..\modules\BackOfficeBase.Modules.Authentication\BackOfficeBase.Modules.Authentication.csproj" />
+    <ProjectReference Include="..\modules\BackOfficeBase.Modules.Authorization\BackOfficeBase.Modules.Authorization.csproj" />
   </ItemGroup>
 
 
