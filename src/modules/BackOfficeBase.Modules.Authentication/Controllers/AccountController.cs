@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
-using System.Web;
 using BackOfficeBase.Application.Authentication;
 using BackOfficeBase.Application.Authentication.Dto;
 using BackOfficeBase.Application.Email;
-using BackOfficeBase.Domain.AppConsts.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Constants;
+using BackOfficeBase.Modules.Authentication.Helpers;
 using BackOfficeBase.Web.Core.Configuration;
 using BackOfficeBase.Web.Core.Controllers;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +39,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult<LoginOutput>> Login([FromBody]LoginInput input)
         {
-            var userToVerify = await CreateClaimsIdentityAsync(input.UserNameOrEmail, input.Password);
+            var userToVerify = await IdentityHelper.CreateClaimsIdentityAsync(_authenticationAppService, input.UserNameOrEmail, input.Password);
             if (userToVerify == null)
             {
                 return NotFound(Messages.UserNameOrPasswordNotFound);
@@ -72,7 +68,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             if (user != null) return Conflict(Messages.EmailAlreadyExist);
 
             user = await _authenticationAppService.FindUserByUserNameAsync(input.UserName);
-            if (user != null) return Conflict(Messages.UserNameAlreadyExist); 
+            if (user != null) return Conflict(Messages.UserNameAlreadyExist);
 
             var applicationUser = new User
             {
@@ -88,11 +84,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             }
 
             var confirmationToken = await _authenticationAppService.GenerateEmailConfirmationTokenAsync(applicationUser);
-            var callbackUrl = $"{_configuration[AppConfig.App_ClientUrl]}/account/confirm-email?email={applicationUser.Email}&token={HttpUtility.UrlEncode(confirmationToken)}";
-            var subject = "Confirm your email.";
-            var message = $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>{callbackUrl}</a>";
-
-            await _emailSender.SendEmailAsync(applicationUser.Email, subject, message);
+            await EmailSenderHelper.SendRegistrationConfirmationMail(_emailSender, _configuration, applicationUser, confirmationToken);
 
             return Ok(new RegisterOutput { ResetToken = confirmationToken });
         }
@@ -108,7 +100,6 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
 
             return Ok();
         }
-
 
         [HttpPost("/api/[action]")]
         [Authorize]
@@ -133,11 +124,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             if (user == null) return NotFound(Messages.UserIsNotFound);
 
             var resetToken = await _authenticationAppService.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = $"{_configuration[AppConfig.App_ClientUrl]}/account/reset-password?token={HttpUtility.UrlEncode(resetToken)}";
-            var subject = "Reset your password.";
-            var message = $"Please reset your password by clicking this link: <a href='{callbackUrl}'>{callbackUrl}</a>";
-
-            await _emailSender.SendEmailAsync(user.Email, subject, message);
+            await EmailSenderHelper.SendForgotPasswordMail(_emailSender, _configuration, resetToken, user);
 
             return Ok(new ForgotPasswordOutput { ResetToken = resetToken });
         }
@@ -152,49 +139,6 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
 
             return Ok();
-        }
-
-        private async Task<ClaimsIdentity> CreateClaimsIdentityAsync(string userNameOrEmail, string password)
-        {
-            if (string.IsNullOrEmpty(userNameOrEmail) || string.IsNullOrEmpty(password))
-            {
-                return null;
-            }
-
-            var userToVerify = await _authenticationAppService.FindUserByUserNameOrEmailAsync(userNameOrEmail);
-            if (userToVerify == null)
-            {
-                return null;
-            }
-
-            if (!await _authenticationAppService.CheckPasswordAsync(userToVerify, password)) return null;
-            var claims = CreateUserClaims(userToVerify);
-            claims = CreateRoleClaims(userToVerify, claims);
-
-            return new ClaimsIdentity(new ClaimsIdentity(new GenericIdentity(userNameOrEmail, "Token"), claims));
-        }
-
-        private static List<Claim> CreateRoleClaims(User userToVerify, List<Claim> claims)
-        {
-            // add roles to roleClaim to use build-in User.IsInRole method
-            var roleNames = userToVerify.UserRoles.Select(ur => ur.Role.Name);
-            foreach (var roleName in roleNames)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, roleName));
-            }
-
-            return claims;
-        }
-
-        private static List<Claim> CreateUserClaims(User userToVerify)
-        {
-            var claims = new List<Claim>(new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, userToVerify.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("Id", userToVerify.Id.ToString())
-            });
-            return claims;
         }
     }
 }
