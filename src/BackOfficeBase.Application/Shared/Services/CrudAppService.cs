@@ -66,6 +66,7 @@ namespace BackOfficeBase.Application.Shared.Services
             return pagedListOutput.ToPagedListResult(count);
         }
 
+        // TODO: Return dto in success app service result
         public virtual async Task<TGetOutputDto> CreateAsync(TCreateInput input)
         {
             var entity = _mapper.Map<TEntity>(input);
@@ -74,6 +75,7 @@ namespace BackOfficeBase.Application.Shared.Services
             return _mapper.Map<TGetOutputDto>(result.Entity);
         }
 
+        // TODO: Return dto in success app service result
         public virtual TGetOutputDto Update(TUpdateInput input)
         {
             var entity = _mapper.Map<TEntity>(input);
@@ -82,6 +84,7 @@ namespace BackOfficeBase.Application.Shared.Services
             return _mapper.Map<TGetOutputDto>(result.Entity);
         }
 
+        // TODO: Return dto in success app service result
         public virtual async Task<TGetOutputDto> DeleteAsync(Guid id)
         {
             var entity = await _dbContext.Set<TEntity>().FindAsync(id);

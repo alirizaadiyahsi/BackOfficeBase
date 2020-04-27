@@ -1,15 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using BackOfficeBase.Application.Authorization.Users;
+using BackOfficeBase.Application.Authorization.Users.Dto;
+using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Web.Core.Controllers;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BackOfficeBase.Modules.Authorization.Controllers
 {
-    public class UsersController : ApiControllerBase
+    public class UsersController : CrudController<IUserAppService,User,UserOutput, UserListOutput,CreateUserInput, UpdateUserInput>
     {
-        [HttpGet]
-        public async Task<object> GetUsers()
+        public UsersController(IUserAppService appService) : base(appService)
         {
-            return Ok();
         }
     }
 }

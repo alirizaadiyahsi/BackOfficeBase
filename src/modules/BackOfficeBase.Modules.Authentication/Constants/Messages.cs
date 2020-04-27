@@ -1,6 +1,6 @@
 ﻿namespace BackOfficeBase.Modules.Authentication.Constants
 {
-    public static class Messages
+    public sealed class Messages
     {
         public static readonly string UserNameOrPasswordNotFound = "User name or password is not correct!";
         public static readonly string EmailAlreadyExist = "Email already exist!";
