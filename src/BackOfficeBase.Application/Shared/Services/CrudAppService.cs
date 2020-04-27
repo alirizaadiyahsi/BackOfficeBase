@@ -33,7 +33,7 @@ namespace BackOfficeBase.Application.Shared.Services
 
         public virtual async Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input)
         {
-            IQueryable<TEntity> query = null;
+            IQueryable<TEntity> query;
             if (input.Filters == null)
             {
                 query = _dbContext.Set<TEntity>();
