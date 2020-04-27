@@ -4,7 +4,7 @@ using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 
 namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService
 {
-    public interface IProductCrudAppService:ICrudAppService<Product, ProductDto, ProductDto, CreateProductInput, UpdateProductInput>
+    public interface IProductCrudAppService:ICrudAppService<Product, ProductOutput, ProductOutput, CreateProductInput, UpdateProductInput>
     {
     }
 }

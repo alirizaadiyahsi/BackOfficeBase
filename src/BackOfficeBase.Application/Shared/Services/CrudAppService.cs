@@ -33,9 +33,24 @@ namespace BackOfficeBase.Application.Shared.Services
 
         public virtual async Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input)
         {
-            var predicate = string.Join(" && ", input.Filters);
-            var query = _dbContext.Set<TEntity>().Where(predicate);
-
+            IQueryable<TEntity> query = null;
+            if (input.Filters == null)
+            {
+                query = _dbContext.Set<TEntity>();
+            }
+            else
+            {
+                if (input.Filters.Count>1)
+                {
+                    var predicate = string.Join(" && ", input.Filters);
+                    query = _dbContext.Set<TEntity>().Where(predicate);
+                }
+                else
+                {
+                    query = _dbContext.Set<TEntity>().Where(input.Filters.First());
+                }
+            }
+            
             IOrderedQueryable<TEntity> orderedQuery = null;
             foreach (var sort in input.Sorts)
             {

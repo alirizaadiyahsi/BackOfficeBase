@@ -12,7 +12,7 @@ namespace BackOfficeBase.Application.Shared.Dto
 
         public List<string> Filters { get; set; }
 
-        public List<string> Sorts { get; set; }
+        public List<string> Sorts { get; set; } = new List<string> { "Id" };
 
         public int PageIndex { get; set; }
 

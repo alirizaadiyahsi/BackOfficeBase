@@ -6,7 +6,7 @@ using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 
 namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService
 {
-    public class ProductCrudAppService : CrudAppService<Product, ProductDto, ProductDto, CreateProductInput, UpdateProductInput>, IProductCrudAppService
+    public class ProductCrudAppService : CrudAppService<Product, ProductOutput, ProductOutput, CreateProductInput, UpdateProductInput>, IProductCrudAppService
     {
         public ProductCrudAppService(BackOfficeBaseDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {

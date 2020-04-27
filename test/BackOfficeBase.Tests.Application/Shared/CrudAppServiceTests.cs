@@ -35,10 +35,10 @@ namespace BackOfficeBase.Tests.Application.Shared
         [Fact]
         public async Task Should_Get_List_Async()
         {
-            DbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_async" });
-            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_async"});
-            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_async" });
-            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_async" });
+            DbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_filter_and_sort_async" });
+            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_filter_and_sort_async"});
+            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_filter_and_sort_async" });
+            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_with_filter_and_sort_async" });
             DbContextTest.SaveChanges();
 
             var pagedListInput = new PagedListInput
@@ -47,7 +47,7 @@ namespace BackOfficeBase.Tests.Application.Shared
                 {
                     "Name.Contains(\"Product\")",
                     "CreationTime > DateTime.Now.AddMinutes(-1)",
-                    "Code.Contains(\"for_get_list_async\")"
+                    "Code.Contains(\"for_get_list_with_filter_and_sort_async\")"
                 },
                 Sorts = new List<string>
                 {
@@ -60,7 +60,24 @@ namespace BackOfficeBase.Tests.Application.Shared
 
             Assert.NotNull(pagedProductList);
             Assert.Equal(4, pagedProductList.TotalCount);
-            Assert.Equal("b_product_code_2_for_get_list_async", pagedProductList.Items.ToArray()[1].Code);
+            Assert.Equal("b_product_code_2_for_get_list_with_filter_and_sort_async", pagedProductList.Items.ToArray()[1].Code);
+        }
+
+        [Fact]
+        public async Task Should_Get_List_With_No_Filter_And_Sort_Async()
+        {
+            DbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_no_filter_and_sort_async" });
+            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_no_filter_and_sort_async"});
+            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_no_filter_and_sort_async" });
+            DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_with_no_filter_and_sort_async" });
+            DbContextTest.SaveChanges();
+
+            var pagedListInput = new PagedListInput();
+
+            var pagedProductList = await _productCrudAppService.GetListAsync(pagedListInput);
+
+            Assert.NotNull(pagedProductList);
+            Assert.Equal(4, pagedProductList.TotalCount);
         }
 
         [Fact]
@@ -133,7 +150,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         {
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Product, ProductDto>();
+                cfg.CreateMap<Product, ProductOutput>();
                 cfg.CreateMap<CreateProductInput, Product>();
                 cfg.CreateMap<UpdateProductInput, Product>();
             });
