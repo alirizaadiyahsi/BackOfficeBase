@@ -37,22 +37,37 @@ namespace BackOfficeBase.Web.Core.Controllers
         [HttpPost]
         public virtual async Task<ActionResult<TGetOutput>> Post(TCreateInput input)
         {
-            var entityDto = await _appService.CreateAsync(input);
-            return Ok(entityDto);
+            var appServiceResult = await _appService.CreateAsync(input);
+            if (!appServiceResult.Success)
+            {
+                return BadRequest(appServiceResult.Errors);
+            }
+
+            return Ok(appServiceResult.Data);
         }
 
         [HttpPut]
         public virtual async Task<ActionResult<TGetOutput>> Put(TUpdateInput input)
         {
-            var entityDto = _appService.Update(input);
-            return Ok(entityDto);
+            var appServiceResult = _appService.Update(input);
+            if (!appServiceResult.Success)
+            {
+                return BadRequest(appServiceResult.Errors);
+            }
+
+            return Ok(appServiceResult.Data);
         }
 
         [HttpDelete]
         public virtual async Task<ActionResult<TGetOutput>> Delete(Guid id)
         {
-            var entityDto = await _appService.DeleteAsync(id);
-            return Ok(entityDto);
+            var appServiceResult = await _appService.DeleteAsync(id);
+            if (!appServiceResult.Success)
+            {
+                return BadRequest(appServiceResult.Errors);
+            }
+
+            return Ok(appServiceResult.Data);
         }
     }
 }

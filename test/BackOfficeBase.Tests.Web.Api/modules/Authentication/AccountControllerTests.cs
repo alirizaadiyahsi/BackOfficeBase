@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authentication;
 using BackOfficeBase.Application.Authentication.Dto;

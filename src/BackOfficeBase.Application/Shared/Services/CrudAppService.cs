@@ -66,31 +66,28 @@ namespace BackOfficeBase.Application.Shared.Services
             return pagedListOutput.ToPagedListResult(count);
         }
 
-        // TODO: Return dto in success app service result
-        public virtual async Task<TGetOutputDto> CreateAsync(TCreateInput input)
+        public virtual async Task<AppServiceResult<TGetOutputDto>> CreateAsync(TCreateInput input)
         {
             var entity = _mapper.Map<TEntity>(input);
             var result = await _dbContext.AddAsync(entity);
 
-            return _mapper.Map<TGetOutputDto>(result.Entity);
+            return AppServiceResult<TGetOutputDto>.Succeed(_mapper.Map<TGetOutputDto>(result.Entity));
         }
 
-        // TODO: Return dto in success app service result
-        public virtual TGetOutputDto Update(TUpdateInput input)
+        public virtual AppServiceResult<TGetOutputDto> Update(TUpdateInput input)
         {
             var entity = _mapper.Map<TEntity>(input);
             var result = _dbContext.Update(entity);
 
-            return _mapper.Map<TGetOutputDto>(result.Entity);
+            return AppServiceResult<TGetOutputDto>.Succeed(_mapper.Map<TGetOutputDto>(result.Entity));
         }
 
-        // TODO: Return dto in success app service result
-        public virtual async Task<TGetOutputDto> DeleteAsync(Guid id)
+        public virtual async Task<AppServiceResult<TGetOutputDto>> DeleteAsync(Guid id)
         {
             var entity = await _dbContext.Set<TEntity>().FindAsync(id);
             var result = _dbContext.Remove(entity);
 
-            return _mapper.Map<TGetOutputDto>(result.Entity);
+            return AppServiceResult<TGetOutputDto>.Succeed(_mapper.Map<TGetOutputDto>(result.Entity));
         }
     }
 }

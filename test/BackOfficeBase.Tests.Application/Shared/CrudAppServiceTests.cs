@@ -36,7 +36,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         public async Task Should_Get_List_Async()
         {
             DbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_filter_and_sort_async" });
-            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_filter_and_sort_async"});
+            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_filter_and_sort_async" });
             DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_filter_and_sort_async" });
             DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_with_filter_and_sort_async" });
             DbContextTest.SaveChanges();
@@ -67,7 +67,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         public async Task Should_Get_List_With_No_Filter_And_Sort_Async()
         {
             DbContextTest.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_no_filter_and_sort_async" });
-            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_no_filter_and_sort_async"});
+            DbContextTest.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_no_filter_and_sort_async" });
             DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_no_filter_and_sort_async" });
             DbContextTest.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_with_no_filter_and_sort_async" });
             DbContextTest.SaveChanges();
@@ -83,7 +83,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         [Fact]
         public async Task Should_Create_Async()
         {
-            var productDto = await _productCrudAppService.CreateAsync(new CreateProductInput
+            var appServiceResult = await _productCrudAppService.CreateAsync(new CreateProductInput
             {
                 Code = "create_async_product_code",
                 Name = "Create Async Product Name"
@@ -91,11 +91,12 @@ namespace BackOfficeBase.Tests.Application.Shared
             await DbContextTest.SaveChangesAsync();
 
             var anotherScopeDbContext = GetDbContextTest();
-            var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(productDto.Id);
+            var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(appServiceResult.Data.Id);
 
-            Assert.NotNull(productDto);
+            Assert.True(appServiceResult.Success);
+            Assert.NotNull(appServiceResult.Data);
             Assert.NotNull(insertedProductDto);
-            Assert.Equal(productDto.Code, insertedProductDto.Code);
+            Assert.Equal(appServiceResult.Data.Code, insertedProductDto.Code);
         }
 
         [Fact]
@@ -109,7 +110,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await dbContextForAddEntity.SaveChangesAsync();
 
-            _productCrudAppService.Update(new UpdateProductInput
+            var appServiceResult = _productCrudAppService.Update(new UpdateProductInput
             {
                 Id = productDto.Entity.Id,
                 Code = "update_product_code_updated",
@@ -120,6 +121,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             var dbContextForGetEntity = GetDbContextTest();
             var updatedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
+            Assert.True(appServiceResult.Success);
             Assert.NotNull(productDto);
             Assert.NotNull(updatedProductDto);
             Assert.Equal("update_product_code_updated", updatedProductDto.Code);
@@ -137,12 +139,13 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await dbContextForAddEntity.SaveChangesAsync();
 
-            await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
+            var appServiceResult = await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
             await DbContextTest.SaveChangesAsync();
 
             var dbContextForGetEntity = GetDbContextTest();
             var deletedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
+            Assert.True(appServiceResult.Success);
             Assert.Null(deletedProductDto);
         }
 
