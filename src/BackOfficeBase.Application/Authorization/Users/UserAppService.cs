@@ -11,7 +11,6 @@ using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.AppConstants;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BackOfficeBase.Application.Authorization.Users
 {
