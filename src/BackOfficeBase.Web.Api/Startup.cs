@@ -13,7 +13,6 @@ using BackOfficeBase.Web.Core.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +25,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace BackOfficeBase.Web.Api
 {
+    // TODO: Make this project open-source when .net 5 is released!
     public class Startup
     {
         public Startup(IConfiguration configuration)

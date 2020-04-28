@@ -21,7 +21,7 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public Guid[] SelectedRoleIds { get; set; }
 
-        public Guid[] SelectedClaimIds { get; set; }
+        public int[] SelectedClaimIds { get; set; }
 
         public IEnumerable<RoleOutput> AllRoles { get; set; }
     }

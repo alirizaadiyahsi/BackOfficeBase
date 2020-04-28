@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Permissions;
 using BackOfficeBase.Domain.AppConsts.Authorization;

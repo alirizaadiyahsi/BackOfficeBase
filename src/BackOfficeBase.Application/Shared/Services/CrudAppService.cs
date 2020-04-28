@@ -31,6 +31,13 @@ namespace BackOfficeBase.Application.Shared.Services
             return _mapper.Map<TGetOutputDto>(entity);
         }
 
+        public async Task<TGetOutputDto> GetAsync(Guid id, Action<IMappingOperationOptions> mappingOperationOptions)
+        {
+            var entity = await _dbContext.Set<TEntity>().FindAsync(id);
+
+            return _mapper.Map<TGetOutputDto>(entity, mappingOperationOptions);
+        }
+
         public virtual async Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input)
         {
             IQueryable<TEntity> query;

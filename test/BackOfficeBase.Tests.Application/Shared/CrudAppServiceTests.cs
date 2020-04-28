@@ -90,7 +90,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await DbContextTest.SaveChangesAsync();
 
-            var anotherScopeDbContext = GetDbContextTest();
+            var anotherScopeDbContext = GetTestDbContext();
             var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(appServiceResult.Data.Id);
 
             Assert.True(appServiceResult.Success);
@@ -102,7 +102,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         [Fact]
         public async Task Should_Update_Async()
         {
-            var dbContextForAddEntity = GetDbContextTest();
+            var dbContextForAddEntity = GetTestDbContext();
             var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
             {
                 Code = "update_product_code",
@@ -118,7 +118,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await DbContextTest.SaveChangesAsync();
 
-            var dbContextForGetEntity = GetDbContextTest();
+            var dbContextForGetEntity = GetTestDbContext();
             var updatedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
             Assert.True(appServiceResult.Success);
@@ -131,7 +131,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         [Fact]
         public async Task Should_Delete_Async()
         {
-            var dbContextForAddEntity = GetDbContextTest();
+            var dbContextForAddEntity = GetTestDbContext();
             var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
             {
                 Code = "delete_product_code",
@@ -142,7 +142,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             var appServiceResult = await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
             await DbContextTest.SaveChangesAsync();
 
-            var dbContextForGetEntity = GetDbContextTest();
+            var dbContextForGetEntity = GetTestDbContext();
             var deletedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
             Assert.True(appServiceResult.Success);

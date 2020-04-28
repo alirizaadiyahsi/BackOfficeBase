@@ -24,7 +24,10 @@ namespace BackOfficeBase.Application.Authorization.Users
 
         public override async Task<UserOutput> GetAsync(Guid id)
         {
-            var userOutput = await base.GetAsync(id);
+            var userOutput = await base.GetAsync(id, opts =>
+            {
+                opts.Items["UserId"] = id;
+            });
             userOutput.AllRoles = _mapper.Map<IEnumerable<RoleOutput>>(_dbContext.Roles);
 
             return userOutput;
