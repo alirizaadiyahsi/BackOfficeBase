@@ -10,6 +10,12 @@ namespace BackOfficeBase.Application.Shared.Dto
             PageSize = 10;
         }
 
+        public PagedListInput(int pageIndex, int pageSize)
+        {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+        }
+
         public List<string> Filters { get; set; }
 
         public List<string> Sorts { get; set; } = new List<string> { "Id" };

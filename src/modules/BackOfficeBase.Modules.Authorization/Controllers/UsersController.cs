@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackOfficeBase.Modules.Authorization.Controllers
 {
-    // TODO: Write test
     public class UsersController : ApiControllerBase
     {
         private readonly IUserAppService _userAppService;
@@ -29,7 +28,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
             var user = await _userAppService.GetAsync(id);
             if (user == null) return NotFound(Messages.Shared.EntityNotFound);
 
-            return user;
+            return Ok(user);
         }
 
         [HttpGet]
@@ -51,7 +50,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
                 return BadRequest(appServiceResult.Errors);
             }
 
-            return appServiceResult.Data;
+            return Ok(appServiceResult.Data);
         }
 
         [HttpPut]
@@ -64,7 +63,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
                 return BadRequest(appServiceResult.Errors);
             }
 
-            return appServiceResult.Data;
+            return Ok(appServiceResult.Data);
         }
 
         [HttpDelete]
@@ -77,7 +76,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
                 return BadRequest(appServiceResult.Errors);
             }
 
-            return appServiceResult.Data;
+            return Ok(appServiceResult.Data);
         }
     }
 }

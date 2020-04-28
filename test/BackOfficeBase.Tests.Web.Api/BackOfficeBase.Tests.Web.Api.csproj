@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\modules\BackOfficeBase.Modules.Authentication\BackOfficeBase.Modules.Authentication.csproj" />
+    <ProjectReference Include="..\..\src\modules\BackOfficeBase.Modules.Authorization\BackOfficeBase.Modules.Authorization.csproj" />
     <ProjectReference Include="..\BackOfficeBase.Tests.Shared\BackOfficeBase.Tests.Shared.csproj" />
   </ItemGroup>
 

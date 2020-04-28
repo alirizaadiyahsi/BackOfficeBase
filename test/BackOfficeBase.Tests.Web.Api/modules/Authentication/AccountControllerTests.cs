@@ -27,7 +27,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         private readonly Mock<IEmailSender> _mockEmailSender = new Mock<IEmailSender>();
 
         [Fact]
-        public async Task Should_Login()
+        public async Task Should_Login_Async()
         {
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
@@ -48,7 +48,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         }
 
         [Fact]
-        public async Task Should_Register()
+        public async Task Should_Register_Async()
         {
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
@@ -72,7 +72,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         }
 
         [Fact]
-        public async Task Should_Confirm_Email()
+        public async Task Should_Confirm_Email_Async()
         {
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
@@ -90,7 +90,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         }
 
         [Fact]
-        public async Task Should_Change_Password()
+        public async Task Should_Change_Password_Async()
         {
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
@@ -124,7 +124,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         }
 
         [Fact]
-        public async Task Should_Forgot_Password()
+        public async Task Should_Forgot_Password_Async()
         {
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
@@ -144,7 +144,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         }
 
         [Fact]
-        public async Task Should_Reset_Password()
+        public async Task Should_Reset_Password_Async()
         {
             var mockAuthenticationService = new Mock<IAuthenticationAppService>();
             mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
