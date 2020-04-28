@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Shared.Dto;
-using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService;
-using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto;
+using BackOfficeBase.Tests.Application.Shared.Products;
+using BackOfficeBase.Tests.Application.Shared.Products.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 using Xunit;
 
@@ -17,7 +17,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         public CrudAppServiceTests()
         {
             var mapper = GetConfiguredMapper();
-            _productCrudAppService = new ProductCrudAppService.ProductCrudAppService(DbContextTest, mapper);
+            _productCrudAppService = new ProductCrudAppService(DbContextTest, mapper);
         }
 
         [Fact]

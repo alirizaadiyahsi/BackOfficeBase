@@ -34,31 +34,17 @@ namespace BackOfficeBase.Application.Shared.Services
         public virtual async Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input)
         {
             IQueryable<TEntity> query;
-            if (input.Filters == null)
+            if (input.Filters == null || input.Filters.Count == 0)
             {
                 query = _dbContext.Set<TEntity>();
             }
             else
             {
-                if (input.Filters.Count>1)
-                {
-                    var predicate = string.Join(" && ", input.Filters);
-                    query = _dbContext.Set<TEntity>().Where(predicate);
-                }
-                else
-                {
-                    query = _dbContext.Set<TEntity>().Where(input.Filters.First());
-                }
-            }
-            
-            IOrderedQueryable<TEntity> orderedQuery = null;
-            foreach (var sort in input.Sorts)
-            {
-                orderedQuery = orderedQuery == null
-                    ? query.OrderBy(sort)
-                    : orderedQuery.ThenBy(sort);
+                var predicate = string.Join(" && ", input.Filters);
+                query = _dbContext.Set<TEntity>().Where(predicate);
             }
 
+            var orderedQuery = query.OrderBy(string.Join(',', input.Sorts));
             var count = await orderedQuery.CountAsync();
             var pagedList = orderedQuery.PagedBy(input.PageIndex, input.PageSize).ToList();
             var pagedListOutput = _mapper.Map<List<TGetListOutput>>(pagedList);

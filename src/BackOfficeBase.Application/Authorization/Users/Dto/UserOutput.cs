@@ -19,7 +19,6 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public string ProfileImageUrl { get; set; }
 
-        // TODO: Map following props in automapper profile
         public Guid[] SelectedRoleIds { get; set; }
 
         public Guid[] SelectedClaimIds { get; set; }

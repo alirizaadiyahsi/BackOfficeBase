@@ -1,8 +1,8 @@
 ﻿using BackOfficeBase.Application.Shared.Services;
-using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto;
+using BackOfficeBase.Tests.Application.Shared.Products.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 
-namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService
+namespace BackOfficeBase.Tests.Application.Shared.Products
 {
     public interface IProductCrudAppService:ICrudAppService<Product, ProductOutput, ProductOutput, CreateProductInput, UpdateProductInput>
     {

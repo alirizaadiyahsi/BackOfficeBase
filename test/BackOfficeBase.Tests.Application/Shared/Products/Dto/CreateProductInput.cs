@@ -1,6 +1,6 @@
 ﻿using BackOfficeBase.Application.Shared.Dto;
 
-namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto
+namespace BackOfficeBase.Tests.Application.Shared.Products.Dto
 {
     public class CreateProductInput : AuditedEntityDto
     {

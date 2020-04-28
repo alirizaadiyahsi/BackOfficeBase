@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BackOfficeBase.Application.Shared.Services;
 using BackOfficeBase.DataAccess;
-using BackOfficeBase.Tests.Application.Shared.ProductCrudAppService.Dto;
+using BackOfficeBase.Tests.Application.Shared.Products.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 
-namespace BackOfficeBase.Tests.Application.Shared.ProductCrudAppService
+namespace BackOfficeBase.Tests.Application.Shared.Products
 {
     public class ProductCrudAppService : CrudAppService<Product, ProductOutput, ProductOutput, CreateProductInput, UpdateProductInput>, IProductCrudAppService
     {
