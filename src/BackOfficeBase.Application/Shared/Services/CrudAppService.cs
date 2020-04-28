@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BackOfficeBase.Application.Shared.Services
 {
-    // TODO: Check permissions while data processing
     public abstract class CrudAppService<TEntity, TGetOutputDto, TGetListOutput, TCreateInput, TUpdateInput>
         : ICrudAppService<TEntity, TGetOutputDto, TGetListOutput, TCreateInput, TUpdateInput>
         where TEntity : class

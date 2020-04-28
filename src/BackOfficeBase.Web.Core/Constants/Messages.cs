@@ -1,7 +1,20 @@
 ﻿namespace BackOfficeBase.Web.Core.Constants
 {
-    public sealed class Messages
+    public class Messages
     {
-        public static readonly string EntityNotFound = "Entity is not found!";
+        public class AccountController
+        {
+            public static readonly string UserNameOrPasswordNotFound = "User name or password is not correct!";
+            public static readonly string EmailAlreadyExist = "Email already exist!";
+            public static readonly string UserNameAlreadyExist = "User name already exist!";
+            public static readonly string EmailIsNotFound = "Email is not found!";
+            public static readonly string PasswordsAreNotMatched = "Passwords are not matched!";
+            public static readonly string UserIsNotFound = "User is not found!";
+        }
+
+        public class Shared
+        {
+            public static readonly string EntityNotFound = "Entity is not found!";
+        }
     }
 }
