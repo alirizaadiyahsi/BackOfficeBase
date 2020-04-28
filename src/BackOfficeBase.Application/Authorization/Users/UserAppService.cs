@@ -26,10 +26,7 @@ namespace BackOfficeBase.Application.Authorization.Users
 
         public override async Task<UserOutput> GetAsync(Guid id)
         {
-            var userOutput = await base.GetAsync(id, opts =>
-            {
-                opts.Items["UserId"] = id;
-            });
+            var userOutput = await base.GetAsync(id);
             userOutput.AllRoles = _mapper.Map<IEnumerable<RoleOutput>>(_dbContext.Roles);
             userOutput.AllPermissions = AppPermissions.GetAll();
 
@@ -42,7 +39,7 @@ namespace BackOfficeBase.Application.Authorization.Users
             if (!appServiceResult.Success) return appServiceResult;
 
             AddRolesToUser(input.SelectedRoleIds, appServiceResult.Data.Id);
-            AddClaimsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
+            AddPermissionsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
 
             return appServiceResult;
         }
@@ -57,12 +54,12 @@ namespace BackOfficeBase.Application.Authorization.Users
             _dbContext.SaveChanges();
 
             AddRolesToUser(input.SelectedRoleIds, appServiceResult.Data.Id);
-            AddClaimsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
+            AddPermissionsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
 
             return appServiceResult;
         }
 
-        private void AddClaimsToUser(IEnumerable<string> selectedPermissions, Guid userId)
+        private void AddPermissionsToUser(IEnumerable<string> selectedPermissions, Guid userId)
         {
             foreach (var permission in selectedPermissions)
             {

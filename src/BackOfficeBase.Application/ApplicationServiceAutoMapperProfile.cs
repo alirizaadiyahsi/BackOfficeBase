@@ -23,7 +23,15 @@ namespace BackOfficeBase.Application
                     {
                         return entity.UserClaims.Where(uc => uc.UserId == Guid.Parse(context.Items["UserId"].ToString()) && uc.ClaimType == CustomClaimTypes.Permission).Select(uc => uc.ClaimValue);
                     }));
+
+            CreateMap<User, UserOutput>()
+                .ForMember(dest => dest.SelectedRoleIds,
+                    opt => opt.MapFrom(src => src.UserRoles.Select(x => x.RoleId)))
+                .ForMember(dest => dest.SelectedPermissions,
+                    opt => opt.MapFrom(src => src.UserClaims.Where(uc => uc.ClaimType == CustomClaimTypes.Permission).Select(uc => uc.ClaimValue)));
+
             CreateMap<CreateUserInput, User>();
+            CreateMap<UpdateUserInput, User>();
 
             CreateMap<Role, RoleOutput>();
         }

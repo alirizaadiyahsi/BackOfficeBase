@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Users;
 using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.AppConsts.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Tests.Shared.DataAccess;
@@ -44,7 +40,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             });
             await _dbContext.SaveChangesAsync();
 
-            var userOutput = await _userAppService.GetAsync(testRole.Id);
+            var userOutput = await _userAppService.GetAsync(testUser.Id);
 
             Assert.NotNull(userOutput);
             Assert.True(userOutput.AllRoles != null && userOutput.AllRoles.Any());
@@ -72,8 +68,56 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var insertedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
 
             Assert.NotNull(insertedUser);
-            Assert.True(insertedUser.UserRoles != null && insertedUser.UserRoles.Any());
-            Assert.True(insertedUser.UserClaims != null && insertedUser.UserClaims.Any());
+            Assert.True(insertedUser.UserRoles != null && insertedUser.UserRoles.Any(x => x.RoleId == testRole.Id));
+            Assert.True(insertedUser.UserClaims != null && insertedUser.UserClaims.Any(x => x.ClaimValue == AppPermissions.Users.Read));
+        }
+
+        [Fact]
+        public async Task Should_Update()
+        {
+            var testUser = GetTestUser("test_user_for_user_app_service_update", "test_user_for_user_app_service_update@mail.com");
+            var grantedRole = GetTestRole("test_role_for_user_app_service_update1");
+            var roleToGrant = GetTestRole("test_role_for_user_app_service_update2");
+
+            await _dbContext.UserRoles.AddAsync(new UserRole { Role = grantedRole, User = testUser });
+            await _dbContext.UserClaims.AddAsync(new UserClaim { User = testUser, ClaimType = CustomClaimTypes.Permission, ClaimValue = AppPermissions.Users.Read });
+            await _dbContext.Users.AddAsync(testUser);
+            await _dbContext.Roles.AddAsync(grantedRole);
+            await _dbContext.Roles.AddAsync(roleToGrant);
+            await _dbContext.SaveChangesAsync();
+
+            var updateUserInput = new UpdateUserInput
+            {
+                UserName = "test_user_for_user_app_service_update_updated",
+                Email = "test_user_for_user_app_service_update_updated@mail.com",
+                SelectedRoleIds = new[] { roleToGrant.Id },
+                SelectedPermissions = new[] { AppPermissions.Users.Create }
+            };
+            var userOutput = _userAppService.Update(updateUserInput);
+            _dbContext.SaveChanges();
+
+            var updatedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+
+            Assert.NotNull(updatedUser);
+            Assert.True(updatedUser.UserRoles != null && updatedUser.UserRoles.Any(x => x.RoleId == roleToGrant.Id));
+            Assert.Null(updatedUser.UserRoles.FirstOrDefault(x => x.RoleId == grantedRole.Id));
+            Assert.True(updatedUser.UserClaims != null && updatedUser.UserClaims.Any(x => x.ClaimValue == AppPermissions.Users.Create));
+            Assert.Null(updatedUser.UserClaims.FirstOrDefault(x => x.ClaimValue == AppPermissions.Users.Read));
+        }
+
+        [Fact]
+        public async Task Should_Delete_Async()
+        {
+            var testUser = GetTestUser("test_user_for_user_app_service_delete", "test_user_for_user_app_service_delete@mail.com");
+            await _dbContext.Users.AddAsync(testUser);
+            await _dbContext.SaveChangesAsync();
+
+            var userOutput = await _userAppService.DeleteAsync(testUser.Id);
+            await _dbContext.SaveChangesAsync();
+
+            var deletedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+
+            Assert.Null(deletedUser);
         }
     }
 }
