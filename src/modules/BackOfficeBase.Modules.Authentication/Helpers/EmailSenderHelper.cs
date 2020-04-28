@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web;
 using BackOfficeBase.Application.Email;
-using BackOfficeBase.Domain.AppConsts.Configuration;
+using BackOfficeBase.Domain.AppConstants.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.Extensions.Configuration;
 

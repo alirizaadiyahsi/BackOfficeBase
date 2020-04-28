@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authentication;
 using BackOfficeBase.Application.Authentication.Dto;
 using BackOfficeBase.Application.Email;
-using BackOfficeBase.Domain.AppConsts.Configuration;
+using BackOfficeBase.Domain.AppConstants.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Controllers;
 using BackOfficeBase.Web.Core.Configuration;

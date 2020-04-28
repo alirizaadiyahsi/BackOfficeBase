@@ -3,7 +3,7 @@ using System.Linq;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Application

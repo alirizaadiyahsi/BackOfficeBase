@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Permissions;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Web.Core.Authorization;
 using Microsoft.AspNetCore.Authorization;

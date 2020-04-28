@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Users;
 using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Tests.Shared.DataAccess;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,8 +44,8 @@ namespace BackOfficeBase.Tests.Application.Authorization
 
             Assert.NotNull(userOutput);
             Assert.True(userOutput.AllRoles != null && userOutput.AllRoles.Any());
-            Assert.True(userOutput.SelectedPermissions != null && userOutput.SelectedPermissions.Length > 0);
-            Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Length > 0);
+            Assert.True(userOutput.SelectedPermissions != null && userOutput.SelectedPermissions.Any());
+            Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Any());
         }
 
         [Fact]
@@ -66,6 +66,10 @@ namespace BackOfficeBase.Tests.Application.Authorization
             await _dbContext.SaveChangesAsync();
 
             var insertedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+
+            Assert.NotNull(userOutput.Data);
+            Assert.True(userOutput.Data.SelectedRoleIds != null && userOutput.Data.SelectedRoleIds.Any(x => x == testRole.Id));
+            Assert.True(userOutput.Data.SelectedPermissions!= null && userOutput.Data.SelectedPermissions.Any(x => x == AppPermissions.Users.Read));
 
             Assert.NotNull(insertedUser);
             Assert.True(insertedUser.UserRoles != null && insertedUser.UserRoles.Any(x => x.RoleId == testRole.Id));
@@ -97,6 +101,10 @@ namespace BackOfficeBase.Tests.Application.Authorization
             _dbContext.SaveChanges();
 
             var updatedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+
+            Assert.NotNull(userOutput.Data);
+            Assert.True(userOutput.Data.SelectedRoleIds != null && userOutput.Data.SelectedRoleIds.Any(x => x == roleToGrant.Id));
+            Assert.True(userOutput.Data.SelectedPermissions != null && userOutput.Data.SelectedPermissions.Any(x => x == AppPermissions.Users.Create));
 
             Assert.NotNull(updatedUser);
             Assert.True(updatedUser.UserRoles != null && updatedUser.UserRoles.Any(x => x.RoleId == roleToGrant.Id));

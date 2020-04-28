@@ -1,4 +1,4 @@
-﻿namespace BackOfficeBase.Domain.AppConsts.Authorization
+﻿namespace BackOfficeBase.Domain.AppConstants.Authorization
 {
     public static class CustomClaimTypes
     {

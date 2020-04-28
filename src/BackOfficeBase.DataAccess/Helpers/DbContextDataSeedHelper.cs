@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.DataAccess.Helpers

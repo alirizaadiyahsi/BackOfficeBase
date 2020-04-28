@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Permissions;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Moq;

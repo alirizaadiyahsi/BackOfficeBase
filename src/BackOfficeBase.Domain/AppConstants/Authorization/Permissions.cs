@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BackOfficeBase.Domain.AppConsts.Authorization
+namespace BackOfficeBase.Domain.AppConstants.Authorization
 {
     public static class AppPermissions
     {

@@ -1,4 +1,4 @@
-﻿namespace BackOfficeBase.Domain.AppConsts.Configuration
+﻿namespace BackOfficeBase.Domain.AppConstants.Configuration
 {
     public static class AppConfig
     {

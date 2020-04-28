@@ -8,8 +8,10 @@ using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Application.Shared.Services;
 using BackOfficeBase.DataAccess;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BackOfficeBase.Application.Authorization.Users
 {
@@ -34,18 +36,26 @@ namespace BackOfficeBase.Application.Authorization.Users
 
         public override async Task<AppServiceResult<UserOutput>> CreateAsync(CreateUserInput input)
         {
-            var appServiceResult = await base.CreateAsync(input);
+            var appServiceResult = CheckIfUserExist(input.UserName, input.Email);
+            if (!appServiceResult.Success) return appServiceResult;
+
+            appServiceResult = await base.CreateAsync(input);
             if (!appServiceResult.Success) return appServiceResult;
 
             AddRolesToUser(input.SelectedRoleIds, appServiceResult.Data.Id);
             AddPermissionsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
+
+            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, appServiceResult);
 
             return appServiceResult;
         }
 
         public override AppServiceResult<UserOutput> Update(UpdateUserInput input)
         {
-            var appServiceResult = base.Update(input);
+            var appServiceResult = CheckIfUserExist(input.UserName, input.Email);
+            if (!appServiceResult.Success) return appServiceResult;
+
+            appServiceResult = base.Update(input);
             if (!appServiceResult.Success) return appServiceResult;
 
             _dbContext.UserRoles.RemoveRange(_dbContext.UserRoles.Where(x => x.UserId == input.Id));
@@ -55,13 +65,21 @@ namespace BackOfficeBase.Application.Authorization.Users
             AddRolesToUser(input.SelectedRoleIds, appServiceResult.Data.Id);
             AddPermissionsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
 
+            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, appServiceResult);
+
             return appServiceResult;
+        }
+
+        private static void SetSelectedNavigationProperties(IEnumerable<Guid> selectedRoleIds, IEnumerable<string> selectedPermissions, AppServiceResult<UserOutput> appServiceResult)
+        {
+            appServiceResult.Data.SelectedRoleIds = selectedRoleIds;
+            appServiceResult.Data.SelectedPermissions = selectedPermissions;
         }
 
         private void AddPermissionsToUser(IEnumerable<string> selectedPermissions, Guid userId)
         {
             foreach (var permission in selectedPermissions)
-            {
+            { 
                 _dbContext.UserClaims.Add(new UserClaim
                 {
                     UserId = userId,
@@ -74,13 +92,36 @@ namespace BackOfficeBase.Application.Authorization.Users
         private void AddRolesToUser(IEnumerable<Guid> selectedRoleIds, Guid userId)
         {
             foreach (var selectedRoleId in selectedRoleIds)
-            {
+            { 
                 _dbContext.UserRoles.Add(new UserRole
                 {
                     UserId = userId,
                     RoleId = selectedRoleId
                 });
             }
+        }
+
+        private AppServiceResult<UserOutput> CheckIfUserExist(string userName, string email)
+        {
+            var isUserExist = _dbContext.Users.Any(x => x.UserName == userName);
+            if (isUserExist)
+            {
+                return AppServiceResult<UserOutput>.Failed(new List<string>
+                {
+                    new string(UserFriendlyMessages.UserNameAlreadyExist)
+                });
+            }
+
+            isUserExist = _dbContext.Users.Any(x => x.Email == email);
+            if (isUserExist)
+            {
+                return AppServiceResult<UserOutput>.Failed(new List<string>
+                {
+                    new string(UserFriendlyMessages.EmailAlreadyExist)
+                });
+            }
+
+            return AppServiceResult<UserOutput>.Succeed(null);
         }
     }
 }

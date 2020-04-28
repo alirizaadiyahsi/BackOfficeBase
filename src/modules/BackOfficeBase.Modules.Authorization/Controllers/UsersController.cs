@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Shared.Dto;
-using BackOfficeBase.Domain.AppConsts.Authorization;
+using BackOfficeBase.Domain.AppConstants;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Utilities.Collections;
-using BackOfficeBase.Web.Core.Constants;
 using BackOfficeBase.Web.Core.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +26,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         public async Task<ActionResult<UserOutput>> GetUsers(Guid id)
         {
             var user = await _userAppService.GetAsync(id);
-            if (user == null) return NotFound(Messages.Shared.EntityNotFound);
+            if (user == null) return NotFound(UserFriendlyMessages.EntityNotFound);
 
             return Ok(user);
         }

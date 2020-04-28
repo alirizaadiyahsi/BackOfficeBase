@@ -19,9 +19,9 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public string ProfileImageUrl { get; set; }
 
-        public Guid[] SelectedRoleIds { get; set; }
+        public IEnumerable<Guid> SelectedRoleIds { get; set; }
 
-        public string[] SelectedPermissions { get; set; }
+        public IEnumerable<string> SelectedPermissions { get; set; }
 
         public IEnumerable<RoleOutput> AllRoles { get; set; }
 
