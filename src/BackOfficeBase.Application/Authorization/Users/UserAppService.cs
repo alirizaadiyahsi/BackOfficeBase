@@ -37,7 +37,11 @@ namespace BackOfficeBase.Application.Authorization.Users
 
             foreach (var selectedRoleId in input.SelectedRoleIds)
             {
-                await _dbContext.UserRoles.AddAsync(new UserRole(appServiceResult.Data.Id, selectedRoleId));
+                await _dbContext.UserRoles.AddAsync(new UserRole
+                {
+                    UserId = appServiceResult.Data.Id, 
+                    RoleId = selectedRoleId
+                });
             }
 
             return appServiceResult;

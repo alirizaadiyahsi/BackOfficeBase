@@ -7,10 +7,5 @@ namespace BackOfficeBase.Domain.Entities.Authorization
     {
         public virtual User User { get; set; }
         public virtual Role Role { get; set; }
-
-        public UserRole(Guid userId, Guid roleId)
-        {
-
-        }
     }
 }

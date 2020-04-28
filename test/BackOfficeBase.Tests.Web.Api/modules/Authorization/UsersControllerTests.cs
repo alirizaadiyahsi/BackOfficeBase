@@ -91,7 +91,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         }
 
         [Fact]
-        public async Task Should_Update_User_Async()
+        public void Should_Update_User()
         {
             var mockUserAppService = new Mock<IUserAppService>();
             mockUserAppService.Setup(x => x.Update(It.IsAny<UpdateUserInput>())).Returns(new AppServiceResult<UserOutput>
