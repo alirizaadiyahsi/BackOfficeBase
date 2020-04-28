@@ -12,7 +12,6 @@ namespace BackOfficeBase.Application
     {
         public ApplicationServiceAutoMapperProfile()
         {
-            // user types
             CreateMap<User, UserOutput>()
                 .ForMember(dest => dest.SelectedRoleIds,
                     opt => opt.MapFrom((entity, dto, _, context) =>
@@ -24,6 +23,7 @@ namespace BackOfficeBase.Application
                     {
                         return entity.UserClaims.Where(uc => uc.UserId == Guid.Parse(context.Items["UserId"].ToString()) && uc.ClaimType == CustomClaimTypes.Permission).Select(uc => uc.ClaimValue);
                     }));
+            CreateMap<CreateUserInput, User>();
 
             CreateMap<Role, RoleOutput>();
         }
