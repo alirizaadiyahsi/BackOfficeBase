@@ -60,7 +60,7 @@ namespace BackOfficeBase.Web.Api
             services.AddScoped<IAuthorizationHandler, PermissionHandler>();
             services.AddAuthorization(options =>
             {
-                foreach (var permission in Permissions.GetAll())
+                foreach (var permission in AppPermissions.GetAll())
                 {
                     options.AddPolicy(permission,
                         policy => policy.Requirements.Add(new PermissionRequirement(permission)));

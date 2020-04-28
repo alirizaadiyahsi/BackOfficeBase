@@ -2,7 +2,7 @@
 
 namespace BackOfficeBase.Domain.AppConsts.Authorization
 {
-    public static class Permissions
+    public static class AppPermissions
     {
         public static List<string> GetAll()
         {

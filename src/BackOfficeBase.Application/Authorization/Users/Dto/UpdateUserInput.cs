@@ -19,6 +19,6 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public Guid[] SelectedRoleIds { get; set; }
 
-        public Guid[] SelectedClaimIds { get; set; }
+        public string[] SelectedPermissions { get; set; }
     }
 }

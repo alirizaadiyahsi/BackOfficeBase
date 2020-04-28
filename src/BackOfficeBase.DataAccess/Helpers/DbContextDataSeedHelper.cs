@@ -51,7 +51,7 @@ namespace BackOfficeBase.DataAccess.Helpers
             _dbContext.Users.Add(adminUser);
             _dbContext.SaveChanges();
 
-            var userClaims = Permissions.GetAll().Select(permission => new UserClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, UserId = adminUser.Id});
+            var userClaims = AppPermissions.GetAll().Select(permission => new UserClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, UserId = adminUser.Id});
             _dbContext.UserClaims.AddRange(userClaims);
             _dbContext.SaveChanges();
         }
@@ -89,7 +89,7 @@ namespace BackOfficeBase.DataAccess.Helpers
             _dbContext.Roles.Add(adminRole);
             _dbContext.SaveChanges();
 
-            var roleClaims = Permissions.GetAll().Select(permission => new RoleClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, RoleId = adminRole.Id});
+            var roleClaims = AppPermissions.GetAll().Select(permission => new RoleClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, RoleId = adminRole.Id});
             _dbContext.RoleClaims.AddRange(roleClaims);
             _dbContext.SaveChanges();
         }

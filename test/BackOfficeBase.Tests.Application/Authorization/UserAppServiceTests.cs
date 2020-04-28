@@ -39,7 +39,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             {
                 UserId = _testUser.Id,
                 ClaimType = CustomClaimTypes.Permission,
-                ClaimValue = Permissions.Users.Read
+                ClaimValue = AppPermissions.Users.Read
             });
 
             await _dbContext.SaveChangesAsync();
@@ -48,7 +48,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
 
             Assert.NotNull(userOutput);
             Assert.True(userOutput.AllRoles != null && userOutput.AllRoles.Any());
-            Assert.True(userOutput.SelectedClaimIds != null && userOutput.SelectedClaimIds.Length > 0);
+            Assert.True(userOutput.SelectedPermissions != null && userOutput.SelectedPermissions.Length > 0);
             Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Length > 0);
         }
     }

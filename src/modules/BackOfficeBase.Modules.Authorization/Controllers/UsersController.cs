@@ -22,7 +22,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         }
 
         [HttpGet]
-        [Authorize(Permissions.Users.Read)]
+        [Authorize(AppPermissions.Users.Read)]
         public async Task<ActionResult<UserOutput>> GetUsers(Guid id)
         {
             var user = await _userAppService.GetAsync(id);
@@ -32,7 +32,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         }
 
         [HttpGet]
-        [Authorize(Permissions.Users.Read)]
+        [Authorize(AppPermissions.Users.Read)]
         public async Task<ActionResult<IPagedListResult<UserListOutput>>> GetUsers(PagedListInput input)
         {
             var users = await _userAppService.GetListAsync(input);
@@ -41,7 +41,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         }
 
         [HttpPost]
-        [Authorize(Permissions.Users.Create)]
+        [Authorize(AppPermissions.Users.Create)]
         public async Task<ActionResult<UserOutput>> PostUsers(CreateUserInput input)
         {
             var appServiceResult = await _userAppService.CreateAsync(input);
@@ -54,7 +54,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         }
 
         [HttpPut]
-        [Authorize(Permissions.Users.Update)]
+        [Authorize(AppPermissions.Users.Update)]
         public ActionResult<UserOutput> PutUsers(UpdateUserInput input)
         {
             var appServiceResult = _userAppService.Update(input);
@@ -67,7 +67,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Permissions.Users.Delete)]
+        [Authorize(AppPermissions.Users.Delete)]
         public async Task<ActionResult<UserOutput>> DeleteUsers(Guid id)
         {
             var appServiceResult = await _userAppService.DeleteAsync(id);

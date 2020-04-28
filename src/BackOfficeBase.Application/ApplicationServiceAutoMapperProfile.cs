@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
+using BackOfficeBase.Domain.AppConsts.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Application
@@ -18,10 +19,10 @@ namespace BackOfficeBase.Application
                     {
                         return entity.UserRoles.Where(ur => ur.UserId == Guid.Parse(context.Items["UserId"].ToString())).Select(ur => ur.RoleId);
                     }))
-                .ForMember(dest => dest.SelectedClaimIds,
+                .ForMember(dest => dest.SelectedPermissions,
                     opt => opt.MapFrom((entity, dto, _, context) =>
                     {
-                        return entity.UserClaims.Where(uc => uc.UserId == Guid.Parse(context.Items["UserId"].ToString())).Select(uc => uc.Id);
+                        return entity.UserClaims.Where(uc => uc.UserId == Guid.Parse(context.Items["UserId"].ToString()) && uc.ClaimType == CustomClaimTypes.Permission).Select(uc => uc.ClaimValue);
                     }));
 
             CreateMap<Role, RoleOutput>();
