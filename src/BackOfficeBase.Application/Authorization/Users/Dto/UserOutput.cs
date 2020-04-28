@@ -23,6 +23,6 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public Guid[] SelectedClaimIds { get; set; }
 
-        public List<RoleOutput> AllRoles { get; set; }
+        public IEnumerable<RoleOutput> AllRoles { get; set; }
     }
 }
