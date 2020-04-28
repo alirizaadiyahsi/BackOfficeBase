@@ -13,7 +13,6 @@ using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Application.Authorization.Users
 {
-    // TODO: Write test
     public class UserAppService : CrudAppService<User, UserOutput, UserListOutput, CreateUserInput, UpdateUserInput>, IUserAppService
     {
         private readonly BackOfficeBaseDbContext _dbContext;
