@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BackOfficeBase.Application.Authentication;
 using BackOfficeBase.Application.Authorization.Users;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Shared.Dto;
@@ -15,10 +16,12 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
     public class UsersController : ApiControllerBase
     {
         private readonly IUserAppService _userAppService;
+        private readonly IAuthenticationAppService _authenticationAppService;
 
-        public UsersController(IUserAppService userAppService)
+        public UsersController(IUserAppService userAppService, IAuthenticationAppService authenticationAppService)
         {
             _userAppService = userAppService;
+            _authenticationAppService = authenticationAppService;
         }
 
         [HttpGet]
@@ -44,7 +47,12 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         [Authorize(AppPermissions.Users.Create)]
         public async Task<ActionResult<UserOutput>> PostUsers(CreateUserInput input)
         {
-            // TODO: Check if user exist and write test case for this
+            var user = await _authenticationAppService.FindUserByEmailAsync(input.Email);
+            if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
+
+            user = await _authenticationAppService.FindUserByUserNameAsync(input.UserName);
+            if (user != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
+
             var userOutput = await _userAppService.CreateAsync(input);
 
             return Ok(userOutput);
@@ -52,9 +60,14 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpPut]
         [Authorize(AppPermissions.Users.Update)]
-        public ActionResult<UserOutput> PutUsers(UpdateUserInput input)
+        public async Task<ActionResult<UserOutput>> PutUsers(UpdateUserInput input)
         {
-            // TODO: Check if user exist and write test case for this
+            var user = await _authenticationAppService.FindUserByEmailAsync(input.Email);
+            if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
+
+            user = await _authenticationAppService.FindUserByUserNameAsync(input.UserName);
+            if (user != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
+
             var userOutput = _userAppService.Update(input);
 
             return Ok(userOutput);

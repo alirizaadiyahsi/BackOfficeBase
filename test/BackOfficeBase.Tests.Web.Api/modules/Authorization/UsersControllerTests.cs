@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using BackOfficeBase.Application.Authentication;
 using BackOfficeBase.Application.Authorization.Users;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Shared.Dto;
+using BackOfficeBase.Domain.AppConstants;
 using BackOfficeBase.Modules.Authorization.Controllers;
 using BackOfficeBase.Utilities.Collections;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +21,15 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         [Fact]
         public async Task Should_Get_User_Async()
         {
-            var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.GetAsync(It.IsAny<Guid>())).ReturnsAsync(new UserOutput
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.GetAsync(It.IsAny<Guid>())).ReturnsAsync(new UserOutput
             {
                 UserName = "test_user",
                 Email = "test_user@mail.com",
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(mockUserAppService.Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
             var actionResult = await usersController.GetUsers(Guid.NewGuid());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -40,8 +42,8 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         [Fact]
         public async Task Should_Get_User_List_Async()
         {
-            var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.GetListAsync(It.IsAny<PagedListInput>())).ReturnsAsync(new PagedListResult<UserListOutput>
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.GetListAsync(It.IsAny<PagedListInput>())).ReturnsAsync(new PagedListResult<UserListOutput>
             {
                 Items = new List<UserListOutput>
                 {
@@ -54,7 +56,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 TotalCount = 10
             });
 
-            var usersController = new UsersController(mockUserAppService.Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
             var actionResult = await usersController.GetUsers(new PagedListInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -68,15 +70,15 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         [Fact]
         public async Task Should_Create_User_Async()
         {
-            var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.CreateAsync(It.IsAny<CreateUserInput>())).ReturnsAsync(new UserOutput
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.CreateAsync(It.IsAny<CreateUserInput>())).ReturnsAsync(new UserOutput
             {
                 UserName = "test_user",
                 Email = "test_user@mail.com",
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(mockUserAppService.Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
             var actionResult = await usersController.PostUsers(new CreateUserInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -87,18 +89,43 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         }
 
         [Fact]
-        public void Should_Update_User()
+        public async Task Should_Not_Create_User_Async()
         {
-            var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.Update(It.IsAny<UpdateUserInput>())).Returns(new UserOutput
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.CreateAsync(It.IsAny<CreateUserInput>())).ReturnsAsync(new UserOutput
             {
                 UserName = "test_user",
                 Email = "test_user@mail.com",
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(mockUserAppService.Object);
-            var actionResult = usersController.PutUsers(new UpdateUserInput());
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
+
+            var usersController = new UsersController(userAppServiceMock.Object, authenticationAppServiceMock.Object);
+            var actionResult = await usersController.PostUsers(new CreateUserInput());
+
+            var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);
+            var message = Assert.IsType<string>(conflictObjectResult.Value);
+
+            Assert.Equal((int)HttpStatusCode.Conflict, conflictObjectResult.StatusCode);
+            Assert.Equal(UserFriendlyMessages.EmailAlreadyExist, message);
+        }
+
+        [Fact]
+        public async Task Should_Update_User()
+        {
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.Update(It.IsAny<UpdateUserInput>())).Returns(new UserOutput
+            {
+                UserName = "test_user",
+                Email = "test_user@mail.com",
+                Id = Guid.NewGuid()
+            });
+
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
+            var actionResult = await usersController.PutUsers(new UpdateUserInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var userOutput = Assert.IsType<UserOutput>(okObjectResult.Value);
@@ -108,17 +135,42 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         }
 
         [Fact]
-        public async Task Should_Delete_User_Async()
+        public async Task Should_Not_Update_User()
         {
-            var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(new UserOutput
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.Update(It.IsAny<UpdateUserInput>())).Returns(new UserOutput
             {
                 UserName = "test_user",
                 Email = "test_user@mail.com",
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(mockUserAppService.Object);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
+
+            var usersController = new UsersController(userAppServiceMock.Object, authenticationAppServiceMock.Object);
+            var actionResult = await usersController.PutUsers(new UpdateUserInput());
+
+            var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);
+            var message = Assert.IsType<string>(conflictObjectResult.Value);
+
+            Assert.Equal((int)HttpStatusCode.Conflict, conflictObjectResult.StatusCode);
+            Assert.Equal(UserFriendlyMessages.EmailAlreadyExist, message);
+        }
+
+        [Fact]
+        public async Task Should_Delete_User_Async()
+        {
+            var userAppServiceMock = new Mock<IUserAppService>();
+            userAppServiceMock.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(new UserOutput
+            {
+                UserName = "test_user",
+                Email = "test_user@mail.com",
+                Id = Guid.NewGuid()
+            });
+
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
             var actionResult = await usersController.DeleteUsers(Guid.NewGuid());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
