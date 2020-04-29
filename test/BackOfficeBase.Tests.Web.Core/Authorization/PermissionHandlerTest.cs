@@ -25,10 +25,10 @@ namespace BackOfficeBase.Tests.Web.Core.Authorization
         {
             AddUserToRole(_testUser, _testRole);
 
-            var mockUserManager = SetupMockUserManager();
-            var mockRoleManager = SetupMockRoleManager();
+            var userManagerMock = SetupMockUserManager();
+            var roleManagerMock = SetupMockRoleManager();
 
-            _permissionAppService = new PermissionAppService(mockUserManager.Object, mockRoleManager.Object);
+            _permissionAppService = new PermissionAppService(userManagerMock.Object, roleManagerMock.Object);
         }
 
         [Fact]
@@ -83,26 +83,26 @@ namespace BackOfficeBase.Tests.Web.Core.Authorization
 
         private Mock<UserManager<User>> SetupMockUserManager()
         {
-            var mockUserManager = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, null, null, null, null, null,
+            var userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, null, null, null, null, null,
                 null, null, null);
-            mockUserManager.Setup(x => x.FindByNameAsync(_testUser.UserName)).ReturnsAsync(_testUser);
-            mockUserManager.Setup(x => x.GetClaimsAsync(_testUser)).ReturnsAsync(
+            userManagerMock.Setup(x => x.FindByNameAsync(_testUser.UserName)).ReturnsAsync(_testUser);
+            userManagerMock.Setup(x => x.GetClaimsAsync(_testUser)).ReturnsAsync(
                 new List<Claim>
                 {
                     new Claim(CustomClaimTypes.Permission, TestPermissionClaimForUser)
                 });
-            return mockUserManager;
+            return userManagerMock;
         }
 
         private Mock<RoleManager<Role>> SetupMockRoleManager()
         {
-            var mockRoleManager = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, null, null, null, null);
-            mockRoleManager.Setup(x => x.GetClaimsAsync(_testRole)).ReturnsAsync(
+            var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, null, null, null, null);
+            roleManagerMock.Setup(x => x.GetClaimsAsync(_testRole)).ReturnsAsync(
                 new List<Claim>
                 {
                     new Claim(CustomClaimTypes.Permission, TestPermissionClaimForRole)
                 });
-            return mockRoleManager;
+            return roleManagerMock;
         }
     }
 }

@@ -23,17 +23,17 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
     {
         private readonly User _testUser = GetTestUser();
         private readonly IOptions<JwtTokenConfiguration> _jwtTokenConfiguration = Options.Create(new JwtTokenConfiguration());
-        private readonly Mock<IConfiguration> _mockConfiguration = SetupMockConfiguration();
-        private readonly Mock<IEmailSender> _mockEmailSender = new Mock<IEmailSender>();
+        private readonly Mock<IConfiguration> _configurationMock = SetupMockConfiguration();
+        private readonly Mock<IEmailSender> _emailSenderMock = new Mock<IEmailSender>();
 
         [Fact]
         public async Task Should_Login_Async()
         {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
-            mockAuthenticationService.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            authenticationAppServiceMock.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
 
-            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var accountController = new AccountController(authenticationAppServiceMock.Object, _jwtTokenConfiguration, _configurationMock.Object, _emailSenderMock.Object);
             var actionResult = await accountController.Login(new LoginInput
             {
                 Password = "123qwe",
@@ -50,13 +50,13 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Register_Async()
         {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
-            mockAuthenticationService.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync((User)null);
-            mockAuthenticationService.Setup(x => x.CreateUserAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
-            mockAuthenticationService.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
+            authenticationAppServiceMock.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync((User)null);
+            authenticationAppServiceMock.Setup(x => x.CreateUserAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            authenticationAppServiceMock.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
 
-            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var accountController = new AccountController(authenticationAppServiceMock.Object, _jwtTokenConfiguration, _configurationMock.Object, _emailSenderMock.Object);
             var actionResult = await accountController.Register(new RegisterInput
             {
                 UserName = _testUser.UserName,
@@ -74,11 +74,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Confirm_Email_Async()
         {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
-            mockAuthenticationService.Setup(x => x.ConfirmEmailAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            authenticationAppServiceMock.Setup(x => x.ConfirmEmailAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
-            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var accountController = new AccountController(authenticationAppServiceMock.Object, _jwtTokenConfiguration, _configurationMock.Object, _emailSenderMock.Object);
             var actionResult = await accountController.ConfirmEmail(new ConfirmEmailInput
             {
                 Token = Guid.NewGuid().ToString(),
@@ -92,15 +92,15 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Change_Password_Async()
         {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
-            mockAuthenticationService.Setup(x => x.ChangePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            authenticationAppServiceMock.Setup(x => x.ChangePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
             var accountController = new AccountController(
-                mockAuthenticationService.Object,
+                authenticationAppServiceMock.Object,
                 _jwtTokenConfiguration,
-                _mockConfiguration.Object,
-                _mockEmailSender.Object)
+                _configurationMock.Object,
+                _emailSenderMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -126,11 +126,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Forgot_Password_Async()
         {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
-            mockAuthenticationService.Setup(x => x.GeneratePasswordResetTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            authenticationAppServiceMock.Setup(x => x.GeneratePasswordResetTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
 
-            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var accountController = new AccountController(authenticationAppServiceMock.Object, _jwtTokenConfiguration, _configurationMock.Object, _emailSenderMock.Object);
             var actionResult = await accountController.ForgotPassword(new ForgotPasswordInput
             {
                 Email = _testUser.Email
@@ -146,11 +146,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Reset_Password_Async()
         {
-            var mockAuthenticationService = new Mock<IAuthenticationAppService>();
-            mockAuthenticationService.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
-            mockAuthenticationService.Setup(x => x.ResetPasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
+            authenticationAppServiceMock.Setup(x => x.ResetPasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
-            var accountController = new AccountController(mockAuthenticationService.Object, _jwtTokenConfiguration, _mockConfiguration.Object, _mockEmailSender.Object);
+            var accountController = new AccountController(authenticationAppServiceMock.Object, _jwtTokenConfiguration, _configurationMock.Object, _emailSenderMock.Object);
             var actionResult = await accountController.ResetPassword(new ResetPasswordInput
             {
                 Token = Guid.NewGuid().ToString(),
@@ -164,10 +164,10 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
 
         private static Mock<IConfiguration> SetupMockConfiguration()
         {
-            var mockConfiguration = new Mock<IConfiguration>();
-            mockConfiguration.Setup(x => x[AppConfig.App_ClientUrl]).Returns("http://localhost:8080");
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(x => x[AppConfig.App_ClientUrl]).Returns("http://localhost:8080");
 
-            return mockConfiguration;
+            return configurationMock;
         }
     }
 }

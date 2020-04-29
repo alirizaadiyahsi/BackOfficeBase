@@ -22,10 +22,10 @@ namespace BackOfficeBase.Tests.Application.Authorization
         {
             AddUserToRole(_testUser, _testRole);
 
-            var mockUserManager = SetupMockUserManager();
-            var mockRoleManager = SetupMockRoleManager();
+            var userManagerMock = SetupMockUserManager();
+            var roleManagerMock = SetupMockRoleManager();
 
-            _permissionAppService = new PermissionAppService(mockUserManager.Object, mockRoleManager.Object);
+            _permissionAppService = new PermissionAppService(userManagerMock.Object, roleManagerMock.Object);
         }
 
         [Fact]
