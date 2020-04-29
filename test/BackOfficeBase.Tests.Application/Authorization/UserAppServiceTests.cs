@@ -125,6 +125,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
 
             var deletedUser = await GetTestDbContext().Users.FindAsync(userOutput.Id);
 
+            Assert.NotNull(userOutput);
             Assert.Null(deletedUser);
         }
     }
