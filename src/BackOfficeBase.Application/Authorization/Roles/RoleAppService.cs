@@ -54,7 +54,6 @@ namespace BackOfficeBase.Application.Authorization.Roles
             return roleOutput;
         }
 
-        // TODO: Write test
         public async Task<RoleOutput> FindByNameAsync(string name)
         {
             var roleOutput = _mapper.Map<RoleOutput>(await _dbContext.Roles.FirstAsync(x => x.Name == name));
