@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Permissions;
 using BackOfficeBase.Domain.AppConstants.Authorization;
@@ -25,8 +24,8 @@ namespace BackOfficeBase.Tests.Web.Core.Authorization
         {
             AddUserToRole(_testUser, _testRole);
 
-            var userManagerMock = SetupMockUserManager();
-            var roleManagerMock = SetupMockRoleManager();
+            var userManagerMock = SetupUserManagerMock();
+            var roleManagerMock = SetupRoleManagerMock();
 
             _permissionAppService = new PermissionAppService(userManagerMock.Object, roleManagerMock.Object);
         }
@@ -81,7 +80,7 @@ namespace BackOfficeBase.Tests.Web.Core.Authorization
             Assert.False(authorizationHandlerContext.HasSucceeded);
         }
 
-        private Mock<UserManager<User>> SetupMockUserManager()
+        private Mock<UserManager<User>> SetupUserManagerMock()
         {
             var userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, null, null, null, null, null,
                 null, null, null);
@@ -94,7 +93,7 @@ namespace BackOfficeBase.Tests.Web.Core.Authorization
             return userManagerMock;
         }
 
-        private Mock<RoleManager<Role>> SetupMockRoleManager()
+        private Mock<RoleManager<Role>> SetupRoleManagerMock()
         {
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, null, null, null, null);
             roleManagerMock.Setup(x => x.GetClaimsAsync(_testRole)).ReturnsAsync(

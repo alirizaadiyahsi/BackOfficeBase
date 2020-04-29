@@ -8,7 +8,7 @@
         public static readonly string EmailIsNotFound = "Email is not found!";
         public static readonly string PasswordsAreNotMatched = "Passwords are not matched!";
         public static readonly string UserIsNotFound = "User is not found!";
-
         public static readonly string EntityNotFound = "Entity is not found!";
+        public static readonly string RoleNameAlreadyExist = "Role name already exist!";
     }
 }

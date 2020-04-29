@@ -8,6 +8,7 @@ using BackOfficeBase.Application.Shared.Services;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackOfficeBase.Application.Authorization.Roles
 {
@@ -49,6 +50,14 @@ namespace BackOfficeBase.Application.Authorization.Roles
 
             AddPermissionsToRole(input.SelectedPermissions, roleOutput.Id);
             SetSelectedNavigationProperties(input.SelectedPermissions, roleOutput);
+
+            return roleOutput;
+        }
+
+        public async Task<RoleOutput> FindByNameAsync(string name)
+        {
+            var roleOutput = _mapper.Map<RoleOutput>(await _dbContext.Roles.FirstAsync(x => x.Name == name));
+            roleOutput.AllPermissions = AppPermissions.GetAll();
 
             return roleOutput;
         }
