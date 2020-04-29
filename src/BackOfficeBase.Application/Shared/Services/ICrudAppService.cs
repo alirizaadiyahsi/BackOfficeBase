@@ -9,8 +9,8 @@ namespace BackOfficeBase.Application.Shared.Services
     {
         Task<TGetOutputDto> GetAsync(Guid id);
         Task<IPagedListResult<TGetListOutput>> GetListAsync(PagedListInput input);
-        Task<AppServiceResult<TGetOutputDto>> CreateAsync(TCreateInput input);
-        AppServiceResult<TGetOutputDto> Update(TUpdateInput input);
-        Task<AppServiceResult<TGetOutputDto>> DeleteAsync(Guid id);
+        Task<TGetOutputDto> CreateAsync(TCreateInput input);
+        TGetOutputDto Update(TUpdateInput input);
+        Task<TGetOutputDto> DeleteAsync(Guid id);
     }
 }

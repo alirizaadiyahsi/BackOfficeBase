@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Application.Shared.Services;
 using BackOfficeBase.DataAccess;
-using BackOfficeBase.Domain.AppConstants;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 
@@ -33,52 +31,44 @@ namespace BackOfficeBase.Application.Authorization.Users
             return userOutput;
         }
 
-        public override async Task<AppServiceResult<UserOutput>> CreateAsync(CreateUserInput input)
+        public override async Task<UserOutput> CreateAsync(CreateUserInput input)
         {
-            var appServiceResult = CheckIfUserExist(input.UserName, input.Email);
-            if (!appServiceResult.Success) return appServiceResult;
+            var userOutput = await base.CreateAsync(input);
 
-            appServiceResult = await base.CreateAsync(input);
-            if (!appServiceResult.Success) return appServiceResult;
+            AddRolesToUser(input.SelectedRoleIds, userOutput.Id);
+            AddPermissionsToUser(input.SelectedPermissions, userOutput.Id);
 
-            AddRolesToUser(input.SelectedRoleIds, appServiceResult.Data.Id);
-            AddPermissionsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
+            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, userOutput);
 
-            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, appServiceResult);
-
-            return appServiceResult;
+            return userOutput;
         }
 
-        public override AppServiceResult<UserOutput> Update(UpdateUserInput input)
+        public override UserOutput Update(UpdateUserInput input)
         {
-            var appServiceResult = CheckIfUserExist(input.UserName, input.Email);
-            if (!appServiceResult.Success) return appServiceResult;
-
-            appServiceResult = base.Update(input);
-            if (!appServiceResult.Success) return appServiceResult;
+            var userOutput  = base.Update(input);
 
             _dbContext.UserRoles.RemoveRange(_dbContext.UserRoles.Where(x => x.UserId == input.Id));
             _dbContext.UserClaims.RemoveRange(_dbContext.UserClaims.Where(x => x.UserId == input.Id && x.ClaimType == CustomClaimTypes.Permission));
             _dbContext.SaveChanges();
 
-            AddRolesToUser(input.SelectedRoleIds, appServiceResult.Data.Id);
-            AddPermissionsToUser(input.SelectedPermissions, appServiceResult.Data.Id);
+            AddRolesToUser(input.SelectedRoleIds, userOutput.Id);
+            AddPermissionsToUser(input.SelectedPermissions, userOutput.Id);
 
-            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, appServiceResult);
+            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, userOutput);
 
-            return appServiceResult;
+            return userOutput;
         }
 
-        private static void SetSelectedNavigationProperties(IEnumerable<Guid> selectedRoleIds, IEnumerable<string> selectedPermissions, AppServiceResult<UserOutput> appServiceResult)
+        private static void SetSelectedNavigationProperties(IEnumerable<Guid> selectedRoleIds, IEnumerable<string> selectedPermissions, UserOutput userOutput)
         {
-            appServiceResult.Data.SelectedRoleIds = selectedRoleIds;
-            appServiceResult.Data.SelectedPermissions = selectedPermissions;
+            userOutput.SelectedRoleIds = selectedRoleIds;
+            userOutput.SelectedPermissions = selectedPermissions;
         }
 
         private void AddPermissionsToUser(IEnumerable<string> selectedPermissions, Guid userId)
         {
             foreach (var permission in selectedPermissions)
-            { 
+            {
                 _dbContext.UserClaims.Add(new UserClaim
                 {
                     UserId = userId,
@@ -91,36 +81,13 @@ namespace BackOfficeBase.Application.Authorization.Users
         private void AddRolesToUser(IEnumerable<Guid> selectedRoleIds, Guid userId)
         {
             foreach (var selectedRoleId in selectedRoleIds)
-            { 
+            {
                 _dbContext.UserRoles.Add(new UserRole
                 {
                     UserId = userId,
                     RoleId = selectedRoleId
                 });
             }
-        }
-
-        private AppServiceResult<UserOutput> CheckIfUserExist(string userName, string email)
-        {
-            var isUserExist = _dbContext.Users.Any(x => x.UserName == userName);
-            if (isUserExist)
-            {
-                return AppServiceResult<UserOutput>.Failed(new List<string>
-                {
-                    new string(UserFriendlyMessages.UserNameAlreadyExist)
-                });
-            }
-
-            isUserExist = _dbContext.Users.Any(x => x.Email == email);
-            if (isUserExist)
-            {
-                return AppServiceResult<UserOutput>.Failed(new List<string>
-                {
-                    new string(UserFriendlyMessages.EmailAlreadyExist)
-                });
-            }
-
-            return AppServiceResult<UserOutput>.Succeed(null);
         }
     }
 }

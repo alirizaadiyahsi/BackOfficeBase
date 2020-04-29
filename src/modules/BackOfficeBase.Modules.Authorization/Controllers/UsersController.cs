@@ -44,39 +44,29 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         [Authorize(AppPermissions.Users.Create)]
         public async Task<ActionResult<UserOutput>> PostUsers(CreateUserInput input)
         {
-            var appServiceResult = await _userAppService.CreateAsync(input);
-            if (!appServiceResult.Success)
-            {
-                return BadRequest(appServiceResult.Errors);
-            }
+            // TODO: Check if user exist and write test case for this
+            var userOutput = await _userAppService.CreateAsync(input);
 
-            return Ok(appServiceResult.Data);
+            return Ok(userOutput);
         }
 
         [HttpPut]
         [Authorize(AppPermissions.Users.Update)]
         public ActionResult<UserOutput> PutUsers(UpdateUserInput input)
         {
-            var appServiceResult = _userAppService.Update(input);
-            if (!appServiceResult.Success)
-            {
-                return BadRequest(appServiceResult.Errors);
-            }
+            // TODO: Check if user exist and write test case for this
+            var userOutput = _userAppService.Update(input);
 
-            return Ok(appServiceResult.Data);
+            return Ok(userOutput);
         }
 
         [HttpDelete]
         [Authorize(AppPermissions.Users.Delete)]
         public async Task<ActionResult<UserOutput>> DeleteUsers(Guid id)
         {
-            var appServiceResult = await _userAppService.DeleteAsync(id);
-            if (!appServiceResult.Success)
-            {
-                return BadRequest(appServiceResult.Errors);
-            }
+            var userOutput = await _userAppService.DeleteAsync(id);
 
-            return Ok(appServiceResult.Data);
+            return Ok(userOutput);
         }
     }
 }

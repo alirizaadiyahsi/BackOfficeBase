@@ -65,11 +65,11 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var userOutput = await _userAppService.CreateAsync(createUserInput);
             await _dbContext.SaveChangesAsync();
 
-            var insertedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+            var insertedUser = await GetTestDbContext().Users.FindAsync(userOutput.Id);
 
-            Assert.NotNull(userOutput.Data);
-            Assert.True(userOutput.Data.SelectedRoleIds != null && userOutput.Data.SelectedRoleIds.Any(x => x == testRole.Id));
-            Assert.True(userOutput.Data.SelectedPermissions!= null && userOutput.Data.SelectedPermissions.Any(x => x == AppPermissions.Users.Read));
+            Assert.NotNull(userOutput);
+            Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Any(x => x == testRole.Id));
+            Assert.True(userOutput.SelectedPermissions!= null && userOutput.SelectedPermissions.Any(x => x == AppPermissions.Users.Read));
 
             Assert.NotNull(insertedUser);
             Assert.True(insertedUser.UserRoles != null && insertedUser.UserRoles.Any(x => x.RoleId == testRole.Id));
@@ -100,11 +100,11 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var userOutput = _userAppService.Update(updateUserInput);
             _dbContext.SaveChanges();
 
-            var updatedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+            var updatedUser = await GetTestDbContext().Users.FindAsync(userOutput.Id);
 
-            Assert.NotNull(userOutput.Data);
-            Assert.True(userOutput.Data.SelectedRoleIds != null && userOutput.Data.SelectedRoleIds.Any(x => x == roleToGrant.Id));
-            Assert.True(userOutput.Data.SelectedPermissions != null && userOutput.Data.SelectedPermissions.Any(x => x == AppPermissions.Users.Create));
+            Assert.NotNull(userOutput);
+            Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Any(x => x == roleToGrant.Id));
+            Assert.True(userOutput.SelectedPermissions != null && userOutput.SelectedPermissions.Any(x => x == AppPermissions.Users.Create));
 
             Assert.NotNull(updatedUser);
             Assert.True(updatedUser.UserRoles != null && updatedUser.UserRoles.Any(x => x.RoleId == roleToGrant.Id));
@@ -123,7 +123,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var userOutput = await _userAppService.DeleteAsync(testUser.Id);
             await _dbContext.SaveChangesAsync();
 
-            var deletedUser = await GetTestDbContext().Users.FindAsync(userOutput.Data.Id);
+            var deletedUser = await GetTestDbContext().Users.FindAsync(userOutput.Id);
 
             Assert.Null(deletedUser);
         }

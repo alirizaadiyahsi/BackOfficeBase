@@ -83,7 +83,7 @@ namespace BackOfficeBase.Tests.Application.Shared
         [Fact]
         public async Task Should_Create_Async()
         {
-            var appServiceResult = await _productCrudAppService.CreateAsync(new CreateProductInput
+            var userOutput = await _productCrudAppService.CreateAsync(new CreateProductInput
             {
                 Code = "create_async_product_code",
                 Name = "Create Async Product Name"
@@ -91,12 +91,11 @@ namespace BackOfficeBase.Tests.Application.Shared
             await DbContextTest.SaveChangesAsync();
 
             var anotherScopeDbContext = GetTestDbContext();
-            var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(appServiceResult.Data.Id);
+            var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(userOutput.Id);
 
-            Assert.True(appServiceResult.Success);
-            Assert.NotNull(appServiceResult.Data);
+            Assert.NotNull(userOutput);
             Assert.NotNull(insertedProductDto);
-            Assert.Equal(appServiceResult.Data.Code, insertedProductDto.Code);
+            Assert.Equal(userOutput.Code, insertedProductDto.Code);
         }
 
         [Fact]
@@ -110,7 +109,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await dbContextForAddEntity.SaveChangesAsync();
 
-            var appServiceResult = _productCrudAppService.Update(new UpdateProductInput
+            var userOutput = _productCrudAppService.Update(new UpdateProductInput
             {
                 Id = productDto.Entity.Id,
                 Code = "update_product_code_updated",
@@ -121,7 +120,7 @@ namespace BackOfficeBase.Tests.Application.Shared
             var dbContextForGetEntity = GetTestDbContext();
             var updatedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
-            Assert.True(appServiceResult.Success);
+            Assert.NotNull(userOutput);
             Assert.NotNull(productDto);
             Assert.NotNull(updatedProductDto);
             Assert.Equal("update_product_code_updated", updatedProductDto.Code);
@@ -139,13 +138,13 @@ namespace BackOfficeBase.Tests.Application.Shared
             });
             await dbContextForAddEntity.SaveChangesAsync();
 
-            var appServiceResult = await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
+            var userOutput = await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
             await DbContextTest.SaveChangesAsync();
 
             var dbContextForGetEntity = GetTestDbContext();
             var deletedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
-            Assert.True(appServiceResult.Success);
+            Assert.NotNull(userOutput);
             Assert.Null(deletedProductDto);
         }
 

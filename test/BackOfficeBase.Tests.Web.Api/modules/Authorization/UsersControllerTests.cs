@@ -69,15 +69,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         public async Task Should_Create_User_Async()
         {
             var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.CreateAsync(It.IsAny<CreateUserInput>())).ReturnsAsync(new AppServiceResult<UserOutput>
+            mockUserAppService.Setup(x => x.CreateAsync(It.IsAny<CreateUserInput>())).ReturnsAsync(new UserOutput
             {
-                Success = true,
-                Data = new UserOutput
-                {
-                    UserName = "test_user",
-                    Email = "test_user@mail.com",
-                    Id = Guid.NewGuid()
-                }
+                UserName = "test_user",
+                Email = "test_user@mail.com",
+                Id = Guid.NewGuid()
             });
 
             var usersController = new UsersController(mockUserAppService.Object);
@@ -94,15 +90,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         public void Should_Update_User()
         {
             var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.Update(It.IsAny<UpdateUserInput>())).Returns(new AppServiceResult<UserOutput>
+            mockUserAppService.Setup(x => x.Update(It.IsAny<UpdateUserInput>())).Returns(new UserOutput
             {
-                Success = true,
-                Data = new UserOutput
-                {
-                    UserName = "test_user",
-                    Email = "test_user@mail.com",
-                    Id = Guid.NewGuid()
-                }
+                UserName = "test_user",
+                Email = "test_user@mail.com",
+                Id = Guid.NewGuid()
             });
 
             var usersController = new UsersController(mockUserAppService.Object);
@@ -119,15 +111,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
         public async Task Should_Delete_User_Async()
         {
             var mockUserAppService = new Mock<IUserAppService>();
-            mockUserAppService.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(new AppServiceResult<UserOutput>
+            mockUserAppService.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(new UserOutput
             {
-                Success = true,
-                Data = new UserOutput
-                {
-                    UserName = "test_user",
-                    Email = "test_user@mail.com",
-                    Id = Guid.NewGuid()
-                }
+                UserName = "test_user",
+                Email = "test_user@mail.com",
+                Id = Guid.NewGuid()
             });
 
             var usersController = new UsersController(mockUserAppService.Object);
