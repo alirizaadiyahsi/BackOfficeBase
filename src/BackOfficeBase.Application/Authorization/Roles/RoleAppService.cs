@@ -6,6 +6,7 @@ using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Application.Authorization.Roles
 {
+    // TODO: Write test
     public class RoleAppService :CrudAppService<Role, RoleOutput, RoleListOutput, CreateRoleInput, UpdateRoleInput>, IRoleAppService
     {
         private readonly BackOfficeBaseDbContext _dbContext;
