@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BackOfficeBase.Application.Authentication
 {
+    // TODO: This app service should return DTO instead of entities
+    // TODO: Also we can create a shared app service that named AuthorizationAppService which is getting user and role manager as params and can be placed in shared folder
     public class AuthenticationAppService : IAuthenticationAppService
     {
         private readonly UserManager<User> _userManager;
