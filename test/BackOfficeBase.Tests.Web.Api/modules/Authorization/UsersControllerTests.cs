@@ -10,6 +10,7 @@ using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Domain.AppConstants;
 using BackOfficeBase.Modules.Authorization.Controllers;
 using BackOfficeBase.Utilities.Collections;
+using BackOfficeBase.Web.Core;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;

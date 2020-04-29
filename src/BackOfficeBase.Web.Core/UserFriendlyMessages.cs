@@ -1,4 +1,4 @@
-﻿namespace BackOfficeBase.Domain.AppConstants
+﻿namespace BackOfficeBase.Web.Core
 {
     public class UserFriendlyMessages
     {

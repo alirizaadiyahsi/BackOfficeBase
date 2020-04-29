@@ -7,6 +7,7 @@ using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Domain.AppConstants;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Utilities.Collections;
+using BackOfficeBase.Web.Core;
 using BackOfficeBase.Web.Core.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

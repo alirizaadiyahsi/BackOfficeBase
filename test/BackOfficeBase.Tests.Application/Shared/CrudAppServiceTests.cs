@@ -51,7 +51,7 @@ namespace BackOfficeBase.Tests.Application.Shared
                 },
                 Sorts = new List<string>
                 {
-                    "Name asc",
+                    "Name",
                     "Code desc"
                 }
             };
