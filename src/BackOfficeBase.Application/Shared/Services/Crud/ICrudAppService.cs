@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Utilities.Collections;
 
-namespace BackOfficeBase.Application.Shared.Services
+namespace BackOfficeBase.Application.Shared.Services.Crud
 {
     public interface ICrudAppService<TEntity, TGetOutputDto, TGetListOutput, in TCreateInput, in TUpdateInput>
     {

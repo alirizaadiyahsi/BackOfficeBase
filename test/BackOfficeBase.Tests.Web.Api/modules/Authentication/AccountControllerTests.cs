@@ -2,9 +2,9 @@
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BackOfficeBase.Application.Authentication;
-using BackOfficeBase.Application.Authentication.Dto;
 using BackOfficeBase.Application.Email;
+using BackOfficeBase.Application.Shared.Services.Authorization;
+using BackOfficeBase.Application.Shared.Services.Authorization.Dto;
 using BackOfficeBase.Domain.AppConstants.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Controllers;

@@ -2,9 +2,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using BackOfficeBase.Application.Authentication;
-using BackOfficeBase.Application.Authentication.Dto;
 using BackOfficeBase.Application.Email;
+using BackOfficeBase.Application.Shared.Services.Authorization;
+using BackOfficeBase.Application.Shared.Services.Authorization.Dto;
 using BackOfficeBase.Domain.AppConstants;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Helpers;

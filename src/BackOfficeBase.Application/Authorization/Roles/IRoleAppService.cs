@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using BackOfficeBase.Application.Authorization.Roles.Dto;
-using BackOfficeBase.Application.Shared.Services;
+﻿using BackOfficeBase.Application.Authorization.Roles.Dto;
+using BackOfficeBase.Application.Shared.Services.Crud;
 using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Application.Authorization.Roles
 {
     public interface IRoleAppService: ICrudAppService<Role, RoleOutput, RoleListOutput, CreateRoleInput, UpdateRoleInput>
     {
-        Task<RoleOutput> FindByNameAsync(string name);
     }
 }

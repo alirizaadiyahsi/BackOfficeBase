@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Roles;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Shared.Dto;
+using BackOfficeBase.Application.Shared.Services.Authorization;
 using BackOfficeBase.Modules.Authorization.Controllers;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Web.Core;
@@ -27,7 +28,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await rolesController.GetRoles(Guid.NewGuid());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -54,7 +55,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 TotalCount = 10
             });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await rolesController.GetRoles(new PagedListInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -75,7 +76,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await rolesController.PostRoles(new CreateRoleInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -94,14 +95,16 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Name = "test_role",
                 Id = Guid.NewGuid()
             });
-            roleAppServiceMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new RoleOutput
                 {
                     Id = Guid.NewGuid(),
                     Name = "test_role_" + Guid.NewGuid()
                 });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, authenticationAppServiceMock.Object);
             var actionResult = await rolesController.PostRoles(new CreateRoleInput());
 
             var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);
@@ -121,7 +124,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await rolesController.PutRoles(new UpdateRoleInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -140,14 +143,16 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Name = "test_role",
                 Id = Guid.NewGuid()
             });
-            roleAppServiceMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
+            authenticationAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new RoleOutput
                 {
                     Id = Guid.NewGuid(),
                     Name = "test_role_" + Guid.NewGuid()
                 });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, authenticationAppServiceMock.Object);
             var actionResult = await rolesController.PutRoles(new UpdateRoleInput());
 
             var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);
@@ -167,7 +172,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await rolesController.DeleteRoles(Guid.NewGuid());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);

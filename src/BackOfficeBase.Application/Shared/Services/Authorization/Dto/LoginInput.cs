@@ -1,4 +1,4 @@
-﻿namespace BackOfficeBase.Application.Authentication.Dto
+﻿namespace BackOfficeBase.Application.Shared.Services.Authorization.Dto
 {
     public class LoginInput
     {

@@ -9,7 +9,7 @@ using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.Collections.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackOfficeBase.Application.Shared.Services
+namespace BackOfficeBase.Application.Shared.Services.Crud
 {
     public abstract class CrudAppService<TEntity, TGetOutputDto, TGetListOutput, TCreateInput, TUpdateInput>
         : ICrudAppService<TEntity, TGetOutputDto, TGetListOutput, TCreateInput, TUpdateInput>

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using BackOfficeBase.Application.Authentication;
+using BackOfficeBase.Application.Shared.Services.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Modules.Authentication.Helpers

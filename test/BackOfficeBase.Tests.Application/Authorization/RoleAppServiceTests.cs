@@ -44,26 +44,6 @@ namespace BackOfficeBase.Tests.Application.Authorization
         }
 
         [Fact]
-        public async Task Should_Find_By_Name_Async()
-        {
-            var testRole = GetTestRole("test_role_for_role_app_service_find_by_name");
-
-            await _dbContext.Roles.AddAsync(testRole);
-            await _dbContext.RoleClaims.AddAsync(new RoleClaim
-            {
-                RoleId = testRole.Id,
-                ClaimType = CustomClaimTypes.Permission,
-                ClaimValue = AppPermissions.Roles.Read
-            });
-            await _dbContext.SaveChangesAsync();
-
-            var roleOutput = await _roleAppService.FindByNameAsync(testRole.Name);
-
-            Assert.NotNull(roleOutput);
-            Assert.True(roleOutput.SelectedPermissions != null && roleOutput.SelectedPermissions.Any());
-        }
-
-        [Fact]
         public async Task Should_Create_Async()
         {
             var testRole = GetTestRole("test_role_for_role_app_service_create");

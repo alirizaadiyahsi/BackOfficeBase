@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BackOfficeBase.Application.Shared.Services;
+using BackOfficeBase.Application.Shared.Services.Crud;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Tests.Application.Shared.Products.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;

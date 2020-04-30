@@ -1,18 +1,23 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
+using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace BackOfficeBase.Application.Authentication
+namespace BackOfficeBase.Application.Shared.Services.Authorization
 {
     // TODO: This app service should return DTO instead of entities
-    // TODO: Also we can create a shared app service that named AuthorizationAppService which is getting user and role manager as params and can be placed in shared folder
     public class AuthorizationAppService : IAuthorizationAppService
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly IMapper _mapper;
 
-        public AuthorizationAppService(UserManager<User> userManager)
+        public AuthorizationAppService(UserManager<User> userManager, RoleManager<Role> roleManager, IMapper mapper)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
+            _mapper = mapper;
         }
 
         public async Task<bool> CheckPasswordAsync(User user, string password)
@@ -64,6 +69,11 @@ namespace BackOfficeBase.Application.Authentication
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
         {
             return await _userManager.ResetPasswordAsync(user, token, password);
+        }
+
+        public async Task<RoleOutput> FindRoleByNameAsync(string name)
+        {
+            return _mapper.Map<RoleOutput>(await _roleManager.FindByNameAsync(name));
         }
     }
 }

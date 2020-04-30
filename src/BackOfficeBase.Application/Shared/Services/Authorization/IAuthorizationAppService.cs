@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace BackOfficeBase.Application.Authentication
+namespace BackOfficeBase.Application.Shared.Services.Authorization
 {
     public interface IAuthorizationAppService
     {
@@ -16,5 +17,6 @@ namespace BackOfficeBase.Application.Authentication
         Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword);
         Task<string> GeneratePasswordResetTokenAsync(User user);
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
+        Task<RoleOutput> FindRoleByNameAsync(string name);
     }
 }
