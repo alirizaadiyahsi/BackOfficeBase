@@ -29,7 +29,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Login_Async()
         {
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
             authenticationAppServiceMock.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
 
@@ -50,7 +50,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Register_Async()
         {
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
             authenticationAppServiceMock.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync((User)null);
             authenticationAppServiceMock.Setup(x => x.CreateUserAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
@@ -74,7 +74,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Confirm_Email_Async()
         {
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
             authenticationAppServiceMock.Setup(x => x.ConfirmEmailAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
@@ -92,7 +92,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Change_Password_Async()
         {
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByUserNameAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
             authenticationAppServiceMock.Setup(x => x.ChangePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
@@ -126,7 +126,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Forgot_Password_Async()
         {
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
             authenticationAppServiceMock.Setup(x => x.GeneratePasswordResetTokenAsync(It.IsAny<User>())).ReturnsAsync(Guid.NewGuid().ToString);
 
@@ -146,7 +146,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authentication
         [Fact]
         public async Task Should_Reset_Password_Async()
         {
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByUserNameOrEmailAsync(It.IsAny<string>())).ReturnsAsync(_testUser);
             authenticationAppServiceMock.Setup(x => x.ResetPasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 

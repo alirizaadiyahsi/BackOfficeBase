@@ -12,7 +12,7 @@ namespace BackOfficeBase.Modules.Authentication.Helpers
 {
     public class IdentityHelper
     {
-        public static async Task<ClaimsIdentity> CreateClaimsIdentityAsync(IAuthenticationAppService authenticationAppService, string userNameOrEmail, string password)
+        public static async Task<ClaimsIdentity> CreateClaimsIdentityAsync(IAuthorizationAppService authenticationAppService, string userNameOrEmail, string password)
         {
             if (string.IsNullOrEmpty(userNameOrEmail) || string.IsNullOrEmpty(password))
             {

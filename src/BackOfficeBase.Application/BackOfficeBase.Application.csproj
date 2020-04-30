@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="OrganizationUnits\Dto\" />
+    <Folder Include="Shared\Services\CrudAppServices\" />
   </ItemGroup>
 
   <ItemGroup>

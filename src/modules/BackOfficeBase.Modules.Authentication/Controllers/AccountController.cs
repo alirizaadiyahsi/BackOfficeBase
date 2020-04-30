@@ -20,13 +20,13 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        private readonly IAuthenticationAppService _authenticationAppService;
+        private readonly IAuthorizationAppService _authenticationAppService;
         private readonly JwtTokenConfiguration _jwtTokenConfiguration;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
 
         public AccountController(
-            IAuthenticationAppService authenticationAppService,
+            IAuthorizationAppService authenticationAppService,
             IOptions<JwtTokenConfiguration> jwtTokenConfiguration,
             IConfiguration configuration,
             IEmailSender emailSender)

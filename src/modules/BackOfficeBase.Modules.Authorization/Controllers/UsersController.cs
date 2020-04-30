@@ -16,9 +16,9 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
     public class UsersController : ApiControllerBase
     {
         private readonly IUserAppService _userAppService;
-        private readonly IAuthenticationAppService _authenticationAppService;
+        private readonly IAuthorizationAppService _authenticationAppService;
 
-        public UsersController(IUserAppService userAppService, IAuthenticationAppService authenticationAppService)
+        public UsersController(IUserAppService userAppService, IAuthorizationAppService authenticationAppService)
         {
             _userAppService = userAppService;
             _authenticationAppService = authenticationAppService;

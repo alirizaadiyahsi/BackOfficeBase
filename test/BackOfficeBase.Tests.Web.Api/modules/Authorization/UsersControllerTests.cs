@@ -29,7 +29,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await usersController.GetUsers(Guid.NewGuid());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -56,7 +56,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 TotalCount = 10
             });
 
-            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await usersController.GetUsers(new PagedListInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -78,7 +78,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await usersController.PostUsers(new CreateUserInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -99,7 +99,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
 
@@ -124,7 +124,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await usersController.PutUsers(new UpdateUserInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -145,7 +145,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var authenticationAppServiceMock = new Mock<IAuthenticationAppService>();
+            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
             authenticationAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
 
@@ -170,7 +170,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthenticationAppService>().Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IAuthorizationAppService>().Object);
             var actionResult = await usersController.DeleteUsers(Guid.NewGuid());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);

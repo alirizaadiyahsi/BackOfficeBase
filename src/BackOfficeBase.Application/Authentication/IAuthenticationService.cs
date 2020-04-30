@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BackOfficeBase.Application.Authentication
 {
-    public interface IAuthenticationAppService
+    public interface IAuthorizationAppService
     {
         Task<bool> CheckPasswordAsync(User user, string password);
         Task<User> FindUserByUserNameOrEmailAsync(string userNameOrEmail);
