@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.AspNetCore.Identity;
 
@@ -73,7 +74,10 @@ namespace BackOfficeBase.Application.Shared.Services.Authorization
 
         public async Task<RoleOutput> FindRoleByNameAsync(string name)
         {
-            return _mapper.Map<RoleOutput>(await _roleManager.FindByNameAsync(name));
+            var roleOutput = _mapper.Map<RoleOutput>(await _roleManager.FindByNameAsync(name));
+            roleOutput.AllPermissions = AppPermissions.GetAll();
+
+            return roleOutput;
         }
     }
 }
