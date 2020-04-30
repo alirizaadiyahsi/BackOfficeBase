@@ -1,6 +1,8 @@
 using System;
 using System.Globalization;
 using System.Security.Claims;
+using AutoMapper;
+using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Tests.Shared.DataAccess;
 using Microsoft.AspNetCore.Hosting;
@@ -60,7 +62,7 @@ namespace BackOfficeBase.Tests.Shared
             testRole.UserRoles.Add(testUserRole);
         }
 
-        public static Role GetTestRole(string roleName = "TestRoleName")
+        public Role GetTestRole(string roleName = "TestRoleName")
         {
             var testRole = new Role
             {
@@ -70,7 +72,7 @@ namespace BackOfficeBase.Tests.Shared
             return testRole;
         }
 
-        public static User GetTestUser(string userName = "TestUserName", string email = "testuser@mail.com")
+        public User GetTestUser(string userName = "TestUserName", string email = "testuser@mail.com")
         {
             var testUser = new User
             {
@@ -88,6 +90,13 @@ namespace BackOfficeBase.Tests.Shared
             };
 
             return testUser;
+        }
+
+        public UserOutput GetTestUserOutput(string userName = "TestUserName", string email = "testuser@mail.com")
+        {
+            var mapper = GetNewHostServiceProvider().GetRequiredService<IMapper>();
+
+            return mapper.Map<UserOutput>(GetTestUser(userName, email));
         }
     }
 }

@@ -17,11 +17,13 @@ namespace BackOfficeBase.Tests.Web.Core.Authorization
         private readonly IPermissionAppService _permissionAppService;
         private static readonly string TestPermissionClaimForUser = "TestPermissionClaimForUser";
         private static readonly string TestPermissionClaimForRole = "TestPermissionClaimForRoe";
-        private readonly User _testUser = GetTestUser();
-        private readonly Role _testRole = GetTestRole();
+        private readonly User _testUser;
+        private readonly Role _testRole;
 
         public PermissionHandlerTest()
         {
+            _testRole = GetTestRole();
+            _testUser = GetTestUser();
             AddUserToRole(_testUser, _testRole);
 
             var userManagerMock = SetupUserManagerMock();

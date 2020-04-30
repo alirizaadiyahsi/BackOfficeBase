@@ -1,13 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
+using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace BackOfficeBase.Application.Shared.Services.Authorization
 {
-    // TODO: This app service should return DTO instead of entities
     public class AuthorizationAppService : IAuthorizationAppService
     {
         private readonly UserManager<User> _userManager;
@@ -21,54 +22,74 @@ namespace BackOfficeBase.Application.Shared.Services.Authorization
             _mapper = mapper;
         }
 
-        public async Task<bool> CheckPasswordAsync(User user, string password)
+        public async Task<bool> CheckPasswordAsync(UserOutput userOutput, string password)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
-        public async Task<User> FindUserByUserNameOrEmailAsync(string userNameOrEmail)
+        public async Task<UserOutput> FindUserByUserNameOrEmailAsync(string userNameOrEmail)
         {
-            return await _userManager.FindByNameAsync(userNameOrEmail) ??
-                   await _userManager.FindByEmailAsync(userNameOrEmail);
+            var user = await _userManager.FindByNameAsync(userNameOrEmail) ??
+                       await _userManager.FindByEmailAsync(userNameOrEmail);
+
+            return MapUserToUserOutput(user);
         }
 
-        public async Task<User> FindUserByEmailAsync(string email)
+        public async Task<UserOutput> FindUserByEmailAsync(string email)
         {
-            return await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            return MapUserToUserOutput(user);
         }
 
-        public async Task<User> FindUserByUserNameAsync(string userName)
+        public async Task<UserOutput> FindUserByUserNameAsync(string userName)
         {
-            return await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
+
+            return MapUserToUserOutput(user);
         }
 
-        public async Task<IdentityResult> CreateUserAsync(User user, string password)
+        public async Task<IdentityResult> CreateUserAsync(UserOutput userOutput, string password)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.CreateAsync(user, password);
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(UserOutput userOutput)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-        public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
+        public async Task<IdentityResult> ConfirmEmailAsync(UserOutput userOutput, string token)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.ConfirmEmailAsync(user, token);
         }
 
-        public async Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+        public async Task<IdentityResult> ChangePasswordAsync(UserOutput userOutput, string currentPassword, string newPassword)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
         }
 
-        public async Task<string> GeneratePasswordResetTokenAsync(User user)
+        public async Task<string> GeneratePasswordResetTokenAsync(UserOutput userOutput)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
-        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
+        public async Task<IdentityResult> ResetPasswordAsync(UserOutput userOutput, string token, string password)
         {
+            var user = _mapper.Map<User>(userOutput);
+
             return await _userManager.ResetPasswordAsync(user, token, password);
         }
 
@@ -78,6 +99,15 @@ namespace BackOfficeBase.Application.Shared.Services.Authorization
             roleOutput.AllPermissions = AppPermissions.GetAll();
 
             return roleOutput;
+        }
+
+        private UserOutput MapUserToUserOutput(User user)
+        {
+            var userOutput = _mapper.Map<UserOutput>(user);
+            userOutput.AllRoles = _mapper.Map<IEnumerable<RoleOutput>>(_roleManager.Roles);
+            userOutput.AllPermissions = AppPermissions.GetAll();
+
+            return userOutput;
         }
     }
 }
