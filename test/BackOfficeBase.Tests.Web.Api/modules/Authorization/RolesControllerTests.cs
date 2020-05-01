@@ -96,15 +96,15 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
-            authenticationAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
+            var authorizationAppServiceMock = new Mock<IAuthorizationAppService>();
+            authorizationAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new RoleOutput
                 {
                     Id = Guid.NewGuid(),
                     Name = "test_role_" + Guid.NewGuid()
                 });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object, authenticationAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, authorizationAppServiceMock.Object);
             var actionResult = await rolesController.PostRoles(new CreateRoleInput());
 
             var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);
@@ -144,15 +144,15 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var authenticationAppServiceMock = new Mock<IAuthorizationAppService>();
-            authenticationAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
+            var authorizationAppServiceMock = new Mock<IAuthorizationAppService>();
+            authorizationAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new RoleOutput
                 {
                     Id = Guid.NewGuid(),
                     Name = "test_role_" + Guid.NewGuid()
                 });
 
-            var rolesController = new RolesController(roleAppServiceMock.Object, authenticationAppServiceMock.Object);
+            var rolesController = new RolesController(roleAppServiceMock.Object, authorizationAppServiceMock.Object);
             var actionResult = await rolesController.PutRoles(new UpdateRoleInput());
 
             var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);

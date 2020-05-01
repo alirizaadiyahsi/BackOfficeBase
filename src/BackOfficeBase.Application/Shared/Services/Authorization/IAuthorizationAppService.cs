@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using Microsoft.AspNetCore.Identity;
@@ -18,5 +19,6 @@ namespace BackOfficeBase.Application.Shared.Services.Authorization
         Task<string> GeneratePasswordResetTokenAsync(UserOutput userOutput);
         Task<IdentityResult> ResetPasswordAsync(UserOutput userOutput, string token, string password);
         Task<RoleOutput> FindRoleByNameAsync(string name);
+        IEnumerable<RoleOutput> GetRolesByUserName(string userName);
     }
 }

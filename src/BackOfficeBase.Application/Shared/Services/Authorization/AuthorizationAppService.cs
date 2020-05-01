@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
@@ -99,6 +100,16 @@ namespace BackOfficeBase.Application.Shared.Services.Authorization
             roleOutput.AllPermissions = AppPermissions.GetAll();
 
             return roleOutput;
+        }
+
+        public IEnumerable<RoleOutput> GetRolesByUserName(string userName)
+        {
+            var roles = _roleManager.Roles
+                .SelectMany(x => x.UserRoles)
+                .Where(x => x.User.UserName == userName)
+                .Select(x => x.Role);
+
+            return _mapper.Map<IEnumerable<RoleOutput>>(roles);
         }
 
         private UserOutput MapUserToUserOutput(User user)
