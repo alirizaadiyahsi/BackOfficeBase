@@ -8,7 +8,6 @@ using BackOfficeBase.Application.Shared.Services.Crud;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace BackOfficeBase.Application.Authorization.Roles
 {
