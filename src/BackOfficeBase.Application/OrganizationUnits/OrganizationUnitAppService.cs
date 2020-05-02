@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using BackOfficeBase.Application.OrganizationUnits.Dto;
 using BackOfficeBase.Application.Shared.Services.Crud;
+using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,21 +13,5 @@ namespace BackOfficeBase.Application.OrganizationUnits
         public OrganizationUnitAppService(DbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
         }
-    }
-
-    public class UpdateOrganizationUnit
-    {
-    }
-
-    public class CreateOrganizationUnit
-    {
-    }
-
-    public class OrganizationUnitListOutput
-    {
-    }
-
-    public class OrganizationUnitOutput
-    {
     }
 }
