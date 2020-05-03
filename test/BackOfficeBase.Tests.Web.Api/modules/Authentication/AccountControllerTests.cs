@@ -7,7 +7,6 @@ using BackOfficeBase.Application.Email;
 using BackOfficeBase.Application.Shared.Services.Authorization;
 using BackOfficeBase.Application.Shared.Services.Authorization.Dto;
 using BackOfficeBase.Domain.AppConstants.Configuration;
-using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Controllers;
 using BackOfficeBase.Web.Core.Configuration;
 using Microsoft.AspNetCore.Http;
