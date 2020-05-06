@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Roles;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
+using BackOfficeBase.Application.Dto;
 using BackOfficeBase.Application.Identity;
-using BackOfficeBase.Application.Shared.Dto;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Web.Core;

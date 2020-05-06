@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
-using BackOfficeBase.Application.Shared.Dto;
+using BackOfficeBase.Application.Dto;
 
 namespace BackOfficeBase.Application.Authorization.Users.Dto
 {

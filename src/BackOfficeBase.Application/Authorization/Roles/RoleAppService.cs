@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
-using BackOfficeBase.Application.Shared;
+using BackOfficeBase.Application.Crud;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;

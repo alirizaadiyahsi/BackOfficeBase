@@ -1,4 +1,4 @@
-﻿using BackOfficeBase.Application.Shared.Dto;
+﻿using BackOfficeBase.Application.Dto;
 
 namespace BackOfficeBase.Tests.Application.Shared.Products.Dto
 {

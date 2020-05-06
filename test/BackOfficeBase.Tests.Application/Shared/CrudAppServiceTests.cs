@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using BackOfficeBase.Application.Shared.Dto;
+using BackOfficeBase.Application.Dto;
 using BackOfficeBase.Tests.Application.Shared.Products;
 using BackOfficeBase.Tests.Application.Shared.Products.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BackOfficeBase.Application.Shared.Dto;
+using BackOfficeBase.Application.Dto;
 using BackOfficeBase.Utilities.Collections;
 
-namespace BackOfficeBase.Application.Shared
+namespace BackOfficeBase.Application.Crud
 {
     public interface ICrudAppService<TEntity, TGetOutputDto, TGetListOutput, in TCreateInput, in TUpdateInput>
     {

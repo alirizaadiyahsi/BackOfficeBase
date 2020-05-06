@@ -1,4 +1,4 @@
-﻿using BackOfficeBase.Application.Shared;
+﻿using BackOfficeBase.Application.Crud;
 using BackOfficeBase.Tests.Application.Shared.Products.Dto;
 using BackOfficeBase.Tests.Shared.DataAccess.Entities;
 

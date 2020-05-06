@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BackOfficeBase.Application.Shared.Dto
+namespace BackOfficeBase.Application.Dto
 {
     public class PagedListInput
     {

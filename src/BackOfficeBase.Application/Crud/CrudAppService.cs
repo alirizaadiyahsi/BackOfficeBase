@@ -4,12 +4,12 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
-using BackOfficeBase.Application.Shared.Dto;
+using BackOfficeBase.Application.Dto;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.Collections.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackOfficeBase.Application.Shared
+namespace BackOfficeBase.Application.Crud
 {
     public abstract class CrudAppService<TEntity, TGetOutputDto, TGetListOutput, TCreateInput, TUpdateInput>
         : ICrudAppService<TEntity, TGetOutputDto, TGetListOutput, TCreateInput, TUpdateInput>

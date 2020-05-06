@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using BackOfficeBase.Application.Crud;
 using BackOfficeBase.Application.OrganizationUnits.Dto;
-using BackOfficeBase.Application.Shared;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
 

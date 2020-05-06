@@ -1,4 +1,4 @@
-﻿using BackOfficeBase.Application.Shared.Dto;
+﻿using BackOfficeBase.Application.Dto;
 
 namespace BackOfficeBase.Application.Authorization.Roles.Dto
 {
