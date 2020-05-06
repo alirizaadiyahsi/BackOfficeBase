@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users;
 using BackOfficeBase.Application.Authorization.Users.Dto;
+using BackOfficeBase.Application.Identity;
 using BackOfficeBase.Application.Shared.Dto;
-using BackOfficeBase.Application.Shared.Services.Authorization;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Web.Core;
@@ -16,12 +16,12 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
     public class UsersController : ApiControllerBase
     {
         private readonly IUserAppService _userAppService;
-        private readonly IAuthorizationAppService _authorizationAppService;
+        private readonly IIdentityAppService _identityAppService;
 
-        public UsersController(IUserAppService userAppService, IAuthorizationAppService authorizationAppService)
+        public UsersController(IUserAppService userAppService, IIdentityAppService identityAppService)
         {
             _userAppService = userAppService;
-            _authorizationAppService = authorizationAppService;
+            _identityAppService = identityAppService;
         }
 
         [HttpGet]
@@ -47,10 +47,10 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         [Authorize(AppPermissions.Users.Create)]
         public async Task<ActionResult<UserOutput>> PostUsers(CreateUserInput input)
         {
-            var user = await _authorizationAppService.FindUserByEmailAsync(input.Email);
+            var user = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
 
-            user = await _authorizationAppService.FindUserByUserNameAsync(input.UserName);
+            user = await _identityAppService.FindUserByUserNameAsync(input.UserName);
             if (user != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
 
             var userOutput = await _userAppService.CreateAsync(input);
@@ -62,10 +62,10 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         [Authorize(AppPermissions.Users.Update)]
         public async Task<ActionResult<UserOutput>> PutUsers(UpdateUserInput input)
         {
-            var user = await _authorizationAppService.FindUserByEmailAsync(input.Email);
+            var user = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
 
-            user = await _authorizationAppService.FindUserByUserNameAsync(input.UserName);
+            user = await _identityAppService.FindUserByUserNameAsync(input.UserName);
             if (user != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
 
             var userOutput = _userAppService.Update(input);

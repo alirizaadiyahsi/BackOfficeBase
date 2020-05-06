@@ -8,15 +8,15 @@ using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace BackOfficeBase.Application.Shared.Services.Authorization
+namespace BackOfficeBase.Application.Identity
 {
-    public class AuthorizationAppService : IAuthorizationAppService
+    public class IdentityAppService : IIdentityAppService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IMapper _mapper;
 
-        public AuthorizationAppService(UserManager<User> userManager, RoleManager<Role> roleManager, IMapper mapper)
+        public IdentityAppService(UserManager<User> userManager, RoleManager<Role> roleManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;

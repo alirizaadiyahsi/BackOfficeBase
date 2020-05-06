@@ -4,9 +4,9 @@ using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using Microsoft.AspNetCore.Identity;
 
-namespace BackOfficeBase.Application.Shared.Services.Authorization
+namespace BackOfficeBase.Application.Identity
 {
-    public interface IAuthorizationAppService
+    public interface IIdentityAppService
     {
         Task<bool> CheckPasswordAsync(UserOutput userOutput, string password);
         Task<UserOutput> FindUserByUserNameOrEmailAsync(string userNameOrEmail);

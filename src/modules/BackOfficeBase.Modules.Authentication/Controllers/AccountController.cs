@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Email;
-using BackOfficeBase.Application.Shared.Services.Authorization;
-using BackOfficeBase.Application.Shared.Services.Authorization.Dto;
+using BackOfficeBase.Application.Identity;
+using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.Modules.Authentication.Helpers;
 using BackOfficeBase.Web.Core;
 using BackOfficeBase.Web.Core.Configuration;
@@ -19,18 +19,18 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        private readonly IAuthorizationAppService _authorizationAppService;
+        private readonly IIdentityAppService _identityAppService;
         private readonly JwtTokenConfiguration _jwtTokenConfiguration;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
 
         public AccountController(
-            IAuthorizationAppService authorizationAppService,
+            IIdentityAppService identityAppService,
             IOptions<JwtTokenConfiguration> jwtTokenConfiguration,
             IConfiguration configuration,
             IEmailSender emailSender)
         {
-            _authorizationAppService = authorizationAppService;
+            _identityAppService = identityAppService;
             _configuration = configuration;
             _emailSender = emailSender;
             _jwtTokenConfiguration = jwtTokenConfiguration.Value;
@@ -39,7 +39,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult<LoginOutput>> Login([FromBody]LoginInput input)
         {
-            var userToVerify = await IdentityHelper.CreateClaimsIdentityAsync(_authorizationAppService, input.UserNameOrEmail, input.Password);
+            var userToVerify = await IdentityHelper.CreateClaimsIdentityAsync(_identityAppService, input.UserNameOrEmail, input.Password);
             if (userToVerify == null)
             {
                 return NotFound(UserFriendlyMessages.UserNameOrPasswordNotFound);
@@ -64,10 +64,10 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult> Register([FromBody]RegisterInput input)
         {
-            var userOutput = await _authorizationAppService.FindUserByEmailAsync(input.Email);
+            var userOutput = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (userOutput != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
 
-            userOutput = await _authorizationAppService.FindUserByUserNameAsync(input.UserName);
+            userOutput = await _identityAppService.FindUserByUserNameAsync(input.UserName);
             if (userOutput != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
 
             var applicationUser = new UserOutput
@@ -76,14 +76,14 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
                 Email = input.Email
             };
 
-            var result = await _authorizationAppService.CreateUserAsync(applicationUser, input.Password);
+            var result = await _identityAppService.CreateUserAsync(applicationUser, input.Password);
 
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
             }
 
-            var confirmationToken = await _authorizationAppService.GenerateEmailConfirmationTokenAsync(applicationUser);
+            var confirmationToken = await _identityAppService.GenerateEmailConfirmationTokenAsync(applicationUser);
             await EmailSenderHelper.SendRegistrationConfirmationMail(_emailSender, _configuration, applicationUser, confirmationToken);
 
             return Ok(new RegisterOutput { ResetToken = confirmationToken });
@@ -92,10 +92,10 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult> ConfirmEmail([FromBody] ConfirmEmailInput input)
         {
-            var userOutput = await _authorizationAppService.FindUserByEmailAsync(input.Email);
+            var userOutput = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (userOutput == null) return NotFound(UserFriendlyMessages.EmailIsNotFound);
 
-            var result = await _authorizationAppService.ConfirmEmailAsync(userOutput, input.Token);
+            var result = await _identityAppService.ConfirmEmailAsync(userOutput, input.Token);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
 
             return Ok();
@@ -110,8 +110,8 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
                 return BadRequest(UserFriendlyMessages.PasswordsAreNotMatched);
             }
 
-            var userOutput = await _authorizationAppService.FindUserByUserNameAsync(User.Identity.Name);
-            var result = await _authorizationAppService.ChangePasswordAsync(userOutput, input.CurrentPassword, input.NewPassword);
+            var userOutput = await _identityAppService.FindUserByUserNameAsync(User.Identity.Name);
+            var result = await _identityAppService.ChangePasswordAsync(userOutput, input.CurrentPassword, input.NewPassword);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
 
             return Ok();
@@ -120,10 +120,10 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult<ForgotPasswordOutput>> ForgotPassword([FromBody] ForgotPasswordInput input)
         {
-            var userOutput = await _authorizationAppService.FindUserByEmailAsync(input.Email);
+            var userOutput = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (userOutput == null) return NotFound(UserFriendlyMessages.UserIsNotFound);
 
-            var resetToken = await _authorizationAppService.GeneratePasswordResetTokenAsync(userOutput);
+            var resetToken = await _identityAppService.GeneratePasswordResetTokenAsync(userOutput);
             await EmailSenderHelper.SendForgotPasswordMail(_emailSender, _configuration, resetToken, userOutput);
 
             return Ok(new ForgotPasswordOutput { ResetToken = resetToken });
@@ -132,10 +132,10 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordInput input)
         {
-            var user = await _authorizationAppService.FindUserByUserNameOrEmailAsync(input.UserNameOrEmail);
+            var user = await _identityAppService.FindUserByUserNameOrEmailAsync(input.UserNameOrEmail);
             if (user == null) return NotFound(UserFriendlyMessages.UserIsNotFound);
 
-            var result = await _authorizationAppService.ResetPasswordAsync(user, input.Token, input.Password);
+            var result = await _identityAppService.ResetPasswordAsync(user, input.Token, input.Password);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
 
             return Ok();

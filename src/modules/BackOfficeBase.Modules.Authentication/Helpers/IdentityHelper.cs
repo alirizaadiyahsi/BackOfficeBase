@@ -5,35 +5,35 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.Application.Shared.Services.Authorization;
+using BackOfficeBase.Application.Identity;
 
 namespace BackOfficeBase.Modules.Authentication.Helpers
 {
     public class IdentityHelper
     {
-        public static async Task<ClaimsIdentity> CreateClaimsIdentityAsync(IAuthorizationAppService authorizationAppService, string userNameOrEmail, string password)
+        public static async Task<ClaimsIdentity> CreateClaimsIdentityAsync(IIdentityAppService identityAppService, string userNameOrEmail, string password)
         {
             if (string.IsNullOrEmpty(userNameOrEmail) || string.IsNullOrEmpty(password))
             {
                 return null;
             }
 
-            var userToVerify = await authorizationAppService.FindUserByUserNameOrEmailAsync(userNameOrEmail);
+            var userToVerify = await identityAppService.FindUserByUserNameOrEmailAsync(userNameOrEmail);
             if (userToVerify == null)
             {
                 return null;
             }
 
-            if (!await authorizationAppService.CheckPasswordAsync(userToVerify, password)) return null;
+            if (!await identityAppService.CheckPasswordAsync(userToVerify, password)) return null;
             var claims = CreateUserClaims(userToVerify);
-            claims = CreateRoleClaims(authorizationAppService, userToVerify.UserName, claims);
+            claims = CreateRoleClaims(identityAppService, userToVerify.UserName, claims);
 
             return new ClaimsIdentity(new ClaimsIdentity(new GenericIdentity(userNameOrEmail, "Token"), claims));
         }
 
-        private static List<Claim> CreateRoleClaims(IAuthorizationAppService authorizationAppService, string userName, List<Claim> claims)
+        private static List<Claim> CreateRoleClaims(IIdentityAppService identityAppService, string userName, List<Claim> claims)
         {
-            var roles = authorizationAppService.GetRolesByUserName(userName);
+            var roles = identityAppService.GetRolesByUserName(userName);
 
             foreach (var role in roles)
             {

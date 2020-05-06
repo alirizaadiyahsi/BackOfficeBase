@@ -1,5 +1,5 @@
 ﻿using BackOfficeBase.Application.OrganizationUnits.Dto;
-using BackOfficeBase.Application.Shared.Services.Crud;
+using BackOfficeBase.Application.Shared;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
 
 namespace BackOfficeBase.Application.OrganizationUnits

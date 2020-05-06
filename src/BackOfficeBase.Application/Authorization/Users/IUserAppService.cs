@@ -1,5 +1,5 @@
 ﻿using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.Application.Shared.Services.Crud;
+using BackOfficeBase.Application.Shared;
 using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Application.Authorization.Users
