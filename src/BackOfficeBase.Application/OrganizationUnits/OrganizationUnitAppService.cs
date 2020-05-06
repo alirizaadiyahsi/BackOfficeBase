@@ -6,11 +6,15 @@ using BackOfficeBase.Domain.Entities.OrganizationUnits;
 
 namespace BackOfficeBase.Application.OrganizationUnits
 {
-    // TODO: Implement app service methods
-    public class OrganizationUnitAppService : CrudAppService<OrganizationUnit, OrganizationUnitOutput, OrganizationUnitListOutput, CreateOrganizationUnit, UpdateOrganizationUnit>, IOrganizationUnitAppService
+    public class OrganizationUnitAppService : CrudAppService<OrganizationUnit, OrganizationUnitOutput, OrganizationUnitListOutput, CreateOrganizationUnitInput, UpdateOrganizationUnitInput>, IOrganizationUnitAppService
     {
         public OrganizationUnitAppService(BackOfficeBaseDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
+            // TODO: Implement following methods
+            // AddUserToOU
+            // RemoveUserFromOU
+            // AddRoleToOU
+            // RemoveRoleFromOU
         }
     }
 }
