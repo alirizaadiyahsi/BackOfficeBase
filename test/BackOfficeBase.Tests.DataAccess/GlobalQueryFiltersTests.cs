@@ -28,7 +28,7 @@ namespace BackOfficeBase.Tests.DataAccess
             DbContextTest.Products.Update(result.Entity);
             await DbContextTest.SaveChangesAsync();
 
-            var dbContextToGetUpdatedEntity = GetTestDbContext();
+            var dbContextToGetUpdatedEntity = GetNewInstanceOfDefaultTestDbContext();
             var updatedEntity = await dbContextToGetUpdatedEntity.Products.FindAsync(result.Entity.Id);
 
             Assert.NotNull(updatedEntity.ModifierUserId);

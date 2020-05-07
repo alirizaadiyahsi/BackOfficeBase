@@ -23,7 +23,7 @@ namespace BackOfficeBase.Tests.Web.Core.ActionFilters
             };
             
             var addedProduct = await DbContextTest.Products.AddAsync(product);
-            var dbContextFromAnotherScope = GetTestDbContext();
+            var dbContextFromAnotherScope = GetNewInstanceOfDefaultTestDbContext();
             var insertedTestRole = await dbContextFromAnotherScope.Products.FindAsync(addedProduct.Entity.Id);
             Assert.Null(insertedTestRole);
 

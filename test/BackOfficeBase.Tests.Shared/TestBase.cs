@@ -8,6 +8,7 @@ using BackOfficeBase.Tests.Shared.DataAccess;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BackOfficeBase.Tests.Shared
@@ -18,10 +19,14 @@ namespace BackOfficeBase.Tests.Shared
 
         public TestBase()
         {
-            DbContextTest = GetTestDbContext();
+            DbContextTest = GetNewInstanceOfDefaultTestDbContext();
         }
 
-        protected TestBackOfficeBaseDbContext GetTestDbContext()
+        /// <summary>
+        /// This method can be used for new scoped (same database) of default dbContext
+        /// </summary>
+        /// <returns>New scoped instance of default dbContext</returns>
+        protected TestBackOfficeBaseDbContext GetNewInstanceOfDefaultTestDbContext()
         {
             var provider = GetNewHostServiceProvider().CreateScope().ServiceProvider;
             var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -34,6 +39,32 @@ namespace BackOfficeBase.Tests.Shared
             };
 
             return provider.GetRequiredService<TestBackOfficeBaseDbContext>();
+        }
+
+        /// <summary>
+        /// This method can be used for create a new dbContext (different database) with different name in run-time.
+        /// It is useful when you want to work on an empty database.
+        /// </summary>
+        /// <param name="dbContextName"></param>
+        /// <returns>Creates new dbContext with different name</returns>
+        protected TestBackOfficeBaseDbContext GetNewTestDbContext(string dbContextName)
+        {
+            var provider = GetNewHostServiceProvider().CreateScope().ServiceProvider;
+            var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+            httpContextAccessor.HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[] {new Claim("Id", Guid.NewGuid().ToString())})
+                })
+            };
+
+            var dbContextOptionBuilder = new DbContextOptionsBuilder();
+            dbContextOptionBuilder.UseInMemoryDatabase(dbContextName)
+                .UseLazyLoadingProxies()
+                .EnableSensitiveDataLogging();
+
+            return new TestBackOfficeBaseDbContext(dbContextOptionBuilder.Options, httpContextAccessor);
         }
 
         protected IServiceProvider GetNewHostServiceProvider()

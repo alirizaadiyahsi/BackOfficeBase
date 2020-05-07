@@ -18,7 +18,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
 
         public RoleAppServiceTests()
         {
-            _dbContext = GetTestDbContext();
+            _dbContext = GetNewInstanceOfDefaultTestDbContext();
             var mapper = GetNewHostServiceProvider().GetRequiredService<IMapper>();
             _roleAppService = new RoleAppService(_dbContext, mapper);
         }
@@ -58,7 +58,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var roleOutput = await _roleAppService.CreateAsync(createRoleInput);
             await _dbContext.SaveChangesAsync();
 
-            var insertedRole = await GetTestDbContext().Roles.FindAsync(roleOutput.Id);
+            var insertedRole = await GetNewInstanceOfDefaultTestDbContext().Roles.FindAsync(roleOutput.Id);
 
             Assert.NotNull(roleOutput);
             Assert.True(roleOutput.SelectedPermissions!= null && roleOutput.SelectedPermissions.Any(x => x == AppPermissions.Roles.Read));
@@ -84,7 +84,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var roleOutput = _roleAppService.Update(updateRoleInput);
             _dbContext.SaveChanges();
 
-            var updatedRole = await GetTestDbContext().Roles.FindAsync(roleOutput.Id);
+            var updatedRole = await GetNewInstanceOfDefaultTestDbContext().Roles.FindAsync(roleOutput.Id);
 
             Assert.NotNull(roleOutput);
             Assert.True(roleOutput.SelectedPermissions != null && roleOutput.SelectedPermissions.Any(x => x == AppPermissions.Roles.Create));
@@ -104,7 +104,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var roleOutput = await _roleAppService.DeleteAsync(testRole.Id);
             await _dbContext.SaveChangesAsync();
 
-            var deletedRole = await GetTestDbContext().Roles.FindAsync(roleOutput.Id);
+            var deletedRole = await GetNewInstanceOfDefaultTestDbContext().Roles.FindAsync(roleOutput.Id);
 
             Assert.NotNull(roleOutput);
             Assert.Null(deletedRole);
