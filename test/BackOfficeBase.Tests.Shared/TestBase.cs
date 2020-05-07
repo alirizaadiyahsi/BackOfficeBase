@@ -15,18 +15,18 @@ namespace BackOfficeBase.Tests.Shared
 {
     public class TestBase
     {
-        protected readonly TestBackOfficeBaseDbContext DbContextTest;
+        protected readonly TestBackOfficeBaseDbContext DefaultTestDbContext;
 
         public TestBase()
         {
-            DbContextTest = GetNewInstanceOfDefaultTestDbContext();
+            DefaultTestDbContext = GetDefaultTestDbContext();
         }
 
         /// <summary>
         /// This method can be used for new scoped (same database) of default dbContext
         /// </summary>
-        /// <returns>New scoped instance of default dbContext</returns>
-        protected TestBackOfficeBaseDbContext GetNewInstanceOfDefaultTestDbContext()
+        /// <returns>New scoped instance (same database) of default dbContext</returns>
+        protected TestBackOfficeBaseDbContext GetDefaultTestDbContext()
         {
             var provider = GetNewHostServiceProvider().CreateScope().ServiceProvider;
             var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -46,7 +46,7 @@ namespace BackOfficeBase.Tests.Shared
         /// It is useful when you want to work on an empty database.
         /// </summary>
         /// <param name="dbContextName"></param>
-        /// <returns>Creates new dbContext with different name</returns>
+        /// <returns>Creates new dbContext (new database) with different name</returns>
         protected TestBackOfficeBaseDbContext GetNewTestDbContext(string dbContextName)
         {
             var provider = GetNewHostServiceProvider().CreateScope().ServiceProvider;

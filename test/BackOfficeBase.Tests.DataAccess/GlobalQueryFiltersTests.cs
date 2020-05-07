@@ -11,8 +11,8 @@ namespace BackOfficeBase.Tests.DataAccess
         [Fact]
         public async Task Should_Add_Creation_Auditing_Properties()
         {
-            var result = await DbContextTest.Products.AddAsync(new Product { Name = "Product Name", Code = "product_code" });
-            await DbContextTest.SaveChangesAsync();
+            var result = await DefaultTestDbContext.Products.AddAsync(new Product { Name = "Product Name", Code = "product_code" });
+            await DefaultTestDbContext.SaveChangesAsync();
 
             Assert.NotNull(result.Entity.CreatorUserId);
             Assert.NotEqual(Guid.Empty, result.Entity.CreatorUserId);
@@ -22,13 +22,13 @@ namespace BackOfficeBase.Tests.DataAccess
         [Fact]
         public async Task Should_Add_Modification_Auditing_Properties()
         {
-            var result = await DbContextTest.Products.AddAsync(new Product { Name = "Product Name", Code = "product_code" });
-            await DbContextTest.SaveChangesAsync();
+            var result = await DefaultTestDbContext.Products.AddAsync(new Product { Name = "Product Name", Code = "product_code" });
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            DbContextTest.Products.Update(result.Entity);
-            await DbContextTest.SaveChangesAsync();
+            DefaultTestDbContext.Products.Update(result.Entity);
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            var dbContextToGetUpdatedEntity = GetNewInstanceOfDefaultTestDbContext();
+            var dbContextToGetUpdatedEntity = GetDefaultTestDbContext();
             var updatedEntity = await dbContextToGetUpdatedEntity.Products.FindAsync(result.Entity.Id);
 
             Assert.NotNull(updatedEntity.ModifierUserId);
@@ -40,11 +40,11 @@ namespace BackOfficeBase.Tests.DataAccess
         [Fact]
         public async Task Should_Add_Deletion_Auditing_Properties()
         {
-            var result = await DbContextTest.Products.AddAsync(new Product { Name = "Product Name", Code = "product_code" });
-            await DbContextTest.SaveChangesAsync();
+            var result = await DefaultTestDbContext.Products.AddAsync(new Product { Name = "Product Name", Code = "product_code" });
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            var deletedEntity = DbContextTest.Products.Remove(result.Entity);
-            await DbContextTest.SaveChangesAsync();
+            var deletedEntity = DefaultTestDbContext.Products.Remove(result.Entity);
+            await DefaultTestDbContext.SaveChangesAsync();
 
             Assert.NotNull(deletedEntity.Entity.DeleterUserId);
             Assert.NotEqual(Guid.Empty, deletedEntity.Entity.DeleterUserId);
@@ -55,11 +55,11 @@ namespace BackOfficeBase.Tests.DataAccess
         [Fact]
         public async Task Should_Add_Soft_Delete_Query_Filter()
         {
-            await DbContextTest.Products.AddAsync(new Product { Name = "Product Name 1", Code = "soft_deleted_product_code_1" });
-            await DbContextTest.Products.AddAsync(new Product { Name = "Product Name 2", Code = "soft_deleted_product_code_2", IsDeleted = true });
-            await DbContextTest.SaveChangesAsync();
+            await DefaultTestDbContext.Products.AddAsync(new Product { Name = "Product Name 1", Code = "soft_deleted_product_code_1" });
+            await DefaultTestDbContext.Products.AddAsync(new Product { Name = "Product Name 2", Code = "soft_deleted_product_code_2", IsDeleted = true });
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            var productList = DbContextTest.Products.Where(x => x.Code.Contains("soft_deleted_product_code"));
+            var productList = DefaultTestDbContext.Products.Where(x => x.Code.Contains("soft_deleted_product_code"));
 
             Assert.NotNull(productList);
             Assert.Equal(1, productList.Count());

@@ -18,7 +18,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
 
         public UserAppServiceTests()
         {
-            _dbContext = GetNewInstanceOfDefaultTestDbContext();
+            _dbContext = GetDefaultTestDbContext();
             var mapper = GetNewHostServiceProvider().GetRequiredService<IMapper>();
             _userAppService = new UserAppService(_dbContext, mapper);
         }
@@ -65,7 +65,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var userOutput = await _userAppService.CreateAsync(createUserInput);
             await _dbContext.SaveChangesAsync();
 
-            var insertedUser = await GetNewInstanceOfDefaultTestDbContext().Users.FindAsync(userOutput.Id);
+            var insertedUser = await GetDefaultTestDbContext().Users.FindAsync(userOutput.Id);
 
             Assert.NotNull(userOutput);
             Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Any(x => x == testRole.Id));
@@ -100,7 +100,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var userOutput = _userAppService.Update(updateUserInput);
             _dbContext.SaveChanges();
 
-            var updatedUser = await GetNewInstanceOfDefaultTestDbContext().Users.FindAsync(userOutput.Id);
+            var updatedUser = await GetDefaultTestDbContext().Users.FindAsync(userOutput.Id);
 
             Assert.NotNull(userOutput);
             Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Any(x => x == roleToGrant.Id));
@@ -123,7 +123,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
             var userOutput = await _userAppService.DeleteAsync(testUser.Id);
             await _dbContext.SaveChangesAsync();
 
-            var deletedUser = await GetNewInstanceOfDefaultTestDbContext().Users.FindAsync(userOutput.Id);
+            var deletedUser = await GetDefaultTestDbContext().Users.FindAsync(userOutput.Id);
 
             Assert.NotNull(userOutput);
             Assert.Null(deletedUser);

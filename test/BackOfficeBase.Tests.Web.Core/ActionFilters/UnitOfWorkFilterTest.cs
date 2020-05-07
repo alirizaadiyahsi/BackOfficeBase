@@ -22,8 +22,8 @@ namespace BackOfficeBase.Tests.Web.Core.ActionFilters
                 Code = "a_product_name"
             };
             
-            var addedProduct = await DbContextTest.Products.AddAsync(product);
-            var dbContextFromAnotherScope = GetNewInstanceOfDefaultTestDbContext();
+            var addedProduct = await DefaultTestDbContext.Products.AddAsync(product);
+            var dbContextFromAnotherScope = GetDefaultTestDbContext();
             var insertedTestRole = await dbContextFromAnotherScope.Products.FindAsync(addedProduct.Entity.Id);
             Assert.Null(insertedTestRole);
 
@@ -39,7 +39,7 @@ namespace BackOfficeBase.Tests.Web.Core.ActionFilters
                 new ActionDescriptor()
             );
             var actionExecutedContext = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), null);
-            var unitOfWorkActionFilter = new UnitOfWorkActionFilter(DbContextTest);
+            var unitOfWorkActionFilter = new UnitOfWorkActionFilter(DefaultTestDbContext);
             
             unitOfWorkActionFilter.OnActionExecuted(actionExecutedContext);
             insertedTestRole = await dbContextFromAnotherScope.Products.FindAsync(addedProduct.Entity.Id);

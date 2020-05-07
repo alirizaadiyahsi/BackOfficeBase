@@ -13,16 +13,22 @@ namespace BackOfficeBase.Tests.Application.Crud
 {
     public class CrudAppServiceTests : AppServiceTestBase
     {
+        private readonly IProductCrudAppService _productCrudAppService;
+        private readonly IMapper _mapper;
+
+        public CrudAppServiceTests()
+        {
+            _mapper = GetConfiguredMapper();
+            _productCrudAppService = new ProductCrudAppService(DefaultTestDbContext, _mapper);
+        }
+
         [Fact]
         public async Task Should_Get_Async()
         {
-            var dbContext = GetNewInstanceOfDefaultTestDbContext();
-            var mapper = GetConfiguredMapper();
-            var productCrudAppService = new ProductCrudAppService(dbContext, mapper);
+            var result = DefaultTestDbContext.Products.Add(new Product { Name = "Product Name", Code = "product_code" });
+            DefaultTestDbContext.SaveChanges();
 
-            var result = dbContext.Products.Add(new Product { Name = "Product Name", Code = "product_code" });
-            dbContext.SaveChanges();
-            var productDto = await productCrudAppService.GetAsync(result.Entity.Id);
+            var productDto = await _productCrudAppService.GetAsync(result.Entity.Id);
 
             Assert.NotNull(productDto);
             Assert.Equal("product_code", productDto.Code);
@@ -31,15 +37,11 @@ namespace BackOfficeBase.Tests.Application.Crud
         [Fact]
         public async Task Should_Get_List_Async()
         {
-            var dbContext = GetNewInstanceOfDefaultTestDbContext();
-            var mapper = GetConfiguredMapper();
-            var productCrudAppService = new ProductCrudAppService(dbContext, mapper);
-
-            dbContext.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_filter_and_sort_async" });
-            dbContext.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_filter_and_sort_async" });
-            dbContext.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_filter_and_sort_async" });
-            dbContext.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_with_filter_and_sort_async" });
-            dbContext.SaveChanges();
+            DefaultTestDbContext.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_filter_and_sort_async" });
+            DefaultTestDbContext.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_filter_and_sort_async" });
+            DefaultTestDbContext.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_filter_and_sort_async" });
+            DefaultTestDbContext.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_2_for_get_list_with_filter_and_sort_async" });
+            DefaultTestDbContext.SaveChanges();
 
             var pagedListInput = new PagedListInput
             {
@@ -56,7 +58,7 @@ namespace BackOfficeBase.Tests.Application.Crud
                 }
             };
 
-            var pagedProductList = await productCrudAppService.GetListAsync(pagedListInput);
+            var pagedProductList = await _productCrudAppService.GetListAsync(pagedListInput);
 
             Assert.NotNull(pagedProductList);
             Assert.Equal(4, pagedProductList.TotalCount);
@@ -67,9 +69,6 @@ namespace BackOfficeBase.Tests.Application.Crud
         public async Task Should_Get_List_With_No_Filter_And_Sort_Async()
         {
             var dbContext = GetNewTestDbContext(Guid.NewGuid().ToString());
-            var mapper = GetConfiguredMapper();
-            var productCrudAppService = new ProductCrudAppService(dbContext, mapper);
-
             dbContext.Products.Add(new Product { Name = "E Product Name", Code = "e_product_code_for_get_list_with_no_filter_and_sort_async" });
             dbContext.Products.Add(new Product { Name = "A Product Name", Code = "a_product_code_for_get_list_with_no_filter_and_sort_async" });
             dbContext.Products.Add(new Product { Name = "B Product Name 1", Code = "b_product_code_1_for_get_list_with_no_filter_and_sort_async" });
@@ -77,6 +76,8 @@ namespace BackOfficeBase.Tests.Application.Crud
             dbContext.SaveChanges();
 
             var pagedListInput = new PagedListInput();
+
+            var productCrudAppService = new ProductCrudAppService(dbContext,_mapper);
             var pagedProductList = await productCrudAppService.GetListAsync(pagedListInput);
 
             Assert.NotNull(pagedProductList);
@@ -86,17 +87,14 @@ namespace BackOfficeBase.Tests.Application.Crud
         [Fact]
         public async Task Should_Create_Async()
         {
-            var dbContext = GetNewInstanceOfDefaultTestDbContext();
-            var mapper = GetConfiguredMapper();
-            var productCrudAppService = new ProductCrudAppService(dbContext, mapper);
-            var userOutput = await productCrudAppService.CreateAsync(new CreateProductInput
+            var userOutput = await _productCrudAppService.CreateAsync(new CreateProductInput
             {
                 Code = "create_async_product_code",
                 Name = "Create Async Product Name"
             });
-            await dbContext.SaveChangesAsync();
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            var anotherScopeDbContext = GetNewInstanceOfDefaultTestDbContext();
+            var anotherScopeDbContext = GetDefaultTestDbContext();
             var insertedProductDto = await anotherScopeDbContext.Products.FindAsync(userOutput.Id);
 
             Assert.NotNull(userOutput);
@@ -107,26 +105,23 @@ namespace BackOfficeBase.Tests.Application.Crud
         [Fact]
         public async Task Should_Update_Async()
         {
-            var dbContext = GetNewInstanceOfDefaultTestDbContext();
-            var mapper = GetConfiguredMapper();
-            var productDto = await dbContext.Products.AddAsync(new Product
+            var dbContextForAddEntity = GetDefaultTestDbContext();
+            var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
             {
                 Code = "update_product_code",
                 Name = "Update Product Name"
             });
-            await dbContext.SaveChangesAsync();
+            await dbContextForAddEntity.SaveChangesAsync();
 
-            var dbContextForUpdateEntity = GetNewInstanceOfDefaultTestDbContext();
-            var productCrudAppService = new ProductCrudAppService(dbContextForUpdateEntity, mapper);
-            var userOutput = productCrudAppService.Update(new UpdateProductInput
+            var userOutput = _productCrudAppService.Update(new UpdateProductInput
             {
                 Id = productDto.Entity.Id,
                 Code = "update_product_code_updated",
                 Name = "Update Product Name Updated"
             });
-            await dbContextForUpdateEntity.SaveChangesAsync();
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            var dbContextForGetEntity = GetNewInstanceOfDefaultTestDbContext();
+            var dbContextForGetEntity = GetDefaultTestDbContext();
             var updatedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
             Assert.NotNull(userOutput);
@@ -139,21 +134,18 @@ namespace BackOfficeBase.Tests.Application.Crud
         [Fact]
         public async Task Should_Delete_Async()
         {
-            var dbContext = GetNewInstanceOfDefaultTestDbContext();
-            var mapper = GetConfiguredMapper();
-            var productCrudAppService = new ProductCrudAppService(dbContext, mapper);
-
-            var productDto = await dbContext.Products.AddAsync(new Product
+            var dbContextForAddEntity = GetDefaultTestDbContext();
+            var productDto = await dbContextForAddEntity.Products.AddAsync(new Product
             {
                 Code = "delete_product_code",
                 Name = "Delete Product Name"
             });
-            await dbContext.SaveChangesAsync();
+            await dbContextForAddEntity.SaveChangesAsync();
 
-            var userOutput = await productCrudAppService.DeleteAsync(productDto.Entity.Id);
-            await dbContext.SaveChangesAsync();
+            var userOutput = await _productCrudAppService.DeleteAsync(productDto.Entity.Id);
+            await DefaultTestDbContext.SaveChangesAsync();
 
-            var dbContextForGetEntity = GetNewInstanceOfDefaultTestDbContext();
+            var dbContextForGetEntity = GetDefaultTestDbContext();
             var deletedProductDto = await dbContextForGetEntity.Products.FindAsync(productDto.Entity.Id);
 
             Assert.NotNull(userOutput);
