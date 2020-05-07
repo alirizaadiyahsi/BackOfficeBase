@@ -14,12 +14,10 @@ namespace BackOfficeBase.Application.Authorization.Roles
     public class RoleAppService : CrudAppService<Role, RoleOutput, RoleListOutput, CreateRoleInput, UpdateRoleInput>, IRoleAppService
     {
         private readonly BackOfficeBaseDbContext _dbContext;
-        private readonly IMapper _mapper;
 
         public RoleAppService(BackOfficeBaseDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public override async Task<RoleOutput> GetAsync(Guid id)
