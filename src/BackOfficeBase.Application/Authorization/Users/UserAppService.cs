@@ -16,6 +16,7 @@ namespace BackOfficeBase.Application.Authorization.Users
     {
         private readonly BackOfficeBaseDbContext _dbContext;
         private readonly IMapper _mapper;
+
         public UserAppService(BackOfficeBaseDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
             _dbContext = dbContext;
