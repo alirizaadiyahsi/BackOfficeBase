@@ -72,7 +72,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             }
             await _dbContext.SaveChangesAsync();
 
-            await _organizationUnitAppService.RemoveUsersFromOrganizationUnit(new AddOrRemoveUsersToOrganizationUnitInput
+            await _organizationUnitAppService.RemoveUsersFromOrganizationUnitAsync(new AddOrRemoveUsersToOrganizationUnitInput
             {
                 OrganizationUnitId = testOrganizationUnitId,
                 SelectedUserIds = testUserIds.GetRange(0, 1)
@@ -131,7 +131,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             }
             await _dbContext.SaveChangesAsync();
 
-            await _organizationUnitAppService.RemoveRolesFromOrganizationUnit(new AddOrRemoveRolesToOrganizationUnitInput
+            await _organizationUnitAppService.RemoveRolesFromOrganizationUnitAsync(new AddOrRemoveRolesToOrganizationUnitInput
             {
                 OrganizationUnitId = testOrganizationUnitId,
                 SelectedRoleIds = testRoleIds.GetRange(0, 1)

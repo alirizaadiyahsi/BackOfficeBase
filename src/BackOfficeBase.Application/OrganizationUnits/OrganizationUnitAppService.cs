@@ -33,7 +33,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
-        public async Task<OrganizationUnitOutput> RemoveUsersFromOrganizationUnit(AddOrRemoveUsersToOrganizationUnitInput input)
+        public async Task<OrganizationUnitOutput> RemoveUsersFromOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input)
         {
             _dbContext.OrganizationUnitUsers.RemoveRange(_dbContext.OrganizationUnitUsers.Where(x =>
                     input.SelectedUserIds.Contains(x.UserId) && x.OrganizationUnitId == input.OrganizationUnitId));
@@ -57,7 +57,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
-        public async Task<OrganizationUnitOutput> RemoveRolesFromOrganizationUnit(AddOrRemoveRolesToOrganizationUnitInput input)
+        public async Task<OrganizationUnitOutput> RemoveRolesFromOrganizationUnitAsync(AddOrRemoveRolesToOrganizationUnitInput input)
         {
             _dbContext.OrganizationUnitRoles.RemoveRange(_dbContext.OrganizationUnitRoles.Where(x =>
                 input.SelectedRoleIds.Contains(x.RoleId) && x.OrganizationUnitId == input.OrganizationUnitId));
