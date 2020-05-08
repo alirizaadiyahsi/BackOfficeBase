@@ -32,7 +32,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             var testOrganizationUnit = new OrganizationUnit
             {
                 Code = "0000",
-                DisplayName = "test organization unit"
+                Name = "test organization unit"
             };
 
             await _dbContext.OrganizationUnits.AddAsync(testOrganizationUnit);
@@ -91,7 +91,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             var testOrganizationUnit = new OrganizationUnit
             {
                 Code = "0000",
-                DisplayName = "test organization unit"
+                Name = "test organization unit"
             };
 
             await _dbContext.OrganizationUnits.AddAsync(testOrganizationUnit);

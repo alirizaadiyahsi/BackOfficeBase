@@ -8,7 +8,6 @@ using BackOfficeBase.Domain.Entities.OrganizationUnits;
 
 namespace BackOfficeBase.Application.OrganizationUnits
 {
-    // TODO: Write unit tests
     public class OrganizationUnitAppService : CrudAppService<OrganizationUnit, OrganizationUnitOutput, OrganizationUnitListOutput, CreateOrganizationUnitInput, UpdateOrganizationUnitInput>, IOrganizationUnitAppService
     {
         private readonly BackOfficeBaseDbContext _dbContext;
@@ -17,6 +16,8 @@ namespace BackOfficeBase.Application.OrganizationUnits
         {
             _dbContext = dbContext;
         }
+
+        //TODO: Override GetAsync method
 
         public async Task<OrganizationUnitOutput> AddUsersToOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input)
         {
@@ -29,7 +30,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
                 });
             }
 
-            // TODO: Return selected roles and users
+            // TODO: Return selected roles and users and add unit test
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
@@ -38,7 +39,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
             _dbContext.OrganizationUnitUsers.RemoveRange(_dbContext.OrganizationUnitUsers.Where(x =>
                     input.SelectedUserIds.Contains(x.UserId) && x.OrganizationUnitId == input.OrganizationUnitId));
 
-            // TODO: Return selected roles and users
+            // TODO: Return selected roles and users and add unit test
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
@@ -53,7 +54,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
                 });
             }
 
-            // TODO: Return selected roles and users
+            // TODO: Return selected roles and users and add unit test
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
@@ -62,7 +63,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
             _dbContext.OrganizationUnitRoles.RemoveRange(_dbContext.OrganizationUnitRoles.Where(x =>
                 input.SelectedRoleIds.Contains(x.RoleId) && x.OrganizationUnitId == input.OrganizationUnitId));
 
-            // TODO: Return selected roles and users
+            // TODO: Return selected roles and users and add unit test
             return await base.GetAsync(input.OrganizationUnitId);
         }
     }

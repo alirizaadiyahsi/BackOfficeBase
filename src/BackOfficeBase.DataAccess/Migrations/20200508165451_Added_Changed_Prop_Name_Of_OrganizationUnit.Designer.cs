@@ -4,14 +4,16 @@ using BackOfficeBase.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackOfficeBase.DataAccess.Migrations
 {
     [DbContext(typeof(BackOfficeBaseDbContext))]
-    partial class BackOfficeBaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200508165451_Added_Changed_Prop_Name_Of_OrganizationUnit")]
+    partial class Added_Changed_Prop_Name_Of_OrganizationUnit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
