@@ -46,14 +46,12 @@ namespace BackOfficeBase.Web.Api
                 .AddEntityFrameworkStores<BackOfficeBaseDbContext>()
                 .AddDefaultTokenProviders();
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppConfig.Authentication_JwtBearer_SecurityKey));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration[AppConfig.Authentication_JwtBearer_SecurityKey]));
             var jwtTokenConfiguration = new JwtTokenConfiguration
             {
-                Issuer = AppConfig.Authentication_JwtBearer_Issuer,
-                Audience = AppConfig.Authentication_JwtBearer_Audience,
-                SigningCredentials = new SigningCredentials(
-                    signingKey
-                    , SecurityAlgorithms.HmacSha256),
+                Issuer = Configuration[AppConfig.Authentication_JwtBearer_Issuer],
+                Audience = Configuration[AppConfig.Authentication_JwtBearer_Audience],
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddDays(60),
             };
@@ -89,9 +87,9 @@ namespace BackOfficeBase.Web.Api
 
             services.AddCors(options =>
             {
-                options.AddPolicy(AppConfig.App_CorsOriginPolicyName,
+                options.AddPolicy(Configuration[AppConfig.App_CorsOriginPolicyName],
                     builder =>
-                        builder.WithOrigins(AppConfig.App_CorsOrigins.Split(",", StringSplitOptions.RemoveEmptyEntries))
+                        builder.WithOrigins(Configuration[AppConfig.App_CorsOrigins].Split(",", StringSplitOptions.RemoveEmptyEntries))
                             .AllowAnyHeader()
                             .AllowAnyMethod());
             });
@@ -139,7 +137,7 @@ namespace BackOfficeBase.Web.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Back Office Base Application API V1");
             });
 
-            app.UseCors(AppConfig.App_CorsOriginPolicyName);
+            app.UseCors(Configuration[AppConfig.App_CorsOriginPolicyName]);
 
             app.UseHttpsRedirection();
             app.UseRouting();
