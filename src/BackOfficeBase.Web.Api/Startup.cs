@@ -46,11 +46,11 @@ namespace BackOfficeBase.Web.Api
                 .AddEntityFrameworkStores<BackOfficeBaseDbContext>()
                 .AddDefaultTokenProviders();
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("JwtTokenBasedAuthExample_8CFB2EC534E14D56"));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppConfig.Authentication_JwtBearer_SecurityKey));
             var jwtTokenConfiguration = new JwtTokenConfiguration
             {
-                Issuer = "JwtTokenBasedAuthExample",
-                Audience = "http://localhost:44341",
+                Issuer = AppConfig.Authentication_JwtBearer_Issuer,
+                Audience = AppConfig.Authentication_JwtBearer_Audience,
                 SigningCredentials = new SigningCredentials(
                     signingKey
                     , SecurityAlgorithms.HmacSha256),
