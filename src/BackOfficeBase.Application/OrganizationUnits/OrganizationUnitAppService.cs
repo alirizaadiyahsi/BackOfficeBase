@@ -17,7 +17,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
             _dbContext = dbContext;
         }
 
-        //TODO: Override GetAsync method
+        //TODO: Override GetAsync method to get selected roles and users
 
         public async Task<OrganizationUnitOutput> AddUsersToOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input)
         {
