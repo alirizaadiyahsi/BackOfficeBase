@@ -24,7 +24,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
             _identityAppService = identityAppService;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         [Authorize(AppPermissions.Roles.Read)]
         public async Task<ActionResult<RoleOutput>> GetRoles(Guid id)
         {
@@ -36,7 +36,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpGet]
         [Authorize(AppPermissions.Roles.Read)]
-        public async Task<ActionResult<IPagedListResult<RoleListOutput>>> GetRoles(PagedListInput input)
+        public async Task<ActionResult<IPagedListResult<RoleListOutput>>> GetRoles([FromQuery]PagedListInput input)
         {
             var roles = await _roleAppService.GetListAsync(input);
 
@@ -45,7 +45,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpPost]
         [Authorize(AppPermissions.Roles.Create)]
-        public async Task<ActionResult<RoleOutput>> PostRoles(CreateRoleInput input)
+        public async Task<ActionResult<RoleOutput>> PostRoles([FromBody]CreateRoleInput input)
         {
             var role = await _identityAppService.FindRoleByNameAsync(input.Name);
             if (role != null) return Conflict(UserFriendlyMessages.RoleNameAlreadyExist);
@@ -57,7 +57,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpPut]
         [Authorize(AppPermissions.Roles.Update)]
-        public async Task<ActionResult<RoleOutput>> PutRoles(UpdateRoleInput input)
+        public async Task<ActionResult<RoleOutput>> PutRoles([FromBody]UpdateRoleInput input)
         {
             var role = await _identityAppService.FindRoleByNameAsync(input.Name);
             if (role != null) return Conflict(UserFriendlyMessages.RoleNameAlreadyExist);

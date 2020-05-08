@@ -10,6 +10,7 @@ using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Web.Core.ActionFilters;
 using BackOfficeBase.Web.Core.Authorization;
 using BackOfficeBase.Web.Core.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,16 +46,35 @@ namespace BackOfficeBase.Web.Api
                 .AddEntityFrameworkStores<BackOfficeBaseDbContext>()
                 .AddDefaultTokenProviders();
 
-            Configuration.Bind(new JwtTokenConfiguration
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("JwtTokenBasedAuthExample_8CFB2EC534E14D56"));
+            var jwtTokenConfiguration = new JwtTokenConfiguration
             {
-                Issuer = AppConfig.Authentication_JwtBearer_Issuer,
-                Audience = AppConfig.Authentication_JwtBearer_Audience,
+                Issuer = "JwtTokenBasedAuthExample",
+                Audience = "http://localhost:44341",
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(
-                        Encoding.ASCII.GetBytes(AppConfig.Authentication_JwtBearer_SecurityKey))
+                    signingKey
                     , SecurityAlgorithms.HmacSha256),
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddDays(60),
+            };
+            Configuration.Bind(jwtTokenConfiguration);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateActor = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtTokenConfiguration.Issuer,
+                    ValidAudience = jwtTokenConfiguration.Audience,
+                    IssuerSigningKey = signingKey
+                };
             });
 
             services.AddScoped<IAuthorizationHandler, PermissionHandler>();

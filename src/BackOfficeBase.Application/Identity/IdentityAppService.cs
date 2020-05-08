@@ -35,21 +35,21 @@ namespace BackOfficeBase.Application.Identity
             var user = await _userManager.FindByNameAsync(userNameOrEmail) ??
                        await _userManager.FindByEmailAsync(userNameOrEmail);
 
-            return MapUserToUserOutput(user);
+            return user == null ? null : MapUserToUserOutput(user);
         }
 
         public async Task<UserOutput> FindUserByEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            return MapUserToUserOutput(user);
+            return user == null ? null : MapUserToUserOutput(user);
         }
 
         public async Task<UserOutput> FindUserByUserNameAsync(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
 
-            return MapUserToUserOutput(user);
+            return user == null ? null : MapUserToUserOutput(user);
         }
 
         public async Task<IdentityResult> CreateUserAsync(UserOutput userOutput, string password)

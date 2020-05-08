@@ -24,7 +24,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
             _identityAppService = identityAppService;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         [Authorize(AppPermissions.Users.Read)]
         public async Task<ActionResult<UserOutput>> GetUsers(Guid id)
         {
@@ -36,7 +36,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpGet]
         [Authorize(AppPermissions.Users.Read)]
-        public async Task<ActionResult<IPagedListResult<UserListOutput>>> GetUsers(PagedListInput input)
+        public async Task<ActionResult<IPagedListResult<UserListOutput>>> GetUsers([FromQuery]PagedListInput input)
         {
             var users = await _userAppService.GetListAsync(input);
 
@@ -45,7 +45,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpPost]
         [Authorize(AppPermissions.Users.Create)]
-        public async Task<ActionResult<UserOutput>> PostUsers(CreateUserInput input)
+        public async Task<ActionResult<UserOutput>> PostUsers([FromBody]CreateUserInput input)
         {
             var user = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
@@ -60,7 +60,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
 
         [HttpPut]
         [Authorize(AppPermissions.Users.Update)]
-        public async Task<ActionResult<UserOutput>> PutUsers(UpdateUserInput input)
+        public async Task<ActionResult<UserOutput>> PutUsers([FromBody]UpdateUserInput input)
         {
             var user = await _identityAppService.FindUserByEmailAsync(input.Email);
             if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
