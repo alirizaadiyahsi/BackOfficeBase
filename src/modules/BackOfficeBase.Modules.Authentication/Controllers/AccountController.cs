@@ -42,7 +42,7 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
             var userToVerify = await IdentityHelper.CreateClaimsIdentityAsync(_identityAppService, input.UserNameOrEmail, input.Password);
             if (userToVerify == null)
             {
-                return NotFound(UserFriendlyMessages.UserNameOrPasswordNotFound);
+                return BadRequest(UserFriendlyMessages.UserNameOrPasswordNotFound);
             }
 
             var token = new JwtSecurityToken
