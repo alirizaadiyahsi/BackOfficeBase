@@ -55,7 +55,15 @@ namespace BackOfficeBase.Web.Api
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddDays(60),
             };
-            Configuration.Bind(jwtTokenConfiguration);
+
+            services.Configure<JwtTokenConfiguration>(config =>
+            {
+                config.Audience = jwtTokenConfiguration.Audience;
+                config.EndDate = jwtTokenConfiguration.EndDate;
+                config.Issuer = jwtTokenConfiguration.Issuer;
+                config.StartDate = jwtTokenConfiguration.StartDate;
+                config.SigningCredentials = jwtTokenConfiguration.SigningCredentials;
+            });
 
             services.AddAuthentication(options =>
             {

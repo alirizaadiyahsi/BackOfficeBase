@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BackOfficeBase.Application.Identity
 {
+    // TODO: Make this app service as identityManager and use entities instead of DTOs
+    // Because data is losing if it map entity to DTO and re-map again to entity 
     public class IdentityAppService : IIdentityAppService
     {
         private readonly UserManager<User> _userManager;
