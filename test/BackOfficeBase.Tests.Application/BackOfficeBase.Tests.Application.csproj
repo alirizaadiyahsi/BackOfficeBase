@@ -24,8 +24,4 @@
     <ProjectReference Include="..\BackOfficeBase.Tests.Shared\BackOfficeBase.Tests.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="OrganizationUnits\" />
-  </ItemGroup>
-
 </Project>

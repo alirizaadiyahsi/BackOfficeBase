@@ -10,6 +10,7 @@ namespace BackOfficeBase.Domain.Entities.OrganizationUnits
 
         public string Code { get; set; }
 
+        // TODO: Use Name instead of DisplayName
         public string DisplayName { get; set; }
 
         public virtual OrganizationUnit Parent { get; set; }

@@ -29,6 +29,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
                 });
             }
 
+            // TODO: Return selected roles and users
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
@@ -37,7 +38,8 @@ namespace BackOfficeBase.Application.OrganizationUnits
             _dbContext.OrganizationUnitUsers.RemoveRange(_dbContext.OrganizationUnitUsers.Where(x =>
                     input.SelectedUserIds.Contains(x.UserId) && x.OrganizationUnitId == input.OrganizationUnitId));
 
-                return await base.GetAsync(input.OrganizationUnitId);
+            // TODO: Return selected roles and users
+            return await base.GetAsync(input.OrganizationUnitId);
         }
 
         public async Task<OrganizationUnitOutput> AddRolesToOrganizationUnitAsync(AddOrRemoveRolesToOrganizationUnitInput input)
@@ -51,6 +53,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
                 });
             }
 
+            // TODO: Return selected roles and users
             return await base.GetAsync(input.OrganizationUnitId);
         }
 
@@ -59,6 +62,7 @@ namespace BackOfficeBase.Application.OrganizationUnits
             _dbContext.OrganizationUnitRoles.RemoveRange(_dbContext.OrganizationUnitRoles.Where(x =>
                 input.SelectedRoleIds.Contains(x.RoleId) && x.OrganizationUnitId == input.OrganizationUnitId));
 
+            // TODO: Return selected roles and users
             return await base.GetAsync(input.OrganizationUnitId);
         }
     }

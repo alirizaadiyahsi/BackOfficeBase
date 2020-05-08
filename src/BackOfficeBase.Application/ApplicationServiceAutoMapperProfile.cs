@@ -2,8 +2,10 @@
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
+using BackOfficeBase.Application.OrganizationUnits.Dto;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
+using BackOfficeBase.Domain.Entities.OrganizationUnits;
 
 namespace BackOfficeBase.Application
 {
@@ -24,6 +26,8 @@ namespace BackOfficeBase.Application
                     opt => opt.MapFrom(src => src.RoleClaims.Where(uc => uc.ClaimType == CustomClaimTypes.Permission).Select(uc => uc.ClaimValue)));
             CreateMap<CreateRoleInput, Role>();
             CreateMap<UpdateRoleInput, Role>();
+
+            CreateMap<OrganizationUnit, OrganizationUnitOutput>();
         }
     }
 }
