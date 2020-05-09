@@ -101,7 +101,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
 
             var identityAppServiceMock = new Mock<IIdentityAppService>();
             identityAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(GetTestUserOutput("test_user" + Guid.NewGuid()));
+                .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
 
             var usersController = new UsersController(userAppServiceMock.Object, identityAppServiceMock.Object);
             var actionResult = await usersController.PostUsers(new CreateUserInput());
@@ -147,7 +147,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
 
             var identityAppServiceMock = new Mock<IIdentityAppService>();
             identityAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(GetTestUserOutput("test_user" + Guid.NewGuid()));
+                .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
 
             var usersController = new UsersController(userAppServiceMock.Object, identityAppServiceMock.Object);
             var actionResult = await usersController.PutUsers(new UpdateUserInput());

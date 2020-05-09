@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Identity;
+using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.Modules.Authentication.Helpers
 {
@@ -43,7 +44,7 @@ namespace BackOfficeBase.Modules.Authentication.Helpers
             return claims;
         }
 
-        private static List<Claim> CreateUserClaims(UserOutput userToVerify)
+        private static List<Claim> CreateUserClaims(User userToVerify)
         {
             var claims = new List<Claim>(new[]
             {

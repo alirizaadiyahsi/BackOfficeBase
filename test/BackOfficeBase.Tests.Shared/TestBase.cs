@@ -122,12 +122,5 @@ namespace BackOfficeBase.Tests.Shared
 
             return testUser;
         }
-
-        public UserOutput GetTestUserOutput(string userName = "TestUserName", string email = "testuser@mail.com")
-        {
-            var mapper = GetNewHostServiceProvider().GetRequiredService<IMapper>();
-
-            return mapper.Map<UserOutput>(GetTestUser(userName, email));
-        }
     }
 }

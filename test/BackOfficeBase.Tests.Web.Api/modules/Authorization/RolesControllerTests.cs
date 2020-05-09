@@ -98,11 +98,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
 
             var identityAppServiceMock = new Mock<IIdentityAppService>();
             identityAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
-                .ReturnsAsync(new RoleOutput
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "test_role_" + Guid.NewGuid()
-                });
+                .ReturnsAsync(GetTestRole("test_role" + Guid.NewGuid()));
 
             var rolesController = new RolesController(roleAppServiceMock.Object, identityAppServiceMock.Object);
             var actionResult = await rolesController.PostRoles(new CreateRoleInput());
@@ -146,11 +142,7 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
 
             var identityAppServiceMock = new Mock<IIdentityAppService>();
             identityAppServiceMock.Setup(x => x.FindRoleByNameAsync(It.IsAny<string>()))
-                .ReturnsAsync(new RoleOutput
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "test_role_" + Guid.NewGuid()
-                });
+                .ReturnsAsync(GetTestRole("test_role_" + Guid.NewGuid()));
 
             var rolesController = new RolesController(roleAppServiceMock.Object, identityAppServiceMock.Object);
             var actionResult = await rolesController.PutRoles(new UpdateRoleInput());

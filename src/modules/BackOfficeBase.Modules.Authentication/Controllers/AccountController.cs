@@ -6,6 +6,7 @@ using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Email;
 using BackOfficeBase.Application.Identity;
 using BackOfficeBase.Application.Identity.Dto;
+using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Modules.Authentication.Helpers;
 using BackOfficeBase.Web.Core;
 using BackOfficeBase.Web.Core.Configuration;
@@ -64,13 +65,13 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult> Register([FromBody]RegisterInput input)
         {
-            var userOutput = await _identityAppService.FindUserByEmailAsync(input.Email);
-            if (userOutput != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
+            var user = await _identityAppService.FindUserByEmailAsync(input.Email);
+            if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
 
-            userOutput = await _identityAppService.FindUserByUserNameAsync(input.UserName);
-            if (userOutput != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
+            user = await _identityAppService.FindUserByUserNameAsync(input.UserName);
+            if (user != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
 
-            var applicationUser = new UserOutput
+            var applicationUser = new User
             {
                 UserName = input.UserName,
                 Email = input.Email
@@ -92,10 +93,10 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult> ConfirmEmail([FromBody] ConfirmEmailInput input)
         {
-            var userOutput = await _identityAppService.FindUserByEmailAsync(input.Email);
-            if (userOutput == null) return NotFound(UserFriendlyMessages.EmailIsNotFound);
+            var user = await _identityAppService.FindUserByEmailAsync(input.Email);
+            if (user == null) return NotFound(UserFriendlyMessages.EmailIsNotFound);
 
-            var result = await _identityAppService.ConfirmEmailAsync(userOutput, input.Token);
+            var result = await _identityAppService.ConfirmEmailAsync(user, input.Token);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
 
             return Ok();
@@ -110,8 +111,8 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
                 return BadRequest(UserFriendlyMessages.PasswordsAreNotMatched);
             }
 
-            var userOutput = await _identityAppService.FindUserByUserNameAsync(User.Identity.Name);
-            var result = await _identityAppService.ChangePasswordAsync(userOutput, input.CurrentPassword, input.NewPassword);
+            var user = await _identityAppService.FindUserByUserNameAsync(User.Identity.Name);
+            var result = await _identityAppService.ChangePasswordAsync(user, input.CurrentPassword, input.NewPassword);
             if (!result.Succeeded) return BadRequest(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
 
             return Ok();
@@ -120,11 +121,11 @@ namespace BackOfficeBase.Modules.Authentication.Controllers
         [HttpPost("/api/[action]")]
         public async Task<ActionResult<ForgotPasswordOutput>> ForgotPassword([FromBody] ForgotPasswordInput input)
         {
-            var userOutput = await _identityAppService.FindUserByEmailAsync(input.Email);
-            if (userOutput == null) return NotFound(UserFriendlyMessages.UserIsNotFound);
+            var user = await _identityAppService.FindUserByEmailAsync(input.Email);
+            if (user == null) return NotFound(UserFriendlyMessages.UserIsNotFound);
 
-            var resetToken = await _identityAppService.GeneratePasswordResetTokenAsync(userOutput);
-            await EmailSenderHelper.SendForgotPasswordMail(_emailSender, _configuration, resetToken, userOutput);
+            var resetToken = await _identityAppService.GeneratePasswordResetTokenAsync(user);
+            await EmailSenderHelper.SendForgotPasswordMail(_emailSender, _configuration, resetToken, user);
 
             return Ok(new ForgotPasswordOutput { ResetToken = resetToken });
         }
