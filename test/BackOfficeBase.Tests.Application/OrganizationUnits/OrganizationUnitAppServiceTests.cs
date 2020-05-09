@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.OrganizationUnits;
 using BackOfficeBase.Application.OrganizationUnits.Dto;
-using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Domain.Entities.OrganizationUnits;
 using BackOfficeBase.Tests.Shared.DataAccess;
@@ -35,54 +34,63 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
                 Name = "test organization unit"
             };
 
+            var testUser1 = GetTestUser("test_user_for_add_or_remove_ou1");
+            var testUser2 = GetTestUser("test_user_for_add_or_remove_ou2");
+
             await _dbContext.OrganizationUnits.AddAsync(testOrganizationUnit);
+            await _dbContext.Users.AddAsync(testUser1);
+            await _dbContext.Users.AddAsync(testUser2);
             await _dbContext.SaveChangesAsync();
 
-            var organizationUnitOutput = await _organizationUnitAppService.AddUsersToOrganizationUnitAsync(new AddOrRemoveUsersToOrganizationUnitInput
+            await _organizationUnitAppService.AddUsersToOrganizationUnitAsync(new AddOrRemoveUsersToOrganizationUnitInput
             {
                 OrganizationUnitId = testOrganizationUnit.Id,
                 SelectedUserIds = new List<Guid>
                 {
-                    Guid.NewGuid(),
-                    Guid.NewGuid()
+                    testUser1.Id,
+                    testUser2.Id
                 }
             });
             await _dbContext.SaveChangesAsync();
 
-            var selectedOrganizationUnitUsers = _dbContext.OrganizationUnitUsers
-                    .Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
+            var organizationUnitUsers =
+                _dbContext.OrganizationUnitUsers.Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
 
-            Assert.NotNull(organizationUnitOutput);
-            Assert.Equal(2, selectedOrganizationUnitUsers.Count());
+            Assert.NotNull(organizationUnitUsers);
+            Assert.Equal(2, organizationUnitUsers.Count());
         }
 
         [Fact]
         public async Task Should_Remove_Users_To_OrganizationUnit_Async()
         {
-            var testOrganizationUnitId = Guid.NewGuid();
-            var testUserIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-
-            foreach (var testUserId in testUserIds)
+            var testOrganizationUnit = new OrganizationUnit
             {
-                await _dbContext.OrganizationUnitUsers.AddAsync(new OrganizationUnitUser
-                {
-                    OrganizationUnitId = testOrganizationUnitId,
-                    UserId = testUserId
-                });
-            }
+                Code = "0000",
+                Name = "test organization unit"
+            };
+
+            var testUser1 = GetTestUser("test_user_for_add_or_remove_ou1");
+            var testUser2 = GetTestUser("test_user_for_add_or_remove_ou2");
+
+            await _dbContext.OrganizationUnits.AddAsync(testOrganizationUnit);
+            await _dbContext.Users.AddAsync(testUser1);
+            await _dbContext.Users.AddAsync(testUser2);
             await _dbContext.SaveChangesAsync();
 
-            await _organizationUnitAppService.RemoveUsersFromOrganizationUnitAsync(new AddOrRemoveUsersToOrganizationUnitInput
+            await AddUsersToOrganizationUnit(testOrganizationUnit, testUser1, testUser2);
+
+            _organizationUnitAppService.RemoveUsersFromOrganizationUnit(new AddOrRemoveUsersToOrganizationUnitInput
             {
-                OrganizationUnitId = testOrganizationUnitId,
-                SelectedUserIds = testUserIds.GetRange(0, 1)
+                OrganizationUnitId = testOrganizationUnit.Id,
+                SelectedUserIds = new List<Guid> { testUser2.Id }
             });
             await _dbContext.SaveChangesAsync();
 
-            var selectedOrganizationUnitUsers = _dbContext.OrganizationUnitUsers
-                .Where(x => x.OrganizationUnitId == testOrganizationUnitId);
+            var organizationUnitUsers =
+                _dbContext.OrganizationUnitUsers.Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
 
-            Assert.Equal(1, selectedOrganizationUnitUsers.Count());
+            Assert.NotNull(organizationUnitUsers);
+            Assert.Equal(1, organizationUnitUsers.Count());
         }
 
         [Fact]
@@ -94,54 +102,93 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
                 Name = "test organization unit"
             };
 
+            var testRole1 = GetTestUser("test_role_for_add_or_remove_ou1");
+            var testRole2 = GetTestUser("test_role_for_add_or_remove_ou2");
+
             await _dbContext.OrganizationUnits.AddAsync(testOrganizationUnit);
+            await _dbContext.Users.AddAsync(testRole1);
+            await _dbContext.Users.AddAsync(testRole2);
             await _dbContext.SaveChangesAsync();
 
-            var organizationUnitOutput = await _organizationUnitAppService.AddRolesToOrganizationUnitAsync(new AddOrRemoveRolesToOrganizationUnitInput
+            await _organizationUnitAppService.AddRolesToOrganizationUnitAsync(new AddOrRemoveRolesToOrganizationUnitInput
             {
                 OrganizationUnitId = testOrganizationUnit.Id,
                 SelectedRoleIds = new List<Guid>
                 {
-                    Guid.NewGuid(),
-                    Guid.NewGuid()
+                    testRole1.Id,
+                    testRole1.Id
                 }
             });
             await _dbContext.SaveChangesAsync();
 
-            var selectedOrganizationUnitRoles = _dbContext.OrganizationUnitRoles
-                .Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
+            var organizationUnitRoles =
+                _dbContext.OrganizationUnitRoles.Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
 
-            Assert.NotNull(organizationUnitOutput);
-            Assert.Equal(2, selectedOrganizationUnitRoles.Count());
+            Assert.NotNull(organizationUnitRoles);
+            Assert.Equal(2, organizationUnitRoles.Count());
         }
 
         [Fact]
         public async Task Should_Remove_Roles_To_OrganizationUnit_Async()
         {
-            var testOrganizationUnitId = Guid.NewGuid();
-            var testRoleIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-
-            foreach (var testRoleId in testRoleIds)
+            var testOrganizationUnit = new OrganizationUnit
             {
-                await _dbContext.OrganizationUnitRoles.AddAsync(new OrganizationUnitRole
-                {
-                    OrganizationUnitId = testOrganizationUnitId,
-                    RoleId = testRoleId
-                });
-            }
+                Code = "0000",
+                Name = "test organization unit"
+            };
+
+            var testRole1 = GetTestUser("test_role_for_add_or_remove_ou1");
+            var testRole2 = GetTestUser("test_role_for_add_or_remove_ou2");
+
+            await _dbContext.OrganizationUnits.AddAsync(testOrganizationUnit);
+            await _dbContext.Users.AddAsync(testRole1);
+            await _dbContext.Users.AddAsync(testRole2);
             await _dbContext.SaveChangesAsync();
 
-            await _organizationUnitAppService.RemoveRolesFromOrganizationUnitAsync(new AddOrRemoveRolesToOrganizationUnitInput
+            await AddRolesToOrganizationUnit(testOrganizationUnit, testRole1, testRole2);
+
+            var organizationUnitRoles =
+                _dbContext.OrganizationUnitRoles.Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
+
+            Assert.NotNull(organizationUnitRoles);
+            Assert.Equal(1, organizationUnitRoles.Count());
+        }
+
+        private async Task AddRolesToOrganizationUnit(OrganizationUnit testOrganizationUnit, User testRole1, User testRole2)
+        {
+            await _dbContext.OrganizationUnitRoles.AddAsync(new OrganizationUnitRole
             {
-                OrganizationUnitId = testOrganizationUnitId,
-                SelectedRoleIds = testRoleIds.GetRange(0, 1)
+                OrganizationUnitId = testOrganizationUnit.Id,
+                RoleId = testRole1.Id
+            });
+            await _dbContext.OrganizationUnitRoles.AddAsync(new OrganizationUnitRole
+            {
+                OrganizationUnitId = testOrganizationUnit.Id,
+                RoleId = testRole2.Id
             });
             await _dbContext.SaveChangesAsync();
 
-            var selectedOrganizationUnitRoles = _dbContext.OrganizationUnitRoles
-                .Where(x => x.OrganizationUnitId == testOrganizationUnitId);
+            _organizationUnitAppService.RemoveRolesFromOrganizationUnit(new AddOrRemoveRolesToOrganizationUnitInput
+            {
+                OrganizationUnitId = testOrganizationUnit.Id,
+                SelectedRoleIds = new List<Guid> {testRole2.Id}
+            });
+            await _dbContext.SaveChangesAsync();
+        }
 
-            Assert.Equal(1, selectedOrganizationUnitRoles.Count());
+        private async Task AddUsersToOrganizationUnit(OrganizationUnit testOrganizationUnit, User testUser1, User testUser2)
+        {
+            await _dbContext.OrganizationUnitUsers.AddAsync(new OrganizationUnitUser
+            {
+                OrganizationUnitId = testOrganizationUnit.Id,
+                UserId = testUser1.Id
+            });
+            await _dbContext.OrganizationUnitUsers.AddAsync(new OrganizationUnitUser
+            {
+                OrganizationUnitId = testOrganizationUnit.Id,
+                UserId = testUser2.Id
+            });
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

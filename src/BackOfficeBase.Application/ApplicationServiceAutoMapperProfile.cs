@@ -28,7 +28,24 @@ namespace BackOfficeBase.Application
             CreateMap<CreateRoleInput, Role>();
             CreateMap<UpdateRoleInput, Role>();
 
-            CreateMap<OrganizationUnit, OrganizationUnitOutput>();
+            CreateMap<OrganizationUnit, OrganizationUnitOutput>()
+                .ForMember(dest => dest.SelectedRoles,
+                    opt => opt.MapFrom(src => src.OrganizationUnitRoles.Select(x => new RoleOutput
+                    {
+                        Id = x.RoleId,
+                        Name = x.Role.Name
+                    })))
+                .ForMember(dest => dest.SelectedUsers,
+                    opt => opt.MapFrom(src => src.OrganizationUnitUsers.Select(x => new UserOutput
+                    {
+                        Id = x.UserId,
+                        Email = x.User.Email,
+                        FirstName = x.User.FirstName,
+                        LastName = x.User.LastName,
+                        Phone = x.User.Phone,
+                        ProfileImageUrl = x.User.ProfileImageUrl,
+                        UserName = x.User.UserName
+                    })));
         }
     }
 }

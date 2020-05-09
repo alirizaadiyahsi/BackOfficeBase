@@ -8,9 +8,9 @@ namespace BackOfficeBase.Application.OrganizationUnits
     // TODO: Write OrganizationUnitController api
     public interface IOrganizationUnitAppService : ICrudAppService<OrganizationUnit, OrganizationUnitOutput, OrganizationUnitListOutput, CreateOrganizationUnitInput, UpdateOrganizationUnitInput>
     {
-        Task<OrganizationUnitOutput> AddUsersToOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input);
-        Task<OrganizationUnitOutput> RemoveUsersFromOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input);
-        Task<OrganizationUnitOutput> AddRolesToOrganizationUnitAsync(AddOrRemoveRolesToOrganizationUnitInput input);
-        Task<OrganizationUnitOutput> RemoveRolesFromOrganizationUnitAsync(AddOrRemoveRolesToOrganizationUnitInput input);
+        Task AddUsersToOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input);
+        void RemoveUsersFromOrganizationUnit(AddOrRemoveUsersToOrganizationUnitInput input);
+        Task AddRolesToOrganizationUnitAsync(AddOrRemoveRolesToOrganizationUnitInput input);
+        void RemoveRolesFromOrganizationUnit(AddOrRemoveRolesToOrganizationUnitInput input);
     }
 }
