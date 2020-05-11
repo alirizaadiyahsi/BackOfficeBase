@@ -46,6 +46,7 @@ namespace BackOfficeBase.Application
                         ProfileImageUrl = x.User.ProfileImageUrl,
                         UserName = x.User.UserName
                     })));
+            CreateMap<CreateOrganizationUnitInput, OrganizationUnit>();
         }
     }
 }

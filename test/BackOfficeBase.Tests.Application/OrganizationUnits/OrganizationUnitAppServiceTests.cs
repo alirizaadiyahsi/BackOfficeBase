@@ -28,28 +28,33 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         [Fact]
         public async Task Should_Add_OrganizationUnit_Async()
         {
-            var testOrganizationUnit = new CreateOrganizationUnitInput
+            var parentOrganizationUnitOutput = await _organizationUnitAppService.CreateAsync(new CreateOrganizationUnitInput
             {
-                Name = "test organization unit",
-            };
-
-            await _organizationUnitAppService.CreateAsync(testOrganizationUnit);
+                Name = "test parent organization unit to add",
+            });
             await _dbContext.SaveChangesAsync();
 
-            var organizationUnitUsers =
-                _dbContext.OrganizationUnitUsers.Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
+            var organizationUnitOutput = await _organizationUnitAppService.CreateAsync(new CreateOrganizationUnitInput
+            {
+                Name = "test organization unit to add",
+                ParentId = parentOrganizationUnitOutput.Id
+            });
+            await _dbContext.SaveChangesAsync();
 
-            Assert.NotNull(organizationUnitUsers);
-            Assert.Equal(2, organizationUnitUsers.Count());
+            var organizationUnit = await _dbContext.OrganizationUnits.FindAsync(organizationUnitOutput.Id);
+            var parentOrganizationUnit = await _dbContext.OrganizationUnits.FindAsync(parentOrganizationUnitOutput.Id);
+
+            Assert.NotNull(organizationUnitOutput);
+            Assert.NotNull(parentOrganizationUnit);
+            Assert.Equal(parentOrganizationUnit.Id, organizationUnit.ParentId);
         }
 
-        
         [Fact]
         public async Task Should_Add_Users_To_OrganizationUnit_Async()
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Name = "test organization unit"
+                Name = "test organization unit to add users"
             };
 
             var testUser1 = GetTestUser("test_user_for_add_or_remove_ou1");
@@ -83,7 +88,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Name = "test organization unit"
+                Name = "test organization unit to remove users"
             };
 
             var testUser1 = GetTestUser("test_user_for_add_or_remove_ou1");
@@ -115,7 +120,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Name = "test organization unit"
+                Name = "test organization unit to add role"
             };
 
             var testRole1 = GetTestUser("test_role_for_add_or_remove_ou1");
@@ -149,7 +154,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Name = "test organization unit"
+                Name = "test organization unit to remove role"
             };
 
             var testRole1 = GetTestUser("test_role_for_add_or_remove_ou1");
@@ -186,7 +191,7 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             _organizationUnitAppService.RemoveRolesFromOrganizationUnit(new AddOrRemoveRolesToOrganizationUnitInput
             {
                 OrganizationUnitId = testOrganizationUnit.Id,
-                SelectedRoleIds = new List<Guid> {testRole2.Id}
+                SelectedRoleIds = new List<Guid> { testRole2.Id }
             });
             await _dbContext.SaveChangesAsync();
         }
