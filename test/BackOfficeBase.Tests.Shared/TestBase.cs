@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Security.Claims;
 using AutoMapper;
+using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Domain.Entities.Authorization;
 using BackOfficeBase.Tests.Shared.DataAccess;
@@ -103,6 +104,16 @@ namespace BackOfficeBase.Tests.Shared
             return testRole;
         }
 
+        public RoleOutput GetTestRoleOutput(string roleName = "TestRoleName")
+        {
+            var testRoleOutput = new RoleOutput
+            {
+                Name = roleName
+            };
+
+            return testRoleOutput;
+        }
+
         public User GetTestUser(string userName = "TestUserName", string email = "testuser@mail.com")
         {
             var testUser = new User
@@ -121,6 +132,18 @@ namespace BackOfficeBase.Tests.Shared
             };
 
             return testUser;
+        }
+
+        public UserOutput GetTestUserOutput(string userName = "TestUserName", string email = "testuser@mail.com")
+        {
+            var testUserOutput = new UserOutput
+            {
+                Id = Guid.NewGuid(),
+                UserName = userName,
+                Email = email
+            };
+
+            return testUserOutput;
         }
     }
 }

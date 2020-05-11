@@ -10,5 +10,6 @@
         public static readonly string UserIsNotFound = "User is not found!";
         public static readonly string EntityNotFound = "Entity is not found!";
         public static readonly string RoleNameAlreadyExist = "Role name already exist!";
+        public static readonly string OrganizationUnitNameAlreadyExist = "Organization unit name already exist!";
     }
 }

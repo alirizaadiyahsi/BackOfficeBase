@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackOfficeBase.Modules.Core.Controllers
 {
-    // TODO: Write tests
     public class OrganizationUnitsController : ApiControllerBase
     {
         private readonly IOrganizationUnitAppService _organizationUnitAppService;
