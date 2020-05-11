@@ -5,7 +5,6 @@ using BackOfficeBase.Domain.Entities.OrganizationUnits;
 
 namespace BackOfficeBase.Application.OrganizationUnits
 {
-    // TODO: Write OrganizationUnitController api
     public interface IOrganizationUnitAppService : ICrudAppService<OrganizationUnit, OrganizationUnitOutput, OrganizationUnitListOutput, CreateOrganizationUnitInput, UpdateOrganizationUnitInput>
     {
         Task AddUsersToOrganizationUnitAsync(AddOrRemoveUsersToOrganizationUnitInput input);
