@@ -26,30 +26,6 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         }
 
         [Fact]
-        public async Task Should_Add_OrganizationUnit_Async()
-        {
-            var parentOrganizationUnitOutput = await _organizationUnitAppService.CreateAsync(new CreateOrganizationUnitInput
-            {
-                Name = "test parent organization unit to add",
-            });
-            await _dbContext.SaveChangesAsync();
-
-            var organizationUnitOutput = await _organizationUnitAppService.CreateAsync(new CreateOrganizationUnitInput
-            {
-                Name = "test organization unit to add",
-                ParentId = parentOrganizationUnitOutput.Id
-            });
-            await _dbContext.SaveChangesAsync();
-
-            var organizationUnit = await _dbContext.OrganizationUnits.FindAsync(organizationUnitOutput.Id);
-            var parentOrganizationUnit = await _dbContext.OrganizationUnits.FindAsync(parentOrganizationUnitOutput.Id);
-
-            Assert.NotNull(organizationUnitOutput);
-            Assert.NotNull(parentOrganizationUnit);
-            Assert.Equal(parentOrganizationUnit.Id, organizationUnit.ParentId);
-        }
-
-        [Fact]
         public async Task Should_Add_Users_To_OrganizationUnit_Async()
         {
             var testOrganizationUnit = new OrganizationUnit
