@@ -27,6 +27,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace BackOfficeBase.Web.Api
 {
     // TODO: Make this project open-source when .net 5 is released!
+    // Create nuget packages for per .csproj
     public class Startup
     {
         public Startup(IConfiguration configuration)
