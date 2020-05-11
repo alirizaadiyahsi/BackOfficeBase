@@ -8,8 +8,6 @@ namespace BackOfficeBase.Application.OrganizationUnits.Dto
     {
         public Guid? ParentId { get; set; }
 
-        public string Code { get; set; }
-
         public string Name { get; set; }
 
         public virtual OrganizationUnitOutput Parent { get; set; }

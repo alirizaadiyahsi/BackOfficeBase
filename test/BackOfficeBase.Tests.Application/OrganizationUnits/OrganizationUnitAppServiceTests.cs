@@ -25,14 +25,30 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             _organizationUnitAppService = new OrganizationUnitAppService(_dbContext, mapper);
         }
 
-        //TODO: Add unit tests for OU CRUD operations
+        [Fact]
+        public async Task Should_Add_OrganizationUnit_Async()
+        {
+            var testOrganizationUnit = new CreateOrganizationUnitInput
+            {
+                Name = "test organization unit",
+            };
+
+            await _organizationUnitAppService.CreateAsync(testOrganizationUnit);
+            await _dbContext.SaveChangesAsync();
+
+            var organizationUnitUsers =
+                _dbContext.OrganizationUnitUsers.Where(x => x.OrganizationUnitId == testOrganizationUnit.Id);
+
+            Assert.NotNull(organizationUnitUsers);
+            Assert.Equal(2, organizationUnitUsers.Count());
+        }
+
         
         [Fact]
         public async Task Should_Add_Users_To_OrganizationUnit_Async()
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Code = "0000",
                 Name = "test organization unit"
             };
 
@@ -67,7 +83,6 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Code = "0000",
                 Name = "test organization unit"
             };
 
@@ -100,7 +115,6 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Code = "0000",
                 Name = "test organization unit"
             };
 
@@ -135,7 +149,6 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
         {
             var testOrganizationUnit = new OrganizationUnit
             {
-                Code = "0000",
                 Name = "test organization unit"
             };
 

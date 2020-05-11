@@ -4,14 +4,16 @@ using BackOfficeBase.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackOfficeBase.DataAccess.Migrations
 {
     [DbContext(typeof(BackOfficeBaseDbContext))]
-    partial class BackOfficeBaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200511121826_Removed_Code_From_OU")]
+    partial class Removed_Code_From_OU
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

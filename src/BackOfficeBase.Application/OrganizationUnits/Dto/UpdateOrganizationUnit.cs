@@ -7,6 +7,6 @@ namespace BackOfficeBase.Application.OrganizationUnits.Dto
     {
         public Guid? ParentId { get; set; }
 
-        public string DisplayName { get; set; }
+        public string Name { get; set; }
     }
 }
