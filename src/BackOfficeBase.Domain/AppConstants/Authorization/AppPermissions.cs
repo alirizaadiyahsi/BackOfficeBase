@@ -36,6 +36,10 @@ namespace BackOfficeBase.Domain.AppConstants.Authorization
             public const string Create = "Permissions.OrganizationUnits.Create";
             public const string Update = "Permissions.OrganizationUnits.Update";
             public const string Delete = "Permissions.OrganizationUnits.Delete";
+            public const string AddUsersToOrganizationUnit = "Permissions.OrganizationUnits.AddUsersToOrganizationUnit";
+            public const string RemoveUsersToOrganizationUnit = "Permissions.OrganizationUnits.RemoveUsersToOrganizationUnit";
+            public const string AddRolesToOrganizationUnit = "Permissions.OrganizationUnits.AddRolesToOrganizationUnit";
+            public const string RemoveRolesToOrganizationUnit = "Permissions.OrganizationUnits.RemoveRolesToOrganizationUnit";
         }
     }
 }

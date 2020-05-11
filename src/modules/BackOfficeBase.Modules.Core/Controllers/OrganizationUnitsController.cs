@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace BackOfficeBase.Modules.Core.Controllers
 {
     // TODO: Write tests
-    // TODO: Add authorize attr
     public class OrganizationUnitsController : ApiControllerBase
     {
         private readonly IOrganizationUnitAppService _organizationUnitAppService;
@@ -70,6 +69,7 @@ namespace BackOfficeBase.Modules.Core.Controllers
         }
 
         [HttpPost("/api/[action]")]
+        [Authorize(AppPermissions.OrganizationUnits.AddUsersToOrganizationUnit)]
         public async Task<ActionResult> AddUsersToOrganizationUnit([FromBody]AddOrRemoveUsersToOrganizationUnitInput input)
         {
             await _organizationUnitAppService.AddUsersToOrganizationUnitAsync(input);
@@ -78,6 +78,7 @@ namespace BackOfficeBase.Modules.Core.Controllers
         }
 
         [HttpDelete("/api/[action]")]
+        [Authorize(AppPermissions.OrganizationUnits.RemoveUsersToOrganizationUnit)]
         public async Task<ActionResult> RemoveUsersFromOrganizationUnit([FromBody]AddOrRemoveUsersToOrganizationUnitInput input)
         {
             _organizationUnitAppService.RemoveUsersFromOrganizationUnit(input);
@@ -86,6 +87,7 @@ namespace BackOfficeBase.Modules.Core.Controllers
         }
 
         [HttpPost("/api/[action]")]
+        [Authorize(AppPermissions.OrganizationUnits.AddRolesToOrganizationUnit)]
         public async Task<ActionResult> AddRolesToOrganizationUnit([FromBody]AddOrRemoveRolesToOrganizationUnitInput input)
         {
             await _organizationUnitAppService.AddRolesToOrganizationUnitAsync(input);
@@ -94,6 +96,7 @@ namespace BackOfficeBase.Modules.Core.Controllers
         }
 
         [HttpDelete("/api/[action]")]
+        [Authorize(AppPermissions.OrganizationUnits.RemoveRolesToOrganizationUnit)]
         public async Task<ActionResult> RemoveRolesFromOrganizationUnit([FromBody]AddOrRemoveRolesToOrganizationUnitInput input)
         {
             _organizationUnitAppService.RemoveRolesFromOrganizationUnit(input);
