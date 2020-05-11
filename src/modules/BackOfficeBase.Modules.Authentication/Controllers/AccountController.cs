@@ -2,7 +2,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Email;
 using BackOfficeBase.Application.Identity;
 using BackOfficeBase.Application.Identity.Dto;
