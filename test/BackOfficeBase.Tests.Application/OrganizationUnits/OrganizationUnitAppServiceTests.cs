@@ -25,6 +25,8 @@ namespace BackOfficeBase.Tests.Application.OrganizationUnits
             _organizationUnitAppService = new OrganizationUnitAppService(_dbContext, mapper);
         }
 
+        //TODO: Add unit tests for OU CRUD operations
+        
         [Fact]
         public async Task Should_Add_Users_To_OrganizationUnit_Async()
         {
