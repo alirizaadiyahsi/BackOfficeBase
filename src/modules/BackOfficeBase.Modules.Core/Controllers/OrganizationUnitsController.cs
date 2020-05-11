@@ -69,6 +69,36 @@ namespace BackOfficeBase.Modules.Core.Controllers
             return Ok(organizationUnitOutput);
         }
 
-        // TODO: Implement "add or remove users or roles" methods
+        [HttpPost("/api/[action]")]
+        public async Task<ActionResult> AddUsersToOrganizationUnit([FromBody]AddOrRemoveUsersToOrganizationUnitInput input)
+        {
+            await _organizationUnitAppService.AddUsersToOrganizationUnitAsync(input);
+
+            return Ok();
+        }
+
+        [HttpDelete("/api/[action]")]
+        public async Task<ActionResult> RemoveUsersFromOrganizationUnit([FromBody]AddOrRemoveUsersToOrganizationUnitInput input)
+        {
+            _organizationUnitAppService.RemoveUsersFromOrganizationUnit(input);
+
+            return Ok();
+        }
+
+        [HttpPost("/api/[action]")]
+        public async Task<ActionResult> AddRolesToOrganizationUnit([FromBody]AddOrRemoveRolesToOrganizationUnitInput input)
+        {
+            await _organizationUnitAppService.AddRolesToOrganizationUnitAsync(input);
+
+            return Ok();
+        }
+
+        [HttpDelete("/api/[action]")]
+        public async Task<ActionResult> RemoveRolesFromOrganizationUnit([FromBody]AddOrRemoveRolesToOrganizationUnitInput input)
+        {
+            _organizationUnitAppService.RemoveRolesFromOrganizationUnit(input);
+
+            return Ok();
+        }
     }
 }
