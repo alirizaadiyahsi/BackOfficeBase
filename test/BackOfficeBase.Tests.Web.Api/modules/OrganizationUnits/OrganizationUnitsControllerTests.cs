@@ -132,6 +132,60 @@ namespace BackOfficeBase.Tests.Web.Api.modules.OrganizationUnits
             Assert.True(organizationUnitOutput.SelectedRoles.Any());
         }
 
-        // TODO: Add unit tests for add-remove users or roles from ou
+        [Fact]
+        public async Task Should_Add_Users_To_OrganizationUnit_Async()
+        {
+            var organizationUnitAppServiceMock = new Mock<IOrganizationUnitAppService>();
+            organizationUnitAppServiceMock.Setup(x => x.AddUsersToOrganizationUnitAsync(It.IsAny<AddOrRemoveUsersToOrganizationUnitInput>()));
+
+            var organizationUnitsController = new OrganizationUnitsController(organizationUnitAppServiceMock.Object);
+            var actionResult = await organizationUnitsController.AddUsersToOrganizationUnit(new AddOrRemoveUsersToOrganizationUnitInput());
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
+
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task Should_Remove_Users_From_OrganizationUnit_Async()
+        {
+            var organizationUnitAppServiceMock = new Mock<IOrganizationUnitAppService>();
+            organizationUnitAppServiceMock.Setup(x => x.RemoveUsersFromOrganizationUnit(It.IsAny<AddOrRemoveUsersToOrganizationUnitInput>()));
+
+            var organizationUnitsController = new OrganizationUnitsController(organizationUnitAppServiceMock.Object);
+            var actionResult = await organizationUnitsController.RemoveUsersFromOrganizationUnit(new AddOrRemoveUsersToOrganizationUnitInput());
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
+
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task Should_Add_Roles_To_OrganizationUnit_Async()
+        {
+            var organizationUnitAppServiceMock = new Mock<IOrganizationUnitAppService>();
+            organizationUnitAppServiceMock.Setup(x => x.AddRolesToOrganizationUnitAsync(It.IsAny<AddOrRemoveRolesToOrganizationUnitInput>()));
+
+            var organizationUnitsController = new OrganizationUnitsController(organizationUnitAppServiceMock.Object);
+            var actionResult = await organizationUnitsController.AddRolesToOrganizationUnit(new AddOrRemoveRolesToOrganizationUnitInput());
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
+
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task Should_Remove_Roles_From_OrganizationUnit_Async()
+        {
+            var organizationUnitAppServiceMock = new Mock<IOrganizationUnitAppService>();
+            organizationUnitAppServiceMock.Setup(x => x.RemoveRolesFromOrganizationUnit(It.IsAny<AddOrRemoveRolesToOrganizationUnitInput>()));
+
+            var organizationUnitsController = new OrganizationUnitsController(organizationUnitAppServiceMock.Object);
+            var actionResult = await organizationUnitsController.RemoveRolesFromOrganizationUnit(new AddOrRemoveRolesToOrganizationUnitInput());
+
+            var okResult = Assert.IsType<OkResult>(actionResult);
+
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
     }
 }
