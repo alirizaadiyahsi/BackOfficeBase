@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BackOfficeBase.Tests.Shared
 {
+    // TODO: Write integration tests
     public class TestBase
     {
         protected readonly TestBackOfficeBaseDbContext DefaultTestDbContext;
