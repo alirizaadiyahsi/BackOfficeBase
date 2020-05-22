@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackOfficeBase.Modules.Authorization.Controllers
 {
+    // TODO: Write integration tests
     public class RolesController: ApiControllerBase
     {
         private readonly IRoleAppService _roleAppService;
