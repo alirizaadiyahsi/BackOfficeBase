@@ -21,6 +21,7 @@ namespace BackOfficeBase.Application
             CreateMap<CreateUserInput, User>();
             CreateMap<UpdateUserInput, User>();
             CreateMap<UserOutput, User>();
+            CreateMap<User, UserListOutput>();
 
             CreateMap<Role, RoleOutput>()
                 .ForMember(dest => dest.SelectedPermissions,

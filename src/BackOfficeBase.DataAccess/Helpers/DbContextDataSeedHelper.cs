@@ -5,7 +5,7 @@ using BackOfficeBase.Domain.Entities.Authorization;
 
 namespace BackOfficeBase.DataAccess.Helpers
 {
-    public class DbContextDataSeedHelper
+    public class DbContextDataBuilderHelper
     {
         private readonly BackOfficeBaseDbContext _dbContext;
         public static string AdminRoleName = "Admin";
@@ -18,7 +18,7 @@ namespace BackOfficeBase.DataAccess.Helpers
 
         private const string PasswordHashFor123Qwe = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw=="; //123qwe
 
-        public DbContextDataSeedHelper(BackOfficeBaseDbContext dbContext)
+        public DbContextDataBuilderHelper(BackOfficeBaseDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -35,23 +35,29 @@ namespace BackOfficeBase.DataAccess.Helpers
 
         private void InitializeAdminUserWithAllPermissions()
         {
-            if (_dbContext.Users.Any(u => u.UserName == AdminUserName)) return;
-
-            var adminUser = new User
+            var adminUser = _dbContext.Users.FirstOrDefault(u => u.UserName == AdminUserName);
+            if (adminUser == null)
             {
-                UserName = AdminUserName,
-                Email = AdminUserEmail,
-                EmailConfirmed = true,
-                NormalizedUserName = AdminUserName.ToUpper(CultureInfo.GetCultureInfo("en-US")),
-                NormalizedEmail = AdminUserEmail.ToUpper(CultureInfo.GetCultureInfo("en-US")),
-                AccessFailedCount = 5,
-                PasswordHash = PasswordHashFor123Qwe
-            };
+               adminUser = _dbContext.Users.Add(new User
+                {
+                    UserName = AdminUserName,
+                    Email = AdminUserEmail,
+                    EmailConfirmed = true,
+                    NormalizedUserName = AdminUserName.ToUpper(CultureInfo.GetCultureInfo("en-US")),
+                    NormalizedEmail = AdminUserEmail.ToUpper(CultureInfo.GetCultureInfo("en-US")),
+                    AccessFailedCount = 5,
+                    PasswordHash = PasswordHashFor123Qwe
+                }).Entity;
+                _dbContext.SaveChanges();
+            }
 
-            _dbContext.Users.Add(adminUser);
-            _dbContext.SaveChanges();
+            if (adminUser.UserClaims != null)
+            {
+                adminUser.UserClaims.Clear();
+                _dbContext.SaveChanges();
+            }
 
-            var userClaims = AppPermissions.GetAll().Select(permission => new UserClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, UserId = adminUser.Id});
+            var userClaims = AppPermissions.GetAll().Select(permission => new UserClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, UserId = adminUser.Id });
             _dbContext.UserClaims.AddRange(userClaims);
             _dbContext.SaveChanges();
         }
@@ -77,19 +83,25 @@ namespace BackOfficeBase.DataAccess.Helpers
 
         private void InitializeAdminRoleWithAllPermissions()
         {
-            if (_dbContext.Roles.Any(r => r.Name == AdminRoleName)) return;
-
-            var adminRole = new Role
+            var adminRole = _dbContext.Roles.FirstOrDefault(r => r.Name == AdminRoleName);
+            if (adminRole == null)
             {
-                Name = AdminRoleName,
-                NormalizedName = AdminRoleName.ToUpper(CultureInfo.GetCultureInfo("en-US")),
-                IsSystemDefault = true
-            };
+                adminRole = _dbContext.Roles.Add(new Role
+                {
+                    Name = AdminRoleName,
+                    NormalizedName = AdminRoleName.ToUpper(CultureInfo.GetCultureInfo("en-US")),
+                    IsSystemDefault = true
+                }).Entity;
+                _dbContext.SaveChanges();
+            }
 
-            _dbContext.Roles.Add(adminRole);
-            _dbContext.SaveChanges();
-
-            var roleClaims = AppPermissions.GetAll().Select(permission => new RoleClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, RoleId = adminRole.Id});
+            if (adminRole.RoleClaims != null)
+            {
+                adminRole.RoleClaims.Clear();
+                _dbContext.SaveChanges();
+            }
+            
+            var roleClaims = AppPermissions.GetAll().Select(permission => new RoleClaim { ClaimType = CustomClaimTypes.Permission, ClaimValue = permission, RoleId = adminRole.Id });
             _dbContext.RoleClaims.AddRange(roleClaims);
             _dbContext.SaveChanges();
         }

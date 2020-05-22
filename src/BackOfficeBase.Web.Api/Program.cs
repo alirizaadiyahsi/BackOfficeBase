@@ -33,7 +33,7 @@ namespace BackOfficeBase.Web.Api
                 using (var scope = host.Services.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<BackOfficeBaseDbContext>();
-                    new DbContextDataSeedHelper(dbContext).SeedData();
+                    new DbContextDataBuilderHelper(dbContext).SeedData();
                 }
 
                 host.Run();

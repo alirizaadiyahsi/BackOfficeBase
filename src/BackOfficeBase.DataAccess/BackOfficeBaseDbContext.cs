@@ -119,7 +119,14 @@ namespace BackOfficeBase.DataAccess
                 return null;
             }
 
-            return new Guid(_httpContextAccessor.HttpContext.User.FindFirstValue("Id"));
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue("Id");
+
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                return new Guid(currentUserId);
+            }
+
+            return null;
         }
     }
 }
