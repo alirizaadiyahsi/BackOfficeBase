@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using BackOfficeBase.Application;
@@ -7,6 +9,7 @@ using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.AppConstants.Authorization;
 using BackOfficeBase.Domain.AppConstants.Configuration;
 using BackOfficeBase.Domain.Entities.Authorization;
+using BackOfficeBase.Domain.Localization.Resources;
 using BackOfficeBase.Web.Core.ActionFilters;
 using BackOfficeBase.Web.Core.Authorization;
 using BackOfficeBase.Web.Core.Configuration;
@@ -15,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,6 +86,19 @@ namespace BackOfficeBase.Web.Api
                 };
             });
 
+            services.Configure<EmailSettings>(Configuration.GetSection(AppConfig.Email_Smtp));
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddHttpContextAccessor();
+            services.ConfigureApplicationService();
+
+            AddAuthorizationConfiguration(services);
+            AddMvcConfiguration(services);
+            AddSwaggerConfiguration(services);
+            AddLocalizationConfiguration(services);
+        }
+
+        private void AddAuthorizationConfiguration(IServiceCollection services)
+        {
             services.AddScoped<IAuthorizationHandler, PermissionHandler>();
             services.AddAuthorization(options =>
             {
@@ -96,20 +113,34 @@ namespace BackOfficeBase.Web.Api
             {
                 options.AddPolicy(Configuration[AppConfig.App_CorsOriginPolicyName],
                     builder =>
-                        builder.WithOrigins(Configuration[AppConfig.App_CorsOrigins].Split(",", StringSplitOptions.RemoveEmptyEntries))
+                        builder.WithOrigins(Configuration[AppConfig.App_CorsOrigins]
+                                .Split(",", StringSplitOptions.RemoveEmptyEntries))
                             .AllowAnyHeader()
                             .AllowAnyMethod());
             });
+        }
 
+        private static void AddMvcConfiguration(IServiceCollection services)
+        {
             services.AddScoped<UnitOfWorkActionFilter>();
             var mvcBuilder = services.AddControllers(options =>
-            {
-                options.Filters.AddService<UnitOfWorkActionFilter>();
-            }).AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            });
+                {
+                    options.Filters.AddService<UnitOfWorkActionFilter>();
+                })
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                })
+                .AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider =
+                        (type, factory) => factory.Create(typeof(Translations));
+                });
+            LoadModules(mvcBuilder);
+        }
 
+        private static void AddSwaggerConfiguration(IServiceCollection services)
+        {
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiBestPractices", Version = "v1" });
@@ -123,12 +154,29 @@ namespace BackOfficeBase.Web.Api
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
+        }
 
-            LoadModules(mvcBuilder);
-            services.Configure<EmailSettings>(Configuration.GetSection(AppConfig.Email_Smtp));
-            services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddHttpContextAccessor();
-            services.ConfigureApplicationService();
+        private static void AddLocalizationConfiguration(IServiceCollection services)
+        {
+            services.AddLocalization();
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                CultureInfo[] supportedCultures =
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("tr")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("tr");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders = new List<IRequestCultureProvider>
+                {
+                    new QueryStringRequestCultureProvider(),
+                    new CookieRequestCultureProvider(),
+                    new AcceptLanguageHeaderRequestCultureProvider()
+                };
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
