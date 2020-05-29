@@ -198,6 +198,7 @@ namespace BackOfficeBase.Web.Api
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseRequestLocalization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
