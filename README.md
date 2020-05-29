@@ -1,3 +1,3 @@
 # Back Office Base
 
-ASP.NET Core WEB API Starter Template
+ASP.NET Core WEB API Startup Template
