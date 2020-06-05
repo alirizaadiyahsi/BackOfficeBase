@@ -6,6 +6,7 @@ using BackOfficeBase.Tests.IntegrationTests.DataBuilder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -18,39 +19,29 @@ namespace BackOfficeBase.Tests.IntegrationTests
         {
             builder.ConfigureServices(services =>
             {
-                // Remove the app's ApplicationDbContext registration.
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                         typeof(DbContextOptions<BackOfficeBaseDbContext>));
-
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<BackOfficeBaseDbContext>));
                 if (descriptor != null)
                 {
                     services.Remove(descriptor);
                 }
 
-                // Add ApplicationDbContext using an in-memory database for testing.
                 services.AddDbContext<BackOfficeBaseDbContext>(options =>
                 {
-                    InMemoryDbContextOptionsExtensions.UseInMemoryDatabase(options, "InMemoryDbForTesting");
+                    options.UseInMemoryDatabase("InMemoryDbForTesting").ConfigureWarnings(x=>x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                    options.EnableSensitiveDataLogging();
                 });
 
-                // Build the service provider.
                 var sp = services.BuildServiceProvider();
-
-                // Create a scope to obtain a reference to the database
-                // context (ApplicationDbContext).
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
                     var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
-                    // Ensure the database is created.
                     db.Database.EnsureCreated();
 
                     try
                     {
-                        // Seed the database with test data.
                         new DbContextDataBuilderHelper(db).SeedData();
                         new TestDataBuilder(db).SeedData();
                     }
