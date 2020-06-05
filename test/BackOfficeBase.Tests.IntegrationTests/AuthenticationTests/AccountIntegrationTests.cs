@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.DataAccess.Helpers;
-using BackOfficeBase.Tests.IntegrationTests.DataBuilder;
+using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.PrimitiveTypes;
 using BackOfficeBase.Web.Api;
@@ -16,12 +16,12 @@ using Xunit;
 
 namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
 {
-    public class AuthenticationIntegrationTests : IntegrationTestBase
+    public class AccountIntegrationTests : IntegrationTestBase
     {
         private readonly string _token;
         private readonly HttpClient _httpClient;
 
-        public AuthenticationIntegrationTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
+        public AccountIntegrationTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
         {
             _httpClient = factory.CreateClient();
             _token = LoginAsAdminUserAndGetTokenAsync().Result;
@@ -104,7 +104,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
         [Fact]
         public async Task Should_Change_Password()
         {
-            var token = await LoginAndGetTokenAsync(TestUsersDataBuilder.TestUserForChangePassword.UserName, "123qwe");
+            var token = await LoginAndGetTokenAsync(TestDataBuilderForAccount.TestUserForChangePassword.UserName, "123qwe");
             var input = new ChangePasswordInput
             {
                 CurrentPassword = "123qwe",
@@ -122,7 +122,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
         [Fact]
         public async Task Should_Reset_Password()
         {
-            var testUser = TestUsersDataBuilder.TestUserForResetPassword;
+            var testUser = TestDataBuilderForAccount.TestUserForResetPassword;
             var token = await LoginAndGetTokenAsync(testUser.UserName, "123qwe");
             var input = new ForgotPasswordInput
             {

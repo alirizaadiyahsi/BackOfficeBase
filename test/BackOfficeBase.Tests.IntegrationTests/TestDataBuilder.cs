@@ -1,6 +1,7 @@
 ﻿using BackOfficeBase.DataAccess;
+using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
 
-namespace BackOfficeBase.Tests.IntegrationTests.DataBuilder
+namespace BackOfficeBase.Tests.IntegrationTests
 {
     public class TestDataBuilder
     {
@@ -13,7 +14,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.DataBuilder
 
         public void SeedData()
         {
-            new TestUsersDataBuilder(_dbContext).SeedData();
+            new TestDataBuilderForAccount(_dbContext).SeedData();
         }
     }
 }

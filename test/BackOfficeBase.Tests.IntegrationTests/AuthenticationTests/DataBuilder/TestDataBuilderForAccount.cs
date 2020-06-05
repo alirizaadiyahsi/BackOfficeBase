@@ -3,16 +3,16 @@ using System.Globalization;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.Entities.Authorization;
 
-namespace BackOfficeBase.Tests.IntegrationTests.DataBuilder
+namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder
 {
-    public class TestUsersDataBuilder
+    public class TestDataBuilderForAccount
     {
         private readonly BackOfficeBaseDbContext _dbContext;
 
         public static User TestUserForChangePassword;
         public static User TestUserForResetPassword;
 
-        public TestUsersDataBuilder(BackOfficeBaseDbContext dbContext)
+        public TestDataBuilderForAccount(BackOfficeBaseDbContext dbContext)
         {
             _dbContext = dbContext;
         }

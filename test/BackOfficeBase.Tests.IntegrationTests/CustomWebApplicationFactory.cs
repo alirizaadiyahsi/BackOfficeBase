@@ -2,7 +2,6 @@
 using System.Linq;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.DataAccess.Helpers;
-using BackOfficeBase.Tests.IntegrationTests.DataBuilder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
