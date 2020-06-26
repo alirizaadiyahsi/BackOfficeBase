@@ -30,7 +30,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
 
                 services.AddDbContext<BackOfficeBaseDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForAdminGuideTesting").ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                    options.UseInMemoryDatabase("InMemoryDbForAccountTesting").ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                     options.EnableSensitiveDataLogging();
                 });
 
