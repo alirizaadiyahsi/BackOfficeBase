@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.DataAccess.Helpers;
 using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
-using BackOfficeBase.Utilities.PrimitiveTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
