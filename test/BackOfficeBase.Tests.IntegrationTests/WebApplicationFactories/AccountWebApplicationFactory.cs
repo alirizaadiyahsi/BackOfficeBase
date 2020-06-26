@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.DataAccess.Helpers;
+using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
+using BackOfficeBase.Utilities.PrimitiveTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +15,19 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace BackOfficeBase.Tests.IntegrationTests
+namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
 {
-    public class CustomWebApplicationFactory<TStartup>
+    public class AccountWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<BackOfficeBaseDbContext>));
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType ==
+                         typeof(DbContextOptions<BackOfficeBaseDbContext>));
+
                 if (descriptor != null)
                 {
                     services.Remove(descriptor);
@@ -26,23 +35,25 @@ namespace BackOfficeBase.Tests.IntegrationTests
 
                 services.AddDbContext<BackOfficeBaseDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting").ConfigureWarnings(x=>x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                    options.UseInMemoryDatabase("InMemoryDbForAdminGuideTesting").ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                     options.EnableSensitiveDataLogging();
                 });
 
                 var sp = services.BuildServiceProvider();
+
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
-                    var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                    var logger = scopedServices.GetRequiredService<ILogger<AccountWebApplicationFactory<TStartup>>>();
 
                     db.Database.EnsureCreated();
 
                     try
                     {
                         new DbContextDataBuilderHelper(db).SeedData();
-                        new TestDataBuilder(db).SeedData();
+                        new TestDataBuilderForAccount(db).SeedData();
+                        db.SaveChanges();
                     }
                     catch (Exception ex)
                     {

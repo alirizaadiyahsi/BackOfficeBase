@@ -9,22 +9,25 @@ using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.DataAccess.Helpers;
 using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
+using BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.PrimitiveTypes;
 using BackOfficeBase.Web.Api;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
 {
-    public class AccountIntegrationTests : IntegrationTestBase
+    public class AccountIntegrationTests : IClassFixture<AccountWebApplicationFactory<Startup>>
     {
-        private readonly string _token;
         private readonly HttpClient _httpClient;
 
-        public AccountIntegrationTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
+        public AccountIntegrationTests(AccountWebApplicationFactory<Startup> factory)
         {
-            _httpClient = factory.CreateClient();
-            _token = LoginAsAdminUserAndGetTokenAsync().Result;
+            _httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
         }
 
         [Fact]
@@ -37,7 +40,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
         [Fact]
         public async Task Should_Not_Login_With_Wrong_Credentials()
         {
-            var token = await LoginAndGetTokenAsync("wrongUserName", "wrongPassword");
+            var token = await LoginHelper.LoginAndGetTokenAsync("wrongUserName", "wrongPassword", _httpClient);
             Assert.Null(token);
         }
 
@@ -45,7 +48,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
         public async Task Should_Access_Authorized_Controller()
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "/api/users");
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await LoginHelper.LoginAsAdminUserAndGetTokenAsync(_httpClient));
             var responseGetUsers = await _httpClient.SendAsync(requestMessage);
             Assert.Equal(HttpStatusCode.OK, responseGetUsers.StatusCode);
 
@@ -104,7 +107,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
         [Fact]
         public async Task Should_Change_Password()
         {
-            var token = await LoginAndGetTokenAsync(TestDataBuilderForAccount.TestUserForChangePassword.UserName, "123qwe");
+            var token = await LoginHelper.LoginAndGetTokenAsync(TestDataBuilderForAccount.TestUserForChangePassword.UserName, "123qwe", _httpClient);
             var input = new ChangePasswordInput
             {
                 CurrentPassword = "123qwe",
@@ -123,7 +126,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
         public async Task Should_Reset_Password()
         {
             var testUser = TestDataBuilderForAccount.TestUserForResetPassword;
-            var token = await LoginAndGetTokenAsync(testUser.UserName, "123qwe");
+            var token = await LoginHelper.LoginAndGetTokenAsync(testUser.UserName, "123qwe", _httpClient);
             var input = new ForgotPasswordInput
             {
                 Email = testUser.Email
