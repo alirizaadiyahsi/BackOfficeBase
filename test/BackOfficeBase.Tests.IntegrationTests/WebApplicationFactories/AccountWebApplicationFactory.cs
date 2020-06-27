@@ -5,6 +5,7 @@ using BackOfficeBase.DataAccess.Helpers;
 using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,15 @@ namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
     public class AccountWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
+        private readonly string _connectionString = "DataSource=:memory:";
+        private readonly SqliteConnection _connection;
+
+        public AccountWebApplicationFactory()
+        {
+            _connection = new SqliteConnection(_connectionString);
+            _connection.Open();
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
@@ -28,11 +38,13 @@ namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
                     services.Remove(descriptor);
                 }
 
-                services.AddDbContext<BackOfficeBaseDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase("InMemoryDbForAccountTesting").ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                    options.EnableSensitiveDataLogging();
-                });
+                services
+                    .AddEntityFrameworkSqlite()
+                    .AddDbContext<BackOfficeBaseDbContext>(options =>
+                    {
+                        options.UseSqlite(_connection);
+                        options.UseInternalServiceProvider(services.BuildServiceProvider());
+                    });
 
                 var sp = services.BuildServiceProvider();
 
@@ -57,6 +69,12 @@ namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
                     }
                 }
             });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            _connection.Close();
         }
     }
 }
