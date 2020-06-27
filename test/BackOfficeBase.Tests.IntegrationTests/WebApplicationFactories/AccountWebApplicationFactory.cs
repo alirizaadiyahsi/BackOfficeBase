@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -40,10 +39,12 @@ namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
 
                 services
                     .AddEntityFrameworkSqlite()
+                    .AddEntityFrameworkProxies()
                     .AddDbContext<BackOfficeBaseDbContext>(options =>
                     {
                         options.UseSqlite(_connection);
                         options.UseInternalServiceProvider(services.BuildServiceProvider());
+                        options.UseLazyLoadingProxies();
                     });
 
                 var sp = services.BuildServiceProvider();
