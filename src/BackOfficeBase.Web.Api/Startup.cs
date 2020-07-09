@@ -42,7 +42,8 @@ namespace BackOfficeBase.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BackOfficeBaseDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString(AppConfig.DefaultConnection))
+                options.UseNpgsql(Configuration.GetConnectionString(AppConfig.DefaultConnection))
+                    .UseSnakeCaseNamingConvention()
                     .UseLazyLoadingProxies());
 
             services.AddIdentity<User, Role>()
