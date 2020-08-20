@@ -12,13 +12,13 @@ using Microsoft.Extensions.Logging;
 
 namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
 {
-    public class AccountWebApplicationFactory<TStartup>
+    public class CustomWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         private readonly string _connectionString = "DataSource=:memory:";
         private readonly SqliteConnection _connection;
 
-        public AccountWebApplicationFactory()
+        public CustomWebApplicationFactory()
         {
             _connection = new SqliteConnection(_connectionString);
             _connection.Open();
@@ -53,7 +53,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.WebApplicationFactories
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
-                    var logger = scopedServices.GetRequiredService<ILogger<AccountWebApplicationFactory<TStartup>>>();
+                    var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
                     db.Database.EnsureCreated();
 

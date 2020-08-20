@@ -18,11 +18,11 @@ using Xunit;
 
 namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
 {
-    public class AccountIntegrationTests : IClassFixture<AccountWebApplicationFactory<Startup>>
+    public class AccountIntegrationTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _httpClient;
 
-        public AccountIntegrationTests(AccountWebApplicationFactory<Startup> factory)
+        public AccountIntegrationTests(CustomWebApplicationFactory<Startup> factory)
         {
             _httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions
             {
