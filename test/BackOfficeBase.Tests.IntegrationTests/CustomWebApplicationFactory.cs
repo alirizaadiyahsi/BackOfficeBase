@@ -49,25 +49,23 @@ namespace BackOfficeBase.Tests.IntegrationTests
 
                 var sp = services.BuildServiceProvider();
 
-                using (var scope = sp.CreateScope())
+                using var scope = sp.CreateScope();
+                var scopedServices = scope.ServiceProvider;
+                var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
+                var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+
+                db.Database.EnsureCreated();
+
+                try
                 {
-                    var scopedServices = scope.ServiceProvider;
-                    var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
-                    var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-
-                    db.Database.EnsureCreated();
-
-                    try
-                    {
-                        new DbContextDataBuilderHelper(db).SeedData();
-                        new TestDataBuilderForAccount(db).SeedData();
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "An error occurred seeding the " +
-                                            "database with test messages. Error: {Message}", ex.Message);
-                    }
+                    new DbContextDataBuilderHelper(db).SeedData();
+                    new TestDataBuilderForAccount(db).SeedData();
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred seeding the " +
+                                        "database with test messages. Error: {Message}", ex.Message);
                 }
             });
         }
