@@ -33,7 +33,7 @@ namespace BackOfficeBase.Application.Authorization.Roles
             var roleOutput = await base.CreateAsync(input);
 
             AddPermissionsToRole(input.SelectedPermissions, roleOutput.Id);
-            SetSelectedNavigationProperties(input.SelectedPermissions, roleOutput);
+            SetSelectedPermissions(input.SelectedPermissions, roleOutput);
 
             return roleOutput;
         }
@@ -46,12 +46,12 @@ namespace BackOfficeBase.Application.Authorization.Roles
             _dbContext.SaveChanges();
 
             AddPermissionsToRole(input.SelectedPermissions, roleOutput.Id);
-            SetSelectedNavigationProperties(input.SelectedPermissions, roleOutput);
+            SetSelectedPermissions(input.SelectedPermissions, roleOutput);
 
             return roleOutput;
         }
 
-        private static void SetSelectedNavigationProperties(IEnumerable<string> selectedPermissions, RoleOutput roleOutput)
+        private static void SetSelectedPermissions(IEnumerable<string> selectedPermissions, RoleOutput roleOutput)
         {
             roleOutput.SelectedPermissions = selectedPermissions;
         }

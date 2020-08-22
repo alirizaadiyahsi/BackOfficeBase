@@ -39,7 +39,7 @@ namespace BackOfficeBase.Application.Authorization.Users
             AddRolesToUser(input.SelectedRoleIds, userOutput.Id);
             AddPermissionsToUser(input.SelectedPermissions, userOutput.Id);
 
-            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, userOutput);
+            SetSelectedRolesAndPermissions(input.SelectedRoleIds, input.SelectedPermissions, userOutput);
 
             return userOutput;
         }
@@ -55,12 +55,12 @@ namespace BackOfficeBase.Application.Authorization.Users
             AddRolesToUser(input.SelectedRoleIds, userOutput.Id);
             AddPermissionsToUser(input.SelectedPermissions, userOutput.Id);
 
-            SetSelectedNavigationProperties(input.SelectedRoleIds, input.SelectedPermissions, userOutput);
+            SetSelectedRolesAndPermissions(input.SelectedRoleIds, input.SelectedPermissions, userOutput);
 
             return userOutput;
         }
 
-        private static void SetSelectedNavigationProperties(IEnumerable<Guid> selectedRoleIds, IEnumerable<string> selectedPermissions, UserOutput userOutput)
+        private static void SetSelectedRolesAndPermissions(IEnumerable<Guid> selectedRoleIds, IEnumerable<string> selectedPermissions, UserOutput userOutput)
         {
             userOutput.SelectedRoleIds = selectedRoleIds;
             userOutput.SelectedPermissions = selectedPermissions;
