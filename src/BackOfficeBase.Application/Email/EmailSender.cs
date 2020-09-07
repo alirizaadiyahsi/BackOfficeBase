@@ -22,7 +22,7 @@ namespace BackOfficeBase.Application.Email
         {
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(new MailboxAddress(_emailSettings.SenderUsername, _emailSettings.SenderEmail));
-            mimeMessage.To.Add(new MailboxAddress(email));
+            mimeMessage.To.Add(new MailboxAddress(email, email));
             mimeMessage.Subject = subject;
             mimeMessage.Body = new TextPart("html")
             {
