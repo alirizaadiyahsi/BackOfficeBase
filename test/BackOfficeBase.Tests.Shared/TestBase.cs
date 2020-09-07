@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Security.Claims;
-using AutoMapper;
 using BackOfficeBase.Application.Authorization.Roles.Dto;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Domain.Entities.Authorization;
@@ -14,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BackOfficeBase.Tests.Shared
 {
-    // TODO: Write integration tests
     public class TestBase
     {
         protected readonly TestBackOfficeBaseDbContext DefaultTestDbContext;

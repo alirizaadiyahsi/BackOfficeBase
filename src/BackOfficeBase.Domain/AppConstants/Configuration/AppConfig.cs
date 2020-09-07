@@ -10,5 +10,6 @@
         public static string Authentication_JwtBearer_Audience = "Authentication:JwtBearer:Audience";
         public static string DefaultConnection = "DefaultConnection";
         public static string Email_Smtp = "Email:Smtp";
+        public static string DefaultTestConnection = "DefaultTestConnection";
     }
 }

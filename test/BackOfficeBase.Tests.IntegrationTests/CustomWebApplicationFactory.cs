@@ -2,10 +2,10 @@
 using System.Linq;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.DataAccess.Helpers;
+using BackOfficeBase.Domain.AppConstants.Configuration;
 using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,15 +17,6 @@ namespace BackOfficeBase.Tests.IntegrationTests
     public class CustomWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
-        private readonly string _connectionString = "DataSource=:memory:";
-        private readonly SqliteConnection _connection;
-
-        public CustomWebApplicationFactory()
-        {
-            _connection = new SqliteConnection(_connectionString);
-            _connection.Open();
-        }
-
         protected override IHostBuilder CreateHostBuilder() =>
             base.CreateHostBuilder()
                 .ConfigureHostConfiguration(
@@ -44,15 +35,10 @@ namespace BackOfficeBase.Tests.IntegrationTests
                     services.Remove(descriptor);
                 }
 
-                services
-                    .AddEntityFrameworkSqlite()
-                    .AddEntityFrameworkProxies()
-                    .AddDbContext<BackOfficeBaseDbContext>(options =>
-                    {
-                        options.UseSqlite(_connection);
-                        options.UseInternalServiceProvider(services.BuildServiceProvider());
-                        options.UseLazyLoadingProxies();
-                    });
+                var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+                services.AddDbContext<BackOfficeBaseDbContext>(options =>
+                    options.UseNpgsql(configuration.GetConnectionString(AppConfig.DefaultTestConnection))
+                        .UseLazyLoadingProxies()); 
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
@@ -60,11 +46,11 @@ namespace BackOfficeBase.Tests.IntegrationTests
                 var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
                 var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
+                db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
 
                 try
                 {
-                    // TODO: Before, remove DB
                     new DbContextDataBuilderHelper(db).SeedData();
                     // TODO: Call one method instead of calling TestDataBuilderForAccount
                     new TestDataBuilderForAccount(db).SeedData();
@@ -81,7 +67,6 @@ namespace BackOfficeBase.Tests.IntegrationTests
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            _connection.Close();
         }
     }
 }
