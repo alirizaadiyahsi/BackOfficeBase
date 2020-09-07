@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace BackOfficeBase.Tests.IntegrationTests
@@ -23,6 +25,11 @@ namespace BackOfficeBase.Tests.IntegrationTests
             _connection = new SqliteConnection(_connectionString);
             _connection.Open();
         }
+
+        protected override IHostBuilder CreateHostBuilder() =>
+            base.CreateHostBuilder()
+                .ConfigureHostConfiguration(
+                    config => config.AddEnvironmentVariables("Test"));
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -48,7 +55,6 @@ namespace BackOfficeBase.Tests.IntegrationTests
                     });
 
                 var sp = services.BuildServiceProvider();
-
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
@@ -59,6 +65,7 @@ namespace BackOfficeBase.Tests.IntegrationTests
                 try
                 {
                     new DbContextDataBuilderHelper(db).SeedData();
+                    // TODO: Call one method instead of calling TestDataBuilderForAccount
                     new TestDataBuilderForAccount(db).SeedData();
                     db.SaveChanges();
                 }
