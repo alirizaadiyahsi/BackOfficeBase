@@ -64,6 +64,7 @@ namespace BackOfficeBase.Tests.IntegrationTests
 
                 try
                 {
+                    // TODO: Before, remove DB
                     new DbContextDataBuilderHelper(db).SeedData();
                     // TODO: Call one method instead of calling TestDataBuilderForAccount
                     new TestDataBuilderForAccount(db).SeedData();
