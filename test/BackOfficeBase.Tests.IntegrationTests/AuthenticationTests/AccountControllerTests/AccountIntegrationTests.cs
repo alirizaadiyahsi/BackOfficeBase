@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.DataAccess.Helpers;
-using BackOfficeBase.Tests.IntegrationTests.AccountTests.Configuration;
+using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.AccountControllerTests.Configuration;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.PrimitiveTypes;
 using BackOfficeBase.Web.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace BackOfficeBase.Tests.IntegrationTests.AccountTests
+namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.AccountControllerTests
 {
     public class AccountIntegrationTests : IClassFixture<AccountWebApplicationFactory<Startup>>
     {

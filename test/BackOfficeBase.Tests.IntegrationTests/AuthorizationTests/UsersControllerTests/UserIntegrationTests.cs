@@ -3,12 +3,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
-using BackOfficeBase.Tests.IntegrationTests.UserTests.DataBuilder;
+using BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControllerTests.DataBuilder;
 using BackOfficeBase.Web.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace BackOfficeBase.Tests.IntegrationTests.UserTests
+namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControllerTests
 {
     public class UserIntegrationTests : IClassFixture<UsersWebApplicationFactory<Startup>>
     {

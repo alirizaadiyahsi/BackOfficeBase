@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BackOfficeBase.Tests.IntegrationTests.UserTests.DataBuilder
+namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.AccountControllerTests.Configuration
 {
-    public class UsersWebApplicationFactory<TStartup>
+    public class AccountWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override IHostBuilder CreateHostBuilder() =>
@@ -36,14 +36,14 @@ namespace BackOfficeBase.Tests.IntegrationTests.UserTests.DataBuilder
 
                 var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
                 services.AddDbContext<BackOfficeBaseDbContext>(options =>
-                    options.UseNpgsql(string.Format(configuration.GetConnectionString(AppConfig.DefaultTestConnection), "Users"))
+                    options.UseNpgsql(string.Format(configuration.GetConnectionString(AppConfig.DefaultTestConnection), "Account"))
                         .UseLazyLoadingProxies());
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
-                var logger = scopedServices.GetRequiredService<ILogger<UsersWebApplicationFactory<TStartup>>>();
+                var logger = scopedServices.GetRequiredService<ILogger<AccountWebApplicationFactory<TStartup>>>();
 
                 db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
@@ -51,7 +51,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.UserTests.DataBuilder
                 try
                 {
                     new DbContextDataBuilderHelper(db).SeedData();
-                    new TestDataBuilderForUsers(db).SeedData();
+                    new TestDataBuilderForAccount(db).SeedData();
                     db.SaveChanges();
                 }
                 catch (Exception ex)

@@ -3,7 +3,7 @@ using System.Globalization;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.Entities.Authorization;
 
-namespace BackOfficeBase.Tests.IntegrationTests.AccountTests.Configuration
+namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.AccountControllerTests.Configuration
 {
     public class TestDataBuilderForAccount
     {
