@@ -28,6 +28,7 @@ namespace BackOfficeBase.Application
                     opt => opt.MapFrom(src => src.RoleClaims.Where(uc => uc.ClaimType == CustomClaimTypes.Permission).Select(uc => uc.ClaimValue)));
             CreateMap<CreateRoleInput, Role>();
             CreateMap<UpdateRoleInput, Role>();
+            CreateMap<Role, RoleListOutput>();
 
             CreateMap<OrganizationUnit, OrganizationUnitOutput>()
                 .ForMember(dest => dest.SelectedRoles,

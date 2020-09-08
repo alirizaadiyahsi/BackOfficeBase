@@ -3,7 +3,6 @@ using System.Linq;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.DataAccess.Helpers;
 using BackOfficeBase.Domain.AppConstants.Configuration;
-using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BackOfficeBase.Tests.IntegrationTests
+namespace BackOfficeBase.Tests.IntegrationTests.AccountTests.Configuration
 {
-    public class CustomWebApplicationFactory<TStartup>
+    public class AccountWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override IHostBuilder CreateHostBuilder() =>
@@ -37,14 +36,14 @@ namespace BackOfficeBase.Tests.IntegrationTests
 
                 var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
                 services.AddDbContext<BackOfficeBaseDbContext>(options =>
-                    options.UseNpgsql(configuration.GetConnectionString(AppConfig.DefaultTestConnection))
-                        .UseLazyLoadingProxies()); 
+                    options.UseNpgsql(string.Format(configuration.GetConnectionString(AppConfig.DefaultTestConnection), "Account"))
+                        .UseLazyLoadingProxies());
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<BackOfficeBaseDbContext>();
-                var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                var logger = scopedServices.GetRequiredService<ILogger<AccountWebApplicationFactory<TStartup>>>();
 
                 db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();

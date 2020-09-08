@@ -23,8 +23,8 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public IEnumerable<string> SelectedPermissions { get; set; }
 
-        public IEnumerable<RoleOutput> AllRoles { get; set; }
+        public IEnumerable<RoleListOutput> AllRoles { get; set; }
 
-        public IEnumerable<string> AllPermissions{ get; set; }
+        public IEnumerable<string> AllPermissions { get; set; }
     }
 }

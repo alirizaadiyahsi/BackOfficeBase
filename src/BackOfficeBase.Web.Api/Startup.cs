@@ -13,6 +13,7 @@ using BackOfficeBase.Domain.Localization.Resources;
 using BackOfficeBase.Web.Core.ActionFilters;
 using BackOfficeBase.Web.Core.Authorization;
 using BackOfficeBase.Web.Core.Configuration;
+using BackOfficeBase.Web.Core.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -198,6 +199,7 @@ namespace BackOfficeBase.Web.Api
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.ConfigureCustomExceptionMiddleware();
             app.UseRequestLocalization();
             app.UseEndpoints(endpoints =>
             {

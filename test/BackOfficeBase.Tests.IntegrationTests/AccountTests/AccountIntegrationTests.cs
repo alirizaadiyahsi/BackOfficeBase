@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 using BackOfficeBase.Application.Authorization.Users.Dto;
 using BackOfficeBase.Application.Identity.Dto;
 using BackOfficeBase.DataAccess.Helpers;
-using BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder;
+using BackOfficeBase.Tests.IntegrationTests.AccountTests.Configuration;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.PrimitiveTypes;
 using BackOfficeBase.Web.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests
+namespace BackOfficeBase.Tests.IntegrationTests.AccountTests
 {
-    public class AccountIntegrationTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class AccountIntegrationTests : IClassFixture<AccountWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _httpClient;
 
-        public AccountIntegrationTests(CustomWebApplicationFactory<Startup> factory)
+        public AccountIntegrationTests(AccountWebApplicationFactory<Startup> factory)
         {
             _httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions
             {

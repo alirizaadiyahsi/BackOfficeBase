@@ -3,7 +3,7 @@ using System.Globalization;
 using BackOfficeBase.DataAccess;
 using BackOfficeBase.Domain.Entities.Authorization;
 
-namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder
+namespace BackOfficeBase.Tests.IntegrationTests.AccountTests.Configuration
 {
     public class TestDataBuilderForAccount
     {
@@ -28,8 +28,8 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder
             TestUserForChangePassword = new User
             {
                 Id = Guid.NewGuid(),
-                UserName = "TestUserName_" + Guid.NewGuid(),
-                Email = "TestUserEmail_" + Guid.NewGuid(),
+                UserName = "ChangePasswordUserName_" + Guid.NewGuid(),
+                Email = "ChangePasswordUserEmail_" + Guid.NewGuid(),
                 PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString()
@@ -46,8 +46,8 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthenticationTests.DataBuilder
             TestUserForResetPassword = new User
             {
                 Id = Guid.NewGuid(),
-                UserName = "TestUserName_" + Guid.NewGuid(),
-                Email = "TestUserEmail_" + Guid.NewGuid(),
+                UserName = "ResetPasswordUserName_" + Guid.NewGuid(),
+                Email = "ResetPasswordUserEmail_" + Guid.NewGuid(),
                 PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString()
