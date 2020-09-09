@@ -18,8 +18,8 @@ namespace BackOfficeBase.Application.Authorization.Users.Dto
 
         public string ProfileImageUrl { get; set; }
 
-        public IEnumerable<Guid> SelectedRoleIds { get; set; }
+        public List<Guid> SelectedRoleIds { get; set; } = new List<Guid>();
 
-        public IEnumerable<string> SelectedPermissions { get; set; }
+        public List<string> SelectedPermissions { get; set; } = new List<string>();
     }
 }

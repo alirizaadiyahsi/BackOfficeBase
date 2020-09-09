@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BackOfficeBase.Application.Authorization.Users;
@@ -59,8 +61,8 @@ namespace BackOfficeBase.Tests.Application.Authorization
             {
                 UserName = "test_user_for_user_app_service_create",
                 Email = "test_user_for_user_app_service_create@mail.com",
-                SelectedRoleIds = new[] { testRole.Id },
-                SelectedPermissions = new[] { AppPermissions.Users.Read }
+                SelectedRoleIds = new List<Guid> { testRole.Id },
+                SelectedPermissions = new List<string> { AppPermissions.Users.Read }
             };
             var userOutput = await _userAppService.CreateAsync(createUserInput);
             await _dbContext.SaveChangesAsync();
@@ -69,7 +71,7 @@ namespace BackOfficeBase.Tests.Application.Authorization
 
             Assert.NotNull(userOutput);
             Assert.True(userOutput.SelectedRoleIds != null && userOutput.SelectedRoleIds.Any(x => x == testRole.Id));
-            Assert.True(userOutput.SelectedPermissions!= null && userOutput.SelectedPermissions.Any(x => x == AppPermissions.Users.Read));
+            Assert.True(userOutput.SelectedPermissions != null && userOutput.SelectedPermissions.Any(x => x == AppPermissions.Users.Read));
 
             Assert.NotNull(insertedUser);
             Assert.True(insertedUser.UserRoles != null && insertedUser.UserRoles.Any(x => x.RoleId == testRole.Id));
@@ -94,8 +96,8 @@ namespace BackOfficeBase.Tests.Application.Authorization
             {
                 UserName = "test_user_for_user_app_service_update_updated",
                 Email = "test_user_for_user_app_service_update_updated@mail.com",
-                SelectedRoleIds = new[] { roleToGrant.Id },
-                SelectedPermissions = new[] { AppPermissions.Users.Create }
+                SelectedRoleIds = new List<Guid> { roleToGrant.Id },
+                SelectedPermissions = new List<string> { AppPermissions.Users.Create }
             };
             var userOutput = _userAppService.Update(updateUserInput);
             _dbContext.SaveChanges();

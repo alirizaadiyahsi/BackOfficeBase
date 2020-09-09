@@ -124,7 +124,11 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IIdentityAppService>().Object);
+            var identityAppServiceMock = new Mock<IIdentityAppService>();
+            identityAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
+
+            var usersController = new UsersController(userAppServiceMock.Object, identityAppServiceMock.Object);
             var actionResult = await usersController.PutUsers(new UpdateUserInput());
 
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
@@ -145,18 +149,14 @@ namespace BackOfficeBase.Tests.Web.Api.modules.Authorization
                 Id = Guid.NewGuid()
             });
 
-            var identityAppServiceMock = new Mock<IIdentityAppService>();
-            identityAppServiceMock.Setup(x => x.FindUserByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(GetTestUser("test_user" + Guid.NewGuid()));
-
-            var usersController = new UsersController(userAppServiceMock.Object, identityAppServiceMock.Object);
+            var usersController = new UsersController(userAppServiceMock.Object, new Mock<IIdentityAppService>().Object);
             var actionResult = await usersController.PutUsers(new UpdateUserInput());
 
-            var conflictObjectResult = Assert.IsType<ConflictObjectResult>(actionResult.Result);
-            var message = Assert.IsType<string>(conflictObjectResult.Value);
+            var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+            var message = Assert.IsType<string>(notFoundObjectResult.Value);
 
-            Assert.Equal((int)HttpStatusCode.Conflict, conflictObjectResult.StatusCode);
-            Assert.Equal(UserFriendlyMessages.EmailAlreadyExist, message);
+            Assert.Equal((int)HttpStatusCode.NotFound, notFoundObjectResult.StatusCode);
+            Assert.Equal(UserFriendlyMessages.UserIsNotFound, message);
         }
 
         [Fact]

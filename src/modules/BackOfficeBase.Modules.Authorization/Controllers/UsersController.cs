@@ -64,17 +64,21 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         public async Task<ActionResult<UserOutput>> PutUsers([FromBody]UpdateUserInput input)
         {
             var user = await _identityAppService.FindUserByEmailAsync(input.Email);
-            if (user != null) return Conflict(UserFriendlyMessages.EmailAlreadyExist);
-
-            user = await _identityAppService.FindUserByUserNameAsync(input.UserName);
-            if (user != null) return Conflict(UserFriendlyMessages.UserNameAlreadyExist);
+            if (user == null)
+            {
+                user = await _identityAppService.FindUserByUserNameAsync(input.UserName);
+                if (user == null)
+                {
+                    return NotFound(UserFriendlyMessages.UserIsNotFound);
+                }
+            }
 
             var userOutput = _userAppService.Update(input);
 
             return Ok(userOutput);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(AppPermissions.Users.Delete)]
         public async Task<ActionResult<UserOutput>> DeleteUsers(Guid id)
         {

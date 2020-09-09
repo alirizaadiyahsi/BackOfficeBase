@@ -9,6 +9,8 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControll
     {
         private readonly BackOfficeBaseDbContext _dbContext;
         public static User TestUserForGet;
+        public static User TestUserForUpdate;
+        public static User TestUserForDelete;
 
         public TestDataBuilderForUsers(BackOfficeBaseDbContext dbContext)
         {
@@ -18,6 +20,8 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControll
         public void SeedData()
         {
             CreateTestUserForGet();
+            CreateTestUserForUpdate();
+            CreateTestUserForDelete();
         }
 
         private void CreateTestUserForGet()
@@ -38,22 +42,40 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControll
             _dbContext.SaveChanges();
         }
 
-        //private void CreateUserForResetPassword()
-        //{
-        //    TestUserForResetPassword = new User
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        UserName = "TestUserName_" + Guid.NewGuid(),
-        //        Email = "TestUserEmail_" + Guid.NewGuid(),
-        //        PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
-        //        EmailConfirmed = true,
-        //        SecurityStamp = Guid.NewGuid().ToString()
-        //    };
-        //    TestUserForResetPassword.NormalizedEmail = TestUserForResetPassword.Email.ToUpper(CultureInfo.GetCultureInfo("en-US"));
-        //    TestUserForResetPassword.NormalizedUserName = TestUserForResetPassword.UserName.ToUpper(CultureInfo.GetCultureInfo("en-US"));
+        private void CreateTestUserForUpdate()
+        {
+            TestUserForUpdate = new User
+            {
+                Id = Guid.NewGuid(),
+                UserName = "GetUserName_" + Guid.NewGuid(),
+                Email = "GetUserEmail_" + Guid.NewGuid(),
+                PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            TestUserForUpdate.NormalizedEmail = TestUserForUpdate.Email.ToUpper(CultureInfo.GetCultureInfo("en-US"));
+            TestUserForUpdate.NormalizedUserName = TestUserForUpdate.UserName.ToUpper(CultureInfo.GetCultureInfo("en-US"));
 
-        //    _dbContext.Users.Add(TestUserForResetPassword);
-        //    _dbContext.SaveChanges();
-        //}
+            _dbContext.Users.Add(TestUserForUpdate);
+            _dbContext.SaveChanges();
+        }
+
+        private void CreateTestUserForDelete()
+        {
+            TestUserForDelete = new User
+            {
+                Id = Guid.NewGuid(),
+                UserName = "GetUserName_" + Guid.NewGuid(),
+                Email = "GetUserEmail_" + Guid.NewGuid(),
+                PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            TestUserForDelete.NormalizedEmail = TestUserForDelete.Email.ToUpper(CultureInfo.GetCultureInfo("en-US"));
+            TestUserForDelete.NormalizedUserName = TestUserForDelete.UserName.ToUpper(CultureInfo.GetCultureInfo("en-US"));
+
+            _dbContext.Users.Add(TestUserForDelete);
+            _dbContext.SaveChanges();
+        }
     }
 }
