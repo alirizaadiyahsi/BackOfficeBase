@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackOfficeBase.Modules.Authorization.Controllers
 {
-    // TODO: Write integration tests
     public class UsersController : ApiControllerBase
     {
         private readonly IUserAppService _userAppService;

@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackOfficeBase.Modules.Authorization.Controllers
 {
-    // TODO: Write integration tests
     public class RolesController: ApiControllerBase
     {
         private readonly IRoleAppService _roleAppService;
@@ -68,7 +67,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
             return Ok(roleOutput);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(AppPermissions.Roles.Delete)]
         public async Task<ActionResult<RoleOutput>> DeleteRoles(Guid id)
         {

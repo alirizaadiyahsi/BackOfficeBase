@@ -47,8 +47,8 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControll
             TestUserForUpdate = new User
             {
                 Id = Guid.NewGuid(),
-                UserName = "GetUserName_" + Guid.NewGuid(),
-                Email = "GetUserEmail_" + Guid.NewGuid(),
+                UserName = "UpdateUserName_" + Guid.NewGuid(),
+                Email = "UpdateUserEmail_" + Guid.NewGuid(),
                 PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString()
@@ -65,8 +65,8 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControll
             TestUserForDelete = new User
             {
                 Id = Guid.NewGuid(),
-                UserName = "GetUserName_" + Guid.NewGuid(),
-                Email = "GetUserEmail_" + Guid.NewGuid(),
+                UserName = "DeleteUserName_" + Guid.NewGuid(),
+                Email = "DeleteUserEmail_" + Guid.NewGuid(),
                 PasswordHash = "AM4OLBpptxBYmM79lGOX9egzZk3vIQU3d/gFCJzaBjAPXzYIK3tQ2N7X4fcrHtElTw==", //123qwe
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString()
