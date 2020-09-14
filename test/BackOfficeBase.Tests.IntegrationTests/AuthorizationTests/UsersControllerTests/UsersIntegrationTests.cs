@@ -6,21 +6,23 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using BackOfficeBase.Application.Authorization.Roles.Dto;
-using BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.RolesControllerTests.DataBuilder;
+using BackOfficeBase.Application.Authorization.Users.Dto;
+using BackOfficeBase.Application.Identity.Dto;
+using BackOfficeBase.DataAccess.Helpers;
+using BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControllerTests.DataBuilder;
 using BackOfficeBase.Utilities.Collections;
 using BackOfficeBase.Utilities.PrimitiveTypes;
 using BackOfficeBase.Web.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.RolesControllerTests
+namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.UsersControllerTests
 {
-    public class RoleIntegrationTests : IClassFixture<RolesWebApplicationFactory<Startup>>
+    public class UsersIntegrationTests : IClassFixture<UsersWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _httpClient;
 
-        public RoleIntegrationTests(RolesWebApplicationFactory<Startup> factory)
+        public UsersIntegrationTests(UsersWebApplicationFactory<Startup> factory)
         {
             _httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions
             {
@@ -29,39 +31,40 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.RolesControll
         }
 
         [Fact]
-        public async Task Should_Get_Role()
+        public async Task Should_Get_User()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"/api/roles/{TestDataBuilderForRoles.TestRoleForGet.Id}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"/api/users/{TestDataBuilderForUsers.TestUserForGet.Id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await LoginHelper.LoginAsAdminUserAndGetTokenAsync(_httpClient));
             var response = await _httpClient.SendAsync(request);
-            var role = await response.Content.ReadAsAsync<RoleOutput>();
+            var user = await response.Content.ReadAsAsync<UserOutput>();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(TestDataBuilderForRoles.TestRoleForGet.Id, role.Id);
+            Assert.Equal(TestDataBuilderForUsers.TestUserForGet.Id, user.Id);
         }
 
         [Fact]
-        public async Task Should_Get_Roles()
+        public async Task Should_Get_Users()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"/api/roles");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"/api/users");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await LoginHelper.LoginAsAdminUserAndGetTokenAsync(_httpClient));
             var response = await _httpClient.SendAsync(request);
-            var roles = await response.Content.ReadAsAsync<PagedListResult<RoleListOutput>>();
+            var users = await response.Content.ReadAsAsync<PagedListResult<UserListOutput>>();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.True(roles.Items.Any());
+            Assert.True(users.Items.Any());
         }
 
         [Fact]
-        public async Task Should_Create_Role()
+        public async Task Should_Create_User()
         {
-            var input = new CreateRoleInput
+            var input = new CreateUserInput
             {
-                Name = "CreateTestRoleName_" + Guid.NewGuid(),
+                Email = "CreateTestUserEmail_" + Guid.NewGuid() + "@mail.com",
+                UserName = "CreateTestUserName_" + Guid.NewGuid(),
                 SelectedPermissions = new List<string> { "permission1", "permission2" }
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, $"/api/roles");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await LoginHelper.LoginAsAdminUserAndGetTokenAsync(_httpClient));
             request.Content = input.ToStringContent(Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request);
@@ -71,15 +74,18 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.RolesControll
 
 
         [Fact]
-        public async Task Should_Update_Role()
+        public async Task Should_Update_User()
         {
-            var input = new UpdateRoleInput
+            var input = new UpdateUserInput
             {
-                Name = "CreateTestRoleName_" + Guid.NewGuid(),
-                SelectedPermissions = new List<string> { "permission1", "permission2" }
+                Email = TestDataBuilderForUsers.TestUserForUpdate.Email,
+                UserName = TestDataBuilderForUsers.TestUserForUpdate.UserName,
+                SelectedPermissions = new List<string> { "permission1", "permission2" },
+                FirstName = "Update FirstName",
+                LastName = "Updated LastName"
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Put, $"/api/roles");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"/api/users");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await LoginHelper.LoginAsAdminUserAndGetTokenAsync(_httpClient));
             request.Content = input.ToStringContent(Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request);
@@ -88,9 +94,9 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.RolesControll
         }
 
         [Fact]
-        public async Task Should_Delete_Role()
+        public async Task Should_Delete_User()
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"/api/roles/{TestDataBuilderForRoles.TestRoleForDelete.Id}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"/api/users/{TestDataBuilderForUsers.TestUserForDelete.Id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await LoginHelper.LoginAsAdminUserAndGetTokenAsync(_httpClient));
             var response = await _httpClient.SendAsync(request);
 

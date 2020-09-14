@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\src\BackOfficeBase.Web.Api\BackOfficeBase.Web.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CoreTests\OrganizationUnitsControllerTests\DataBuilder\" />
+  </ItemGroup>
+
 </Project>
