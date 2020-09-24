@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using BackOfficeBase.Utilities.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Serilog;
@@ -24,8 +25,12 @@ namespace BackOfficeBase.Web.Core.CustomMiddleware
             }
             catch (Exception ex)
             {
-                // TODO: Logger is not working
-                Log.Error(ex.Message);
+                foreach (var exception in ex.GetInnerExceptions())
+                {
+                    Log.Error(exception.Message);
+                    Log.Error(exception.StackTrace);
+                }
+
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
