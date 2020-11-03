@@ -75,7 +75,7 @@ namespace BackOfficeBase.Tests.IntegrationTests.AuthorizationTests.RolesControll
         {
             var input = new UpdateRoleInput
             {
-                Name = "CreateTestRoleName_" + Guid.NewGuid(),
+                Name = "UpdateTestRoleName_" + Guid.NewGuid(),
                 SelectedPermissions = new List<string> { "permission1", "permission2" }
             };
 

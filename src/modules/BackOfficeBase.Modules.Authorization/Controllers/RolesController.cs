@@ -60,7 +60,7 @@ namespace BackOfficeBase.Modules.Authorization.Controllers
         public async Task<ActionResult<RoleOutput>> PutRoles([FromBody]UpdateRoleInput input)
         {
             var role = await _identityAppService.FindRoleByNameAsync(input.Name);
-            if (role != null) return Conflict(UserFriendlyMessages.RoleNameAlreadyExist);
+            if (role == null) return NotFound(UserFriendlyMessages.RoleNotFount);
 
             var roleOutput = _roleAppService.Update(input);
 
